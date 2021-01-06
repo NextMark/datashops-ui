@@ -14,20 +14,6 @@
               <p class="person-info">这个家伙很懒，什么都没有留下</p>
             </div>
             <div class="user-information">
-              <ul>
-                <li>
-                   <i class="el-icon-user"></i>{{userInfo.name}}
-                </li>
-                <li>
-                  <i class="el-icon-data-analysis"></i>北京XXX
-                </li>
-                <li>
-                  <i class="el-icon-video-camera-solid"></i>中国·北京市·朝阳区
-                </li>
-                <li>
-                  <i class="el-icon-medal-1"></i>Vue
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -38,24 +24,15 @@
             <el-tab-pane label="账号绑定" name="second">
               <ul>
                 <li>
-                  <p class="title">密保手机</p>
+                  <p class="title">手机</p>
                   <p class="desc">
-                    已绑定手机:1245678910
-                    <a href="#">立即修改</a>
+                    {{userInfo.phone}}
                   </p>
                 </li>
                 <li>
-                  <p class="title">密保邮箱</p>
+                  <p class="title">邮箱</p>
                   <p class="desc">
-                    已绑定邮箱：gin-vue-admin@google.com.cn
-                    <a href="#">立即修改</a>
-                  </p>
-                </li>
-                <li>
-                  <p class="title">密保问题</p>
-                  <p class="desc">
-                    未设置密保问题
-                    <a href="#">去设置</a>
+                    {{userInfo.email}}
                   </p>
                 </li>
                 <li>
@@ -145,7 +122,7 @@ export default {
       this.$refs.modifyPwdForm.validate(valid => {
         if (valid) {
           changePassword({
-            username: this.userInfo.userName,
+            name: this.userInfo.name,
             password: this.pwdModify.password,
             newPassword: this.pwdModify.newPassword
           }).then((res) => {
@@ -171,8 +148,8 @@ export default {
       this.$refs.chooseImg.open();
     },
     async enterImg(url) {
-      const res = await setUserInfo({ headerImg: url, ID: this.userInfo.ID });
-      if (res.code == 0) {
+      const res = await setUserInfo({ headerImg: url, id: this.userInfo.id });
+      if (res.code === 1000) {
         this.ResetUserInfo({ headerImg: url });
         this.$message({
           type: "success",

@@ -109,7 +109,7 @@ export default {
       }
       if(this.$route.query.type == 'edit'){
          const res = await updateWorkflowProcess(processModel)
-         if(res.code == 0){
+         if(res.code === 1000){
           this.$message({
             type:"success",
             message:"编辑成功"
@@ -117,7 +117,7 @@ export default {
         }
       }else{
         const res = await createWorkflowProcess(processModel)
-        if(res.code == 0){
+        if(res.code === 1000){
           this.$message({
             type:"success",
             message:"创建成功"
@@ -144,20 +144,20 @@ export default {
     }
   },
   async created() {
-    const userRes = await getUserList({ page: 1, pageSize: 9999999 });
-    if (userRes.code == 0) {
-      userRes.data.list.map(item => {
-        this.users.push({ id: item.ID, name: item.nickName });
+    const userRes = await getUserList({ pageNum: 1, pageSize: 9999999 });
+    if (userRes.code === 1000) {
+      userRes.data.content.map(item => {
+        this.users.push({ id: item.id, name: item.name });
       });
     }
-    const authorityRes = await asyncRoles({ page: 1, pageSize: 9999999 });
+    const authorityRes = await asyncRoles({ pageNum: 1, pageSize: 9999999 });
     if (authorityRes.code === 1000) {
-      this.fmtAuthority(authorityRes.data.list,this.authorities)
+      this.fmtAuthority(authorityRes.data.content,this.authorities)
     }
     if(this.$route.query.id){
       const res = await findWorkflowProcess({ id: this.$route.query.id });
       this.disabled = this.$route.query.type == "view"
-      if(res.code == 0){
+      if(res.code === 1000){
          res.data.reworkflowProcess.nodes.map(item=>{
            if(item.assignValue){
              const watiUseArr =item.assignValue.substr(1,item.assignValue.length-2).split(",")

@@ -52,7 +52,7 @@ export default {
     },
     // 关联树 确认方法
     async relation() {
-      const checkArr = this.$refs.menuTree.getCheckedNodes(true, true)
+      const checkArr = this.$refs.menuTree.getCheckedNodes(false, true)
       const res = await addRoleAuthority({
         menus: checkArr,
         id: this.row.id
@@ -75,8 +75,8 @@ export default {
     const arr = []
     menus.map(item => {
       // 防止直接选中父级造成全选
-      if (!menus.some(same => same.parentId === item)) {
-        arr.push(Number(item))
+      if (!menus.some(same => same.parentId === item.id)) {
+        arr.push(Number(item.id))
       }
     })
     console.log(arr)
