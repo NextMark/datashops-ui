@@ -6,7 +6,8 @@
                 <div class="ef-tooltar">
                     <el-link type="primary" :underline="false">{{data.name}}</el-link>
                     <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" icon="el-icon-delete" size="large" @click="deleteElement" :disabled="!this.activeElement.type"></el-button>
+                    <el-button type="text" icon="el-icon-delete" size="large" @click="deleteElement"
+                               :disabled="!this.activeElement.type"></el-button>
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-download" size="large" @click="downloadData"></el-button>
                     <el-divider direction="vertical"></el-divider>
@@ -16,10 +17,17 @@
                     <div style="float: right;margin-right: 5px">
                         <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">DAG信息
                         </el-button>
-                        <el-button type="primary" plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">切换A</el-button>
-                        <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">切换B</el-button>
-                        <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">自定义样式</el-button>
-                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助</el-button>
+                        <el-button type="primary" plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">
+                            切换A
+                        </el-button>
+                        <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">
+                            切换B
+                        </el-button>
+                        <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">
+                            自定义样式
+                        </el-button>
+                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助
+                        </el-button>
                     </div>
                 </div>
             </el-col>
@@ -45,18 +53,14 @@
                 <div style="position:absolute;top: 2000px;left: 2000px;">&nbsp;</div>
             </div>
             <!-- 右侧表单 -->
-<!--            <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">-->
-<!--                -->
-<!--                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel" @repaintEverything="repaintEverything"></flow-node-form>-->
-<!--            </div>-->
+
             <el-drawer
                     title="我是标题"
                     :visible.sync="drawer"
                     direction="rtl"
             >
-                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel" @repaintEverything="repaintEverything"></flow-node-form>
-
-                <span>我来啦!</span>
+                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"
+                                @repaintEverything="repaintEverything"></flow-node-form>
             </el-drawer>
         </div>
         <!-- 流程数据详情 -->
@@ -71,19 +75,19 @@
     // import { jsPlumb } from 'jsplumb'
     // 使用修改后的jsplumb
     import './jsplumb'
-    import { easyFlowMixin } from '@/components/ef/mixins'
+    import {easyFlowMixin} from '@/components/ef/mixins'
     import flowNode from '@/components/ef/node'
     import nodeMenu from '@/components/ef/node_menu'
     import FlowInfo from '@/components/ef/info'
     import FlowHelp from '@/components/ef/help'
     import FlowNodeForm from './node_form'
     import lodash from 'lodash'
-    import { getDataA } from './data_A'
-    import { getDataB } from './data_B'
-    import { getDataC } from './data_C'
-    import { getDataD } from './data_D'
-    import { getDataE } from './data_E'
-    import { ForceDirected } from './force-directed'
+    import {getDataA} from './data_A'
+    import {getDataB} from './data_B'
+    import {getDataC} from './data_C'
+    import {getDataD} from './data_D'
+    import {getDataE} from './data_E'
+    import {ForceDirected} from './force-directed'
 
     export default {
         data() {
@@ -516,7 +520,7 @@
                 if (this.zoom >= 1) {
                     return
                 }
-                this.zoom = (this.zoom  * 10 + 1) / 10
+                this.zoom = (this.zoom * 10 + 1) / 10
                 this.$refs.efContainer.style.transform = `scale(${this.zoom})`
                 this.jsPlumb.setZoom(this.zoom)
             },
@@ -524,7 +528,7 @@
                 if (this.zoom <= 0.2) {
                     return
                 }
-                this.zoom = (this.zoom  * 10 - 1) / 10
+                this.zoom = (this.zoom * 10 - 1) / 10
                 this.$refs.efContainer.style.transform = `scale(${this.zoom})`
                 this.jsPlumb.setZoom(this.zoom)
             },
