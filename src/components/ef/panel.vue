@@ -45,9 +45,19 @@
                 <div style="position:absolute;top: 2000px;left: 2000px;">&nbsp;</div>
             </div>
             <!-- 右侧表单 -->
-            <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">
+<!--            <div style="width: 300px;border-left: 1px solid #dce3e8;background-color: #FBFBFB">-->
+<!--                -->
+<!--                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel" @repaintEverything="repaintEverything"></flow-node-form>-->
+<!--            </div>-->
+            <el-drawer
+                    title="我是标题"
+                    :visible.sync="drawer"
+                    direction="rtl"
+            >
                 <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel" @repaintEverything="repaintEverything"></flow-node-form>
-            </div>
+
+                <span>我来啦!</span>
+            </el-drawer>
         </div>
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
@@ -99,7 +109,8 @@
                     sourceId: undefined,
                     targetId: undefined
                 },
-                zoom: 1
+                zoom: 1,
+                drawer: false
             }
         },
         // 一些基础配置移动该文件中
@@ -422,6 +433,7 @@
                 return true
             },
             clickNode(nodeId) {
+                this.drawer = true
                 this.activeElement.type = 'node'
                 this.activeElement.nodeId = nodeId
                 this.$refs.nodeForm.nodeInit(this.data, nodeId)

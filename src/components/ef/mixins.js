@@ -149,7 +149,7 @@ export const easyFlowMixin = {
                 filterExclude: false,
                 // 是否允许自己连接自己
                 anchor: 'Continuous',
-                allowLoopback: true,
+                allowLoopback: false,
                 dropOptions: {hoverClass: 'ef-drop-hover'}
             }
         }

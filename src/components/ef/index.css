@@ -1,7 +1,7 @@
 /*画布容器*/
 #efContainer {
     position: relative;
-    overflow: scroll;
+    overflow: auto;
     flex: 1;
 }
 
