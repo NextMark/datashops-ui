@@ -13,7 +13,7 @@ router.beforeEach(async(to, from, next) => {
     document.title = getPageTitle(to.meta.title)
     if (whiteList.indexOf(to.name) > -1) {
         if (token) {
-            next({ path: '/layout/dashboard' })
+            next({ path: '/dashboard' })
         } else {
             next()
         }

@@ -52,7 +52,7 @@ export default {
       {
         name: 'dashboard',
         meta: {
-          title: '仪表盘'
+          title: '首页'
         }
       }
     ]
@@ -91,7 +91,7 @@ export default {
         {
           name: 'dashboard',
           meta: {
-            title: '仪表盘'
+            title: '首页'
           }
         }
       ]

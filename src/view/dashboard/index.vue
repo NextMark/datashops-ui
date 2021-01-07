@@ -140,7 +140,7 @@ export default {
 
 <style lang="scss" scoped>
 .big {
-  margin: 100px 0 0 0;
+  margin: 115px 15px 20px;
   padding-top: 0;
   background-color: rgb(243, 243, 243);
   padding-top: 15px;
