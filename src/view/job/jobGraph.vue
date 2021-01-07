@@ -2,24 +2,14 @@
     <div>
         <div class="search-term">
             <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-                <el-form-item label="流程名称">
-                    <el-input placeholder="搜索条件" v-model="searchInfo.name"></el-input>
+                <el-form-item label="名称">
+                    <el-input placeholder="名称" v-model="searchInfo.name"></el-input>
                 </el-form-item>
-                <el-form-item label="流程标题">
-                    <el-input placeholder="搜索条件" v-model="searchInfo.label"></el-input>
+                <el-form-item label="创建人">
+                    <el-input placeholder="创建人" v-model="searchInfo.owner"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="onSubmit" type="primary">查询</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-popover placement="top" v-model="deleteVisible" width="160">
-                        <p>确定要删除吗？</p>
-                        <div style="text-align: right; margin: 0">
-                            <el-button @click="deleteVisible = false" size="mini" type="text">取消</el-button>
-                            <el-button @click="onDelete" size="mini" type="primary">确定</el-button>
-                        </div>
-                        <el-button icon="el-icon-delete" size="mini" slot="reference" type="danger">批量删除</el-button>
-                    </el-popover>
                 </el-form-item>
             </el-form>
         </div>
@@ -32,37 +22,46 @@
                 style="width: 100%"
                 tooltip-effect="dark"
         >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="日期" width="180">
-                <template slot-scope="scope">{{scope.row.CreatedAt|formatDate}}</template>
+            <el-table-column label="ID"
+                    type="index"
+                    width="40"></el-table-column>
+
+            <el-table-column label="名称" prop="name" width="180"></el-table-column>
+            <el-table-column label="描述" prop="description" width="200"></el-table-column>
+
+            <el-table-column label="优先级" prop="priority" width="100"></el-table-column>
+
+            <el-table-column label="创建人" prop="owner" width="120"></el-table-column>
+            <el-table-column label="调度周期" width="100">
+                <template slot-scope="scope">{{scope.row.schedulingPeriod|formatSchedulingPeriod}}</template>
             </el-table-column>
-            <el-table-column label="流程名称" prop="name" width="120"></el-table-column>
 
-            <el-table-column label="分类" prop="category" width="120"></el-table-column>
-
-            <el-table-column label="类型" prop="clazz" width="120"></el-table-column>
-
-            <el-table-column label="流程标题" prop="label" width="120"></el-table-column>
-
-            <el-table-column label="是否隐藏图标" prop="hideIcon" width="120">
+            <el-table-column label="表达式" prop="cronExpression" width="150"></el-table-column>
+            <el-table-column label="下次调度时间" width="180">
+                <template slot-scope="scope">{{scope.row.nextTriggerTime}}</template>
+            </el-table-column>
+            <el-table-column label="创建日期" width="180">
+                <template slot-scope="scope">{{scope.row.createTime}}</template>
+            </el-table-column>
+            <el-table-column label="调度状态" width="80">
                 <template slot-scope="scope">
-                    {{
-                    scope.row.hideIcon | formatBoolean
-                    }}
+                    <el-switch
+                            v-model="scope.row.schedulerStatus"
+                            active-color="#13ce66"
+                            inactive-color="#BFBFBF"
+                            :active-value=1
+                            :inactive-value=0>
+                    </el-switch>
                 </template>
             </el-table-column>
-
-            <el-table-column label="详细介绍" prop="description" width="120"></el-table-column>
-
             <el-table-column label="按钮组">
                 <template slot-scope="scope">
-                    <el-button class="table-button" @click="useWorkflowProcess(scope.row)" size="success">启动</el-button>
                     <el-button
                             class="table-button"
                             @click="updateWorkflowProcess(scope.row)"
                             size="small"
                             type="primary"
-                    >变更</el-button>
+                    >手动执行</el-button>
                     <el-button
                             class="table-button"
                             @click="viewWorkflowProcess(scope.row)"
@@ -99,11 +98,10 @@
         getJobGraphList,
         deleteJobGraph
     } from "@/api/job"; //  此处请自行替换地址
-    import { formatTimeToStr } from "@/utils/date";
     import infoList from "@/mixins/infoList";
 
     export default {
-        name: "WorkflowProcess",
+        name: "JobGraph",
         mixins: [infoList],
         data() {
             return {
@@ -115,19 +113,21 @@
             };
         },
         filters: {
-            formatDate: function(time) {
-                if (time != null && time != "") {
-                    var date = new Date(time);
-                    return formatTimeToStr(date, "yyyy-MM-dd hh:mm:ss");
-                } else {
-                    return "";
+            formatSchedulingPeriod: function (period) {
+                if (period === 0) {
+                    return '月'
                 }
-            },
-            formatBoolean: function(bool) {
-                if (bool != null) {
-                    return bool ? "是" : "否";
-                } else {
-                    return "";
+                if (period === 1) {
+                    return '周'
+                }
+                if (period === 2) {
+                    return '天'
+                }
+                if (period === 3) {
+                    return '小时'
+                }
+                if (period === 4) {
+                    return '分钟'
                 }
             }
         },
@@ -136,9 +136,6 @@
             onSubmit() {
                 this.pageNum = 1;
                 this.pageSize = 10;
-                if (this.searchInfo.hideIcon == "") {
-                    this.searchInfo.hideIcon = null;
-                }
                 this.getTableData();
             },
             handleSelectionChange(val) {
@@ -165,24 +162,16 @@
             },
             async updateWorkflowProcess(row) {
                 this.$router.push({
-                    name: "workflowCreate",
+                    name: "jobGraphCreate",
                     query: {
                         id: row.id,
                         type: "edit"
                     }
                 });
             },
-            async useWorkflowProcess(row) {
-                this.$router.push({
-                    name: "workflowUse",
-                    query: {
-                        workflowId: row.id
-                    }
-                });
-            },
             async viewWorkflowProcess(row) {
                 this.$router.push({
-                    name: "workflowCreate",
+                    name: "jobGraphCreate",
                     query: {
                         id: row.id,
                         type: "view"
