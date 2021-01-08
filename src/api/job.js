@@ -48,3 +48,11 @@ export const modifySchedulerStatus = (params) => {
         data: params
     })
 }
+
+export const getJobGraphById = (params) => {
+    return service({
+        url: "/v1/job/getJobGraphById",
+        method: 'get',
+        params
+    })
+}

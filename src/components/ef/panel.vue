@@ -15,7 +15,8 @@
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-minus" size="large" @click="zoomSub"></el-button>
                     <div style="float: right;margin-right: 5px">
-                        <el-button type="success" plain round icon="el-icon-setting" @click="openGraphSetting($event)"
+                        <el-button type="success" plain round icon="el-icon-setting" @click="openGraphSetting($event,
+                         data.id)"
                                    size="mini">作业组设置
                         </el-button>
                         <el-button type="primary" plain round icon="el-icon-document" @click="dataInfo"
@@ -67,10 +68,9 @@
         <el-drawer
                 title="作业组配置"
                 :visible.sync="graphSetting"
+                size="60%"
                 direction="rtl">
-            <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"
-                            @repaintEverything="repaintEverything">
-            </flow-node-form>
+            <graph-form ref="graphForm"></graph-form>
         </el-drawer>
     </div>
 
@@ -87,11 +87,12 @@
     import FlowInfo from '@/components/ef/info'
     import FlowHelp from '@/components/ef/help'
     import FlowNodeForm from './node_form'
+    import GraphForm from './graph_form'
     import lodash from 'lodash'
-    import {getDataA} from './data_A'
     import {getDataB} from './data_B'
-    import {getDataC} from './data_C'
-    import {getDataD} from './data_D'
+    import {
+        getJobGraphById
+    } from "@/api/job";
 
     export default {
         data() {
@@ -107,6 +108,7 @@
                 flowHelpVisible: false,
                 // 数据
                 data: {},
+                jobGraph: {},
                 // 激活的元素、可能是节点、可能是连线
                 activeElement: {
                     // 可选值 node 、line
@@ -125,7 +127,7 @@
         // 一些基础配置移动该文件中
         mixins: [easyFlowMixin],
         components: {
-            flowNode, nodeMenu, FlowInfo, FlowNodeForm, FlowHelp
+            flowNode, nodeMenu, FlowInfo, FlowNodeForm, FlowHelp, GraphForm
         },
         directives: {
             'flowDrag': {
@@ -169,6 +171,7 @@
             this.$nextTick(() => {
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
                 this.dataReload(getDataB())
+                this.getJobGraphById()
             })
         },
         methods: {
@@ -496,21 +499,10 @@
                     })
                 })
             },
-            // 模拟载入数据dataA
-            dataReloadA() {
-                this.dataReload(getDataA())
-            },
+
             // 模拟载入数据dataB
             dataReloadB() {
                 this.dataReload(getDataB())
-            },
-            // 模拟载入数据dataC
-            dataReloadC() {
-                this.dataReload(getDataC())
-            },
-            // 模拟载入数据dataD
-            dataReloadD() {
-                this.dataReload(getDataD())
             },
 
             zoomAdd() {
@@ -558,13 +550,22 @@
                     this.$refs.flowHelp.init()
                 })
             },
-            openGraphSetting(ev) {
+            openGraphSetting(ev, graphId) {
                 let target = ev.target;
                 if(target.nodeName === "SPAN"){
                     target = ev.target.parentNode;
                 }
                 target.blur();
                 this.graphSetting = true
+                this.$nextTick(()=>{
+                    this.$refs.graphForm.graphInit(this.jobGraph, graphId)
+                });
+            },
+            async getJobGraphById() {
+                const res = await getJobGraphById({id: this.$route.query.id})
+                if (res.code === 1000) {
+                    this.jobGraph = res.data
+                }
             }
         }
     }

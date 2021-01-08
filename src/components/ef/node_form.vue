@@ -1,11 +1,10 @@
 <template>
     <div>
         <div class="ef-node-form">
-<!--            <div class="ef-node-form-header">-->
-<!--                编辑-->
-<!--            </div>-->
+
             <div class="ef-node-form-body">
                 <el-form :model="node" ref="dataForm" label-width="80px" v-show="type === 'node'">
+                    <el-divider content-position="left">基础属性</el-divider>
                     <el-form-item label="类型">
                         <el-input v-model="node.type" :disabled="true"></el-input>
                     </el-form-item>
