@@ -153,12 +153,12 @@
                 }
             },
             // 拖拽开始时触发
-            move(evt, a, b, c) {
+            move(evt) {
                 var type = evt.item.attributes.type.nodeValue
                 this.nodeMenu = this.getMenuByType(type)
             },
             // 拖拽结束时触发
-            end(evt, e) {
+            end(evt) {
                 this.$emit('addNode', evt, this.nodeMenu, mousePosition)
             },
             // 是否是火狐浏览器

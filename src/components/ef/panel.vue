@@ -15,25 +15,24 @@
                     <el-divider direction="vertical"></el-divider>
                     <el-button type="text" icon="el-icon-minus" size="large" @click="zoomSub"></el-button>
                     <div style="float: right;margin-right: 5px">
-                        <el-button type="info" plain round icon="el-icon-document" @click="dataInfo" size="mini">DAG信息
+                        <el-button type="success" plain round icon="el-icon-setting" @click="openGraphSetting($event)"
+                                   size="mini">作业组设置
                         </el-button>
-                        <el-button type="primary" plain round @click="dataReloadA" icon="el-icon-refresh" size="mini">
-                            切换A
+                        <el-button type="primary" plain round icon="el-icon-document" @click="dataInfo"
+                                   size="mini">DAG信息
                         </el-button>
-                        <el-button type="primary" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">
+                        <el-button type="info" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">
                             切换B
                         </el-button>
-                        <el-button type="primary" plain round @click="dataReloadD" icon="el-icon-refresh" size="mini">
-                            自定义样式
-                        </el-button>
-                        <el-button type="info" plain round icon="el-icon-document" @click="openHelp" size="mini">帮助
+                        <el-button type="warning" plain round icon="el-icon-document" @click="openHelp($event)"
+                                   size="mini">帮助
                         </el-button>
                     </div>
                 </div>
             </el-col>
         </el-row>
         <div style="display: flex;height: calc(100% - 47px);">
-            <div style="width: 230px;border-right: 1px solid #dce3e8;">
+            <div style="width: 200px;border-right: 1px solid #dce3e8;">
                 <node-menu @addNode="addNode" ref="nodeMenu"></node-menu>
             </div>
             <div id="efContainer" ref="efContainer" class="container" v-flowDrag>
@@ -53,25 +52,32 @@
                 <div style="position:absolute;top: 2000px;left: 2000px;">&nbsp;</div>
             </div>
             <!-- 右侧表单 -->
-
-            <el-drawer
-                    title="我是标题"
-                    :visible.sync="drawer"
-                    direction="rtl"
-            >
-                <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"
-                                @repaintEverything="repaintEverything"></flow-node-form>
-            </el-drawer>
         </div>
         <!-- 流程数据详情 -->
         <flow-info v-if="flowInfoVisible" ref="flowInfo" :data="data"></flow-info>
         <flow-help v-if="flowHelpVisible" ref="flowHelp"></flow-help>
+        <el-drawer
+                title="作业配置"
+                :visible.sync="drawer"
+                direction="rtl">
+            <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"
+                            @repaintEverything="repaintEverything">
+            </flow-node-form>
+        </el-drawer>
+        <el-drawer
+                title="作业组配置"
+                :visible.sync="graphSetting"
+                direction="rtl">
+            <flow-node-form ref="nodeForm" @setLineLabel="setLineLabel"
+                            @repaintEverything="repaintEverything">
+            </flow-node-form>
+        </el-drawer>
     </div>
+
 
 </template>
 
 <script>
-    import draggable from 'vuedraggable'
     // import { jsPlumb } from 'jsplumb'
     // 使用修改后的jsplumb
     import './jsplumb'
@@ -86,8 +92,6 @@
     import {getDataB} from './data_B'
     import {getDataC} from './data_C'
     import {getDataD} from './data_D'
-    import {getDataE} from './data_E'
-    import {ForceDirected} from './force-directed'
 
     export default {
         data() {
@@ -114,17 +118,18 @@
                     targetId: undefined
                 },
                 zoom: 1,
-                drawer: false
+                drawer: false,
+                graphSetting: false
             }
         },
         // 一些基础配置移动该文件中
         mixins: [easyFlowMixin],
         components: {
-            draggable, flowNode, nodeMenu, FlowInfo, FlowNodeForm, FlowHelp
+            flowNode, nodeMenu, FlowInfo, FlowNodeForm, FlowHelp
         },
         directives: {
             'flowDrag': {
-                bind(el, binding, vnode, oldNode) {
+                bind(el, binding) {
                     if (!binding) {
                         return
                     }
@@ -261,8 +266,8 @@
                     }
                 }
                 // 初始化连线
-                for (var i = 0; i < this.data.lineList.length; i++) {
-                    let line = this.data.lineList[i]
+                for (var j = 0; j < this.data.lineList.length; j++) {
+                    let line = this.data.lineList[j]
                     var connParam = {
                         source: line.from,
                         target: line.to,
@@ -440,7 +445,9 @@
                 this.drawer = true
                 this.activeElement.type = 'node'
                 this.activeElement.nodeId = nodeId
-                this.$refs.nodeForm.nodeInit(this.data, nodeId)
+                this.$nextTick(()=>{
+                    this.$refs.nodeForm.nodeInit(this.data, nodeId)
+                });
             },
             // 是否具有该线
             hasLine(from, to) {
@@ -505,17 +512,7 @@
             dataReloadD() {
                 this.dataReload(getDataD())
             },
-            // 模拟加载数据dataE，自适应创建坐标
-            dataReloadE() {
-                let dataE = getDataE()
-                let tempData = lodash.cloneDeep(dataE)
-                let data = ForceDirected(tempData)
-                this.dataReload(data)
-                this.$message({
-                    message: '力导图每次产生的布局是不一样的',
-                    type: 'warning'
-                });
-            },
+
             zoomAdd() {
                 if (this.zoom >= 1) {
                     return
@@ -550,12 +547,31 @@
                 }).catch(() => {
                 })
             },
-            openHelp() {
+            openHelp(ev) {
+                let target = ev.target;
+                if(target.nodeName === "SPAN"){
+                    target = ev.target.parentNode;
+                }
+                target.blur();
                 this.flowHelpVisible = true
                 this.$nextTick(function () {
                     this.$refs.flowHelp.init()
                 })
+            },
+            openGraphSetting(ev) {
+                let target = ev.target;
+                if(target.nodeName === "SPAN"){
+                    target = ev.target.parentNode;
+                }
+                target.blur();
+                this.graphSetting = true
             }
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    /deep/ :focus {
+        outline: 0;
+    }
+</style>

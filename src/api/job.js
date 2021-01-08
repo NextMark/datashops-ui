@@ -20,7 +20,7 @@ export const getJobGraphList = (data) => {
     return service({
         url: "/v1/job/getJobGraphList",
         method: 'post',
-        data
+        data: data
     })
 }
 
@@ -28,7 +28,7 @@ export const deleteJobGraph = (data) => {
     return service({
         url: "/v1/job/deleteJobGraph",
         method: 'post',
-        data
+        data: data
     })
 }
 
@@ -45,6 +45,6 @@ export const modifySchedulerStatus = (params) => {
     return service({
         url: "/v1/job/modifySchedulerStatus",
         method: 'post',
-        params
+        data: params
     })
 }

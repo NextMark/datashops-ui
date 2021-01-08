@@ -1,15 +1,12 @@
 <template>
   <div class="bottom-info">
     <div>
-      <span>Powered by</span>
+      <span>Copyright ©2020-2021 </span>
       <span>
-      <a href="https://github.com/NextMark/datashops">DataShops</a>
+      <a href="https://github.com/NextMark/datashops-ui">DataShops</a>
       </span>
       <el-divider direction="vertical"></el-divider>
-      <span>Copyright</span>
-      <span>
-      <a href="https://github.com/NextMark/datashops">DataShops</a>
-      </span>
+      <span>数据梦工厂</span>
     </div>
   </div>
 </template>

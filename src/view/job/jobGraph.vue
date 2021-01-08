@@ -23,7 +23,7 @@
                 tooltip-effect="dark"
         >
             <el-table-column label="ID"
-                    type="index"
+                    type="index" fixed="left"
                     width="40"></el-table-column>
 
             <el-table-column label="名称" prop="name" width="180"></el-table-column>
@@ -50,11 +50,12 @@
                             active-color="#13ce66"
                             inactive-color="#BFBFBF"
                             :active-value=1
-                            :inactive-value=0>
+                            :inactive-value=0
+                            @change='handleSchedulerStatus(scope.row)'>
                     </el-switch>
                 </template>
             </el-table-column>
-            <el-table-column label="按钮组">
+            <el-table-column label="按钮组" min-width="220" fixed="right">
                 <template slot-scope="scope">
                     <el-button
                             class="table-button"
@@ -72,7 +73,7 @@
                         <p>确定要删除吗？</p>
                         <div style="text-align: right; margin: 0">
                             <el-button size="mini" type="text" @click="scope.row.visible = false">取消</el-button>
-                            <el-button type="primary" size="mini" @click="deleteWorkflowProcess(scope.row)">确定</el-button>
+                            <el-button type="primary" size="mini" @click="deleteJobGraph(scope.row)">确定</el-button>
                         </div>
                         <el-button type="danger" icon="el-icon-delete" size="mini" slot="reference">删除</el-button>
                     </el-popover>
@@ -95,6 +96,7 @@
 
 <script>
     import {
+        modifySchedulerStatus,
         getJobGraphList,
         deleteJobGraph
     } from "@/api/job"; //  此处请自行替换地址
@@ -141,22 +143,13 @@
             handleSelectionChange(val) {
                 this.multipleSelection = val;
             },
-            async onDelete() {
-                const ids = [];
-                this.multipleSelection &&
-                this.multipleSelection.map(item => {
-                    ids.push(item.id);
-                });
-                const res = await deleteJobGraph({ ids });
+            async handleSchedulerStatus(row) {
+                const res = await modifySchedulerStatus({id: row.id, status: row.schedulerStatus});
                 if (res.code === 1000) {
                     this.$message({
                         type: "success",
-                        message: "删除成功"
+                        message: "调度修改成功"
                     });
-                    if (this.tableData.length == ids.length) {
-                        this.pageNum--;
-                    }
-                    this.deleteVisible = false;
                     this.getTableData();
                 }
             },
@@ -178,7 +171,7 @@
                     }
                 });
             },
-            async deleteWorkflowProcess(row) {
+            async deleteJobGraph(row) {
                 this.visible = false;
                 const res = await deleteJobGraph({ id: row.id });
                 if (res.code === 1000) {
@@ -186,9 +179,6 @@
                         type: "success",
                         message: "删除成功"
                     });
-                    if (this.tableData.length == 1) {
-                        this.pageNum--;
-                    }
                     this.getTableData();
                 }
             },
