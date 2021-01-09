@@ -1,16 +1,15 @@
 <template>
     <div class="flow-menu" ref="tool">
-        <div v-for="menu  in  menuList" :key="menu.id">
-            <span class="ef-node-pmenu" @click="menu.open = !menu.open"><i :class="{'el-icon-caret-bottom': menu.open,'el-icon-caret-right': !menu.open}"></i>&nbsp;{{menu.name}}</span>
-            <ul v-show="menu.open" class="ef-node-menu-ul">
-                <draggable @end="end" @start="move" v-model="menu.children"
-                           v-bind="draggableOptions">
-                    <li v-for="subMenu in menu.children" class="ef-node-menu-li" :key="subMenu.id" :type="subMenu.type">
-                        <i :class="subMenu.ico"></i> {{subMenu.name}}
-                    </li>
-                </draggable>
-            </ul>
-        </div>
+        <ul class="ef-node-menu-ul">
+            <draggable @end="end" @start="move"
+                       v-bind="draggableOptions">
+                <li v-for="subMenu in jobTypes" class="ef-node-menu-li" :key="subMenu.id" :type="subMenu.type">
+                    <svg class="iconfont" aria-hidden="true">
+                        <use :xlink:href="'#' + subMenu.ico"></use>
+                    </svg>
+                </li>
+            </draggable>
+        </ul>
     </div>
 </template>
 <script>
@@ -36,87 +35,48 @@
                     // fallbackClass: 'flow-node-draggable'
                 },
                 // 默认打开的左侧菜单的id
-                defaultOpeneds: ['1', '2', '3'],
-                menuList: [
+                jobTypes: [
                     {
                         id: '1',
-                        type: 'group',
-                        name: 'SQL',
-                        ico: 'el-icon-video-pause',
-                        open: true,
-                        children: [
-                            {
-                                id: '11',
-                                type: 'end',
-                                name: 'Hive SQL',
-                                ico: 'el-icon-caret-right',
-                                // 自定义覆盖样式
-                                style: {}
-                            }, {
-                                id: '12',
-                                type: 'over',
-                                name: 'MySQL',
-                                ico: 'el-icon-shopping-cart-full',
-                                // 自定义覆盖样式
-                                style: {}
-                            },
-                            {
-                                id: '13',
-                                type: 'over',
-                                name: 'ClickHouse',
-                                ico: 'el-icon-edit',
-                                // 自定义覆盖样式
-                                style: {}
-                            }
-                        ]
+                        type: 'hive',
+                        name: 'Hive',
+                        ico: 'el-icon-my-hive',
                     },
                     {
                         id: '2',
-                        type: 'group',
-                        name: 'Shell',
-                        ico: 'el-icon-video-play',
-                        open: true,
-                        children: [
-                            {
-                                id: '21',
-                                type: 'timer',
-                                name: 'Shell',
-                                ico: 'el-icon-time',
-                                // 自定义覆盖样式
-                                style: {}
-                            }, {
-                                id: '22',
-                                type: 'task',
-                                name: 'Python',
-                                ico: 'el-icon-odometer',
-                                // 自定义覆盖样式
-                                style: {}
-                            }
-                        ]
+                        type: 'bash',
+                        name: 'Bash',
+                        ico: 'el-icon-my-bash',
                     },
                     {
                         id: '3',
-                        type: 'group',
+                        type: 'spark',
+                        name: 'Spark',
+                        ico: 'el-icon-my-spark',
+                    },
+                    {
+                        id: '4',
+                        type: 'flink',
                         name: 'Flink',
-                        ico: 'el-icon-video-play',
-                        open: true,
-                        children: [
-                            {
-                                id: '31',
-                                type: 'timer',
-                                name: 'Flink',
-                                ico: 'el-icon-time',
-                                // 自定义覆盖样式
-                                style: {}
-                            }, {
-                                id: '32',
-                                type: 'task',
-                                name: 'Spark',
-                                ico: 'el-icon-odometer',
-                                // 自定义覆盖样式
-                                style: {}
-                            }
-                        ]
+                        ico: 'el-icon-my-flink',
+                    },
+                    {
+                        id: '6',
+                        type: 'fsql',
+                        name: 'FSQL',
+                        ico: 'el-icon-my-flink-sql',
+                    },
+                    {
+                        id: '7',
+                        type: 'mysql',
+                        name: 'Mysql',
+                        ico: 'el-icon-my-mysql',
+                    },
+                    {
+                        id: '8',
+                        type: 'clickhouse',
+                        name: 'ClickHouse',
+                        ico: 'el-icon-my-clickhouse',
                     }
                 ],
                 nodeMenu: {}
@@ -143,12 +103,10 @@
         methods: {
             // 根据类型获取左侧菜单对象
             getMenuByType(type) {
-                for (let i = 0; i < this.menuList.length; i++) {
-                    let children = this.menuList[i].children;
-                    for (let j = 0; j < children.length; j++) {
-                        if (children[j].type === type) {
-                            return children[j]
-                        }
+                for (let i = 0; i < this.jobTypes.length; i++) {
+                    let children = this.jobTypes[i];
+                    if (children.type === type) {
+                        return children
                     }
                 }
             },

@@ -10,6 +10,10 @@ Vue.use(ElementUI);
 // easy-flow
 import '@/components/ef/index.css'
 
+// iconfont
+import './assets/icon/iconfont.css'
+import './assets/icon/iconfont.js'
+
 // 引入封装的router
 import router from '@/router/index'
 

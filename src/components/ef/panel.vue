@@ -22,9 +22,6 @@
                         <el-button type="primary" plain round icon="el-icon-document" @click="dataInfo"
                                    size="mini">DAG信息
                         </el-button>
-                        <el-button type="info" plain round @click="dataReloadB" icon="el-icon-refresh" size="mini">
-                            切换B
-                        </el-button>
                         <el-button type="warning" plain round icon="el-icon-document" @click="openHelp($event)"
                                    size="mini">帮助
                         </el-button>
@@ -33,14 +30,14 @@
             </el-col>
         </el-row>
         <div style="display: flex;height: calc(100% - 47px);">
-            <div style="width: 200px;border-right: 1px solid #dce3e8;">
+            <div style="width: 200px;border-right: 1px solid #dce3e8; overflow: auto">
                 <node-menu @addNode="addNode" ref="nodeMenu"></node-menu>
             </div>
             <div id="efContainer" ref="efContainer" class="container" v-flowDrag>
                 <template v-for="node in data.nodeList">
                     <flow-node
-                            :id="node.id"
-                            :key="node.id"
+                            :id="node.id.toString()"
+                            :key="node.id.toString()"
                             :node="node"
                             :activeElement="activeElement"
                             @changeNodeSite="changeNodeSite"
@@ -170,7 +167,7 @@
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-                this.dataReload(getDataB())
+                //this.dataReload(getDataB())
                 this.getJobGraphById()
             })
         },
@@ -189,6 +186,7 @@
                     this.loadEasyFlow()
                     // 单点击了连接线, https://www.cnblogs.com/ysx215/p/7615677.html
                     this.jsPlumb.bind('click', (conn, originalEvent) => {
+                        this.drawer = true
                         this.activeElement.type = 'line'
                         this.activeElement.sourceId = conn.sourceId
                         this.activeElement.targetId = conn.targetId
@@ -205,6 +203,7 @@
                         if (this.loadEasyFlowFinish) {
                             this.data.lineList.push({from: from, to: to})
                         }
+
                     })
 
                     // 删除连线回调
@@ -255,11 +254,11 @@
                 for (var i = 0; i < this.data.nodeList.length; i++) {
                     let node = this.data.nodeList[i]
                     // 设置源点，可以拖出线连接其他节点
-                    this.jsPlumb.makeSource(node.id, lodash.merge(this.jsplumbSourceOptions, {}))
+                    this.jsPlumb.makeSource(node.id.toString(), lodash.merge(this.jsplumbSourceOptions, {}))
                     // // 设置目标点，其他源点拖出的线可以连接该节点
-                    this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
+                    this.jsPlumb.makeTarget(node.id.toString(), this.jsplumbTargetOptions)
                     if (!node.viewOnly) {
-                        this.jsPlumb.draggable(node.id, {
+                        this.jsPlumb.draggable(node.id.toString(), {
                             containment: 'parent',
                             stop: function (el) {
                                 // 拖拽节点结束后的对调
@@ -272,8 +271,8 @@
                 for (var j = 0; j < this.data.lineList.length; j++) {
                     let line = this.data.lineList[j]
                     var connParam = {
-                        source: line.from,
-                        target: line.to,
+                        source: line.from.toString(),
+                        target: line.to.toString(),
                         label: line.label ? line.label : '',
                         connector: line.connector ? line.connector : '',
                         anchors: line.anchors ? line.anchors : undefined,
@@ -565,6 +564,7 @@
                 const res = await getJobGraphById({id: this.$route.query.id})
                 if (res.code === 1000) {
                     this.jobGraph = res.data
+                    this.dataReload(this.jobGraph)
                 }
             }
         }

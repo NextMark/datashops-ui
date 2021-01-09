@@ -38,6 +38,7 @@
 }
 
 .ef-node-menu-li {
+    text-align: center;
     color: #565758;
     width: 150px;
     border: 1px dashed #E0E3E7;
@@ -58,7 +59,7 @@
 
 .ef-node-menu-ul {
     list-style: none;
-    padding-left: 20px
+    padding-left: 10px
 }
 
 /*节点的最外层容器*/
@@ -96,10 +97,18 @@
     border-radius: 4px 0 0 4px;
 }
 
+/*节点左侧的竖线*/
+.ef-node-left-graph {
+    width: 4px;
+    background-color: #dc143c;
+    border-radius: 4px 0 0 4px;
+}
+
 /*节点左侧的图标*/
 .ef-node-left-ico {
     line-height: 32px;
     margin-left: 8px;
+    margin-top: 2px;
 }
 
 .ef-node-left-ico:hover {

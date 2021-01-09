@@ -2,7 +2,7 @@ let dataB = {
     name: '流程B',
     nodeList: [
         {
-            id: 'nodeA',
+            id: "1",
             name: '节点A-不可拖拽',
             type: 'task',
             left: '18px',
@@ -12,7 +12,7 @@ let dataB = {
             viewOnly: true
         },
         {
-            id: 'nodeB',
+            id: '2',
             type: 'task',
             name: '流程B-节点B',
             left: '351px',
@@ -21,7 +21,7 @@ let dataB = {
             state: 'error'
         },
         {
-            id: 'nodeC',
+            id: '3',
             name: '流程B-节点C',
             type: 'task',
             left: '354px',
@@ -29,7 +29,7 @@ let dataB = {
             ico: 'el-icon-present',
             state: 'warning'
         }, {
-            id: 'nodeD',
+            id: '4',
             name: '流程B-节点D',
             type: 'task',
             left: '723px',
@@ -39,19 +39,19 @@ let dataB = {
         }
     ],
     lineList: [{
-        from: 'nodeA',
-        to: 'nodeB',
+        from: "1",
+        to: '2',
         label: '条件A'
     }, {
-        from: 'nodeA',
-        to: 'nodeC',
+        from: "1",
+        to: '3',
         label: '条件B'
     }, {
-        from: 'nodeB',
-        to: 'nodeD'
+        from: '2',
+        to: '4'
     }, {
-        from: 'nodeC',
-        to: 'nodeD'
+        from: '3',
+        to: '4'
     }
     ]
 }
