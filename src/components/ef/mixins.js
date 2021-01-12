@@ -116,7 +116,7 @@ export const easyFlowMixin = {
                 filterExclude: false,
                 anchor: 'Continuous',
                 // 是否允许自己连接自己
-                allowLoopback: true,
+                allowLoopback: false,
                 maxConnections: -1,
                 onMaxConnections: function (info, e) {
                     console.log(`超过了最大值连线: ${info.maxConnections}`)
@@ -129,7 +129,7 @@ export const easyFlowMixin = {
                 filterExclude: false,
                 // anchor: 'Continuous',
                 // 是否允许自己连接自己
-                allowLoopback: true,
+                allowLoopback: false,
                 connector: ['Flowchart', {curviness: 50}],
                 connectorStyle: {
                     // 线的颜色

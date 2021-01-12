@@ -34,11 +34,12 @@
                         </el-switch>
                     </el-form-item>
                     <el-form-item label="重跑次数">
-                        <el-input-number v-model="data.retryTimes" @change="handleChange" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="data.retryTimes" @change="" :min="1" :max="10"></el-input-number>
 
                     </el-form-item>
                     <el-form-item label="重跑间隔">
-                        <el-input-number v-model="data.retryInterval" @change="handleChange" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="data.retryInterval" @change="" :min="1"
+                                          :max="10"></el-input-number>
                     </el-form-item>
                     <el-form-item label="生效时间">
                         <el-col :span="6">
@@ -61,7 +62,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每周">
-                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" multiple>
+                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
                             <el-option label="星期一" value="minute"></el-option>
                             <el-option label="星期二" value="hour"></el-option>
                             <el-option label="星期一" value="day"></el-option>
@@ -72,7 +73,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每月">
-                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" multiple>
+                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
                             <el-option label="1号" value="minute"></el-option>
                             <el-option label="2号" value="hour"></el-option>
                             <el-option label="3号" value="day"></el-option>
@@ -80,7 +81,7 @@
                     </el-form-item>
                     <el-form-item label="调度时间">
                         <el-time-picker
-                                v-model="data.value"
+                                v-model="data.createTime"
                                 :picker-options="{
                                     format: 'HH:mm'
                                 }"
@@ -92,15 +93,72 @@
                     </el-form-item>
                     <el-form-item label="超时时间">
                         <el-col :span="4">
-                        <el-input v-model="data.timeout"></el-input>
+                        <el-input v-model="data.timeout">
+                            <template slot="append">s</template>
+                        </el-input>
                         </el-col>
                     </el-form-item>
                     <el-divider content-position="left">调度依赖</el-divider>
+                    <el-form-item>
+                        <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+                            <el-tab-pane label="作业组" name="first">
+                            </el-tab-pane>
+                            <el-tab-pane label="作业" name="second"></el-tab-pane>
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        label="名称"
+                                        prop="name">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-input
+                                                v-model="searchInfo.name"
+                                                size="mini"
+                                                placeholder="关键字搜索"/>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="责任人"
+                                        prop="owner"
+                                        width="80">
+                                </el-table-column>
+                                <el-table-column
+                                        label="偏移"
+                                        width="100">
+                                    <template slot-scope="scope">
+                                        <el-input v-model="scope.row.offset ? 1 : 0"></el-input>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作"
+                                        width="90">
+                                    <template slot-scope="scope">
+                                        <el-button
+                                                size="mini"
+                                                type="primary"
+                                                icon="el-icon-plus"
+                                                @click="handleAdd(scope.row)">添加</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-pagination
+                                    :current-page="pageNum"
+                                    :page-size="pageSize"
+                                    :page-sizes="[10, 30, 50, 100]"
+                                    :style="{ float: 'right', padding: '20px' }"
+                                    :total="total"
+                                    @current-change="handleCurrentChange"
+                                    @size-change="handleSizeChange"
+                                    layout="total, sizes, prev, pager, next, jumper"
+                            ></el-pagination>
+                        </el-tabs>
+                    </el-form-item>
+
                     <el-divider content-position="left">资源属性</el-divider>
                     <el-form-item label="资源组">
-                        <el-select v-model="data.resource" placeholder="请选择资源组">
-                            <el-option label="队列一" value="shanghai"></el-option>
-                            <el-option label="队列二" value="beijing"></el-option>
+                        <el-select v-model="data.name" placeholder="请选择资源组">
+                            <el-option label="队列一" value="queue1"></el-option>
+                            <el-option label="队列二" value="queue2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -115,15 +173,45 @@
 </template>
 
 <script>
+    import {
+        getJobGraphList,
+        getJobList,
+        addJobToGraph
+    } from "@/api/job";
+    import infoList from "@/mixins/infoList";
 
     export default {
+        mixins: [infoList],
+        props: ['queryId'],
         data() {
             return {
+                listApi: getJobGraphList,
+                activeName: 'first',
                 visible: true,
-                data: {}
+                data: {},
             }
         },
         methods: {
+
+            async handleClick(tab, event) {
+                if (tab.index === '1') {
+                    this.listApi = getJobList
+                    await this.getTableData()
+                }
+                if (tab.index === '0') {
+                    this.listApi = getJobGraphList
+                    await this.getTableData()
+                }
+            },
+
+            async handleAdd(row) {
+                let type = 'job';
+                if (this.activeName === 'first') {
+                    type = 'graph';
+                }
+                const res = await addJobToGraph({graphId: this.queryId, jobId: row.id, type: type})
+
+            },
             graphInit(data, id) {
                 this.type = 'graph'
                 this.data = data
@@ -131,6 +219,9 @@
             save() {
 
             }
+        },
+        async created() {
+            await this.getTableData();
         }
     }
 </script>

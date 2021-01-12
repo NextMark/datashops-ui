@@ -67,7 +67,7 @@
                 :visible.sync="graphSetting"
                 size="60%"
                 direction="rtl">
-            <graph-form ref="graphForm"></graph-form>
+            <graph-form ref="graphForm" :queryId="queryId"></graph-form>
         </el-drawer>
     </div>
 
@@ -86,7 +86,6 @@
     import FlowNodeForm from './node_form'
     import GraphForm from './graph_form'
     import lodash from 'lodash'
-    import {getDataB} from './data_B'
     import {
         getJobGraphById
     } from "@/api/job";
@@ -118,7 +117,8 @@
                 },
                 zoom: 1,
                 drawer: false,
-                graphSetting: false
+                graphSetting: false,
+                queryId: this.$route.query.id
             }
         },
         // 一些基础配置移动该文件中
@@ -167,7 +167,6 @@
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-                //this.dataReload(getDataB())
                 this.getJobGraphById()
             })
         },
@@ -273,7 +272,7 @@
                     var connParam = {
                         source: line.from.toString(),
                         target: line.to.toString(),
-                        label: line.label ? line.label : '',
+                        label: line.offset ? '偏移周期:' + line.offset : '',
                         connector: line.connector ? line.connector : '',
                         anchors: line.anchors ? line.anchors : undefined,
                         paintStyle: line.paintStyle ? line.paintStyle : undefined,
@@ -499,11 +498,6 @@
                 })
             },
 
-            // 模拟载入数据dataB
-            dataReloadB() {
-                this.dataReload(getDataB())
-            },
-
             zoomAdd() {
                 if (this.zoom >= 1) {
                     return
@@ -561,11 +555,15 @@
                 });
             },
             async getJobGraphById() {
-                const res = await getJobGraphById({id: this.$route.query.id})
-                if (res.code === 1000) {
-                    this.jobGraph = res.data
-                    this.dataReload(this.jobGraph)
+                const id = this.$route.query.id
+                if (id) {
+                    const res = await getJobGraphById({id: id})
+                    if (res.code === 1000) {
+                        this.jobGraph = res.data
+                        this.dataReload(this.jobGraph)
+                    }
                 }
+
             }
         }
     }

@@ -39,7 +39,7 @@ service.interceptors.request.use(
         config.headers = {
             'Content-Type': 'application/json',
             'Authorization': token,
-            'x-user-id': user.ID
+            'x-user-id': user.id
         }
         return config;
     },
@@ -67,7 +67,7 @@ service.interceptors.response.use(
         } else {
             Message({
                 showClose: true,
-                message: response.data.msg || decodeURI(response.headers.msg),
+                message: response.data.msg,
                 type: response.headers.msgtype||'error',
             })
             if (response.data.data && response.data.data.reload) {
@@ -78,12 +78,15 @@ service.interceptors.response.use(
     },
     error => {
         closeLoading()
-        Message({
-            showClose: true,
-            message: error,
-            type: 'error'
-        })
-        return error
+        if (error && error.response && error.response.status === 401) {
+            // Message({
+            //     showClose: true,
+            //     message: error,
+            //     type: 'error'
+            // })
+            store.commit('user/LoginOut')
+        }
+        return Promise.reject(error)
     }
 )
 

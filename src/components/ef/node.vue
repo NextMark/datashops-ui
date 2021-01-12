@@ -11,9 +11,10 @@
         <!-- 节点类型的图标 -->
         <div class="ef-node-left-ico flow-node-drag">
 
-            <svg class="icon" aria-hidden="true">
-                <use :xlink:href="'#' + node.ico"></use>
-            </svg>
+                <svg :class="nodeIcoClass" aria-hidden="true">
+                    <use :xlink:href="'#' + node.ico"></use>
+                </svg>
+
 <!--            <i :class="nodeIcoClass"></i>-->
         </div>
         <!-- 节点名称 -->
@@ -55,9 +56,10 @@
             },
             nodeIcoClass() {
                 var nodeIcoClass = {}
+                nodeIcoClass['icon'] = true
                 nodeIcoClass[this.node.ico] = true
-                // 添加该class可以推拽连线出来，viewOnly 可以控制节点是否运行编辑
-                nodeIcoClass['flow-node-drag'] = this.node.viewOnly ? false : true
+                // // 添加该class可以推拽连线出来，viewOnly 可以控制节点是否运行编辑
+                nodeIcoClass['flow-node-drag'] = !this.node.viewOnly
                 return nodeIcoClass
             }
         },

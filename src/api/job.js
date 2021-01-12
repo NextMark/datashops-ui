@@ -24,6 +24,22 @@ export const getJobGraphList = (data) => {
     })
 }
 
+export const getJobList = (data) => {
+    return service({
+        url: "/v1/job/getJobList",
+        method: 'post',
+        data: data
+    })
+}
+
+export const addJobToGraph = (data) => {
+    return service({
+        url: "/v1/job/addJobToGraph",
+        method: 'post',
+        data: data
+    })
+}
+
 export const deleteJobGraph = (data) => {
     return service({
         url: "/v1/job/deleteJobGraph",

@@ -61,19 +61,19 @@
                         ico: 'el-icon-my-flink',
                     },
                     {
-                        id: '6',
+                        id: '5',
                         type: 'fsql',
                         name: 'FSQL',
                         ico: 'el-icon-my-flink-sql',
                     },
                     {
-                        id: '7',
+                        id: '6',
                         type: 'mysql',
                         name: 'Mysql',
                         ico: 'el-icon-my-mysql',
                     },
                     {
-                        id: '8',
+                        id: '7',
                         type: 'clickhouse',
                         name: 'ClickHouse',
                         ico: 'el-icon-my-clickhouse',

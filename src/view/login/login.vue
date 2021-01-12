@@ -73,7 +73,7 @@ export default {
       curYear: 0,
       lock: "lock",
       loginForm: {
-        name: "qsw",
+        name: "admin",
         password: "123456",
       },
       rules: {
