@@ -7,7 +7,7 @@
             :class="nodeContainerClass"
     >
         <!-- 最左侧的那条竖线 -->
-        <div class="ef-node-left"></div>
+        <div :class="node.type === 1 ? 'ef-node-left' : 'ef-node-left-graph'"></div>
         <!-- 节点类型的图标 -->
         <div class="ef-node-left-ico flow-node-drag">
 

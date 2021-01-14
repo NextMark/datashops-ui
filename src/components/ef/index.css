@@ -100,7 +100,7 @@
 /*节点左侧的竖线*/
 .ef-node-left-graph {
     width: 4px;
-    background-color: #dc143c;
+    background-color: black;
     border-radius: 4px 0 0 4px;
 }
 

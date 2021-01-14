@@ -72,3 +72,11 @@ export const getJobGraphById = (params) => {
         params
     })
 }
+
+export const modifyPosition = (params) => {
+    return service({
+        url: "/v1/job/modifyPosition",
+        method: 'post',
+        data: params
+    })
+}

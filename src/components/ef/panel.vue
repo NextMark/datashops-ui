@@ -87,7 +87,8 @@
     import GraphForm from './graph_form'
     import lodash from 'lodash'
     import {
-        getJobGraphById
+        getJobGraphById,
+        modifyPosition
     } from "@/api/job";
 
     export default {
@@ -118,7 +119,7 @@
                 zoom: 1,
                 drawer: false,
                 graphSetting: false,
-                queryId: this.$route.query.id
+                queryId: this.$route.query.strid
             }
         },
         // 一些基础配置移动该文件中
@@ -169,6 +170,8 @@
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
                 this.getJobGraphById()
             })
+            console.log('queryId '+this.queryId)
+
         },
         methods: {
             // 返回唯一标识
@@ -236,6 +239,7 @@
                             this.$message.error('不支持两个节点之间连线回环');
                             return false
                         }
+                        console.log(evt)
                         this.$message.success('连接成功')
                         return true
                     })
@@ -249,6 +253,7 @@
             },
             // 加载流程图
             loadEasyFlow() {
+                let q = this.queryId
                 // 初始化节点
                 for (var i = 0; i < this.data.nodeList.length; i++) {
                     let node = this.data.nodeList[i]
@@ -262,6 +267,12 @@
                             stop: function (el) {
                                 // 拖拽节点结束后的对调
                                 console.log('拖拽结束: ', el)
+                                modifyPosition({
+                                    graphStrId: q,
+                                    jobStrId: el.el.id,
+                                    left: el.pos[0] + 'px',
+                                    top: el.pos[1] + 'px'
+                                })
                             }
                         })
                     }
@@ -408,7 +419,7 @@
                         containment: 'parent',
                         stop: function (el) {
                             // 拖拽节点结束后的对调
-                            console.log('拖拽结束: ', el)
+                            console.log('拖拽结束aa: ', el)
                         }
                     })
                 })
@@ -555,9 +566,8 @@
                 });
             },
             async getJobGraphById() {
-                const id = this.$route.query.id
-                if (id) {
-                    const res = await getJobGraphById({id: id})
+                if (this.queryId) {
+                    const res = await getJobGraphById({id: this.queryId})
                     if (res.code === 1000) {
                         this.jobGraph = res.data
                         this.dataReload(this.jobGraph)

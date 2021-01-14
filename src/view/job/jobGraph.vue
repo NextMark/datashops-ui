@@ -157,7 +157,7 @@
                 this.$router.push({
                     name: "jobGraphCreate",
                     query: {
-                        id: row.id,
+                        strid: row.strId,
                         type: "edit"
                     }
                 });
@@ -166,7 +166,7 @@
                 this.$router.push({
                     name: "jobGraphCreate",
                     query: {
-                        id: row.id,
+                        strid: row.strId,
                         type: "view"
                     }
                 });

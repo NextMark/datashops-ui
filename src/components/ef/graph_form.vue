@@ -205,11 +205,11 @@
             },
 
             async handleAdd(row) {
-                let type = 'job';
+                let type = 1;
                 if (this.activeName === 'first') {
-                    type = 'graph';
+                    type = 0;
                 }
-                const res = await addJobToGraph({graphId: this.queryId, jobId: row.id, type: type})
+                await addJobToGraph({graphStrId: this.queryId, jobStrId: row.strId, type: type})
 
             },
             graphInit(data, id) {
