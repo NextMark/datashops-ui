@@ -86,9 +86,12 @@
     import FlowNodeForm from './node_form'
     import GraphForm from './graph_form'
     import lodash from 'lodash'
+    import { mapGetters } from "vuex";
     import {
         getJobGraphById,
-        modifyPosition
+        modifyPosition,
+        addNewJobToGraph,
+        deleteJob
     } from "@/api/job";
 
     export default {
@@ -104,7 +107,9 @@
                 loadEasyFlowFinish: false,
                 flowHelpVisible: false,
                 // 数据
-                data: {},
+                data: {
+                    nodeList: []
+                },
                 jobGraph: {},
                 // 激活的元素、可能是节点、可能是连线
                 activeElement: {
@@ -170,8 +175,9 @@
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
                 this.getJobGraphById()
             })
-            console.log('queryId '+this.queryId)
-
+        },
+        computed: {
+            ...mapGetters("user", ["userInfo"])
         },
         methods: {
             // 返回唯一标识
@@ -364,7 +370,7 @@
              * @param nodeMenu 被添加的节点对象
              * @param mousePosition 鼠标拖拽结束的坐标
              */
-            addNode(evt, nodeMenu, mousePosition) {
+             async addNode(evt, nodeMenu, mousePosition) {
                 var screenX = evt.originalEvent.clientX, screenY = evt.originalEvent.clientY
                 let efContainer = this.$refs.efContainer
                 var containerRect = efContainer.getBoundingClientRect()
@@ -379,7 +385,6 @@
                 // 居中
                 left -= 85
                 top -= 16
-                var nodeId = this.getUUID()
                 // 动态生成名字
                 var origName = nodeMenu.name
                 var nodeName = origName
@@ -400,22 +405,33 @@
                     break
                 }
                 var node = {
-                    id: nodeId,
                     name: nodeName,
                     type: nodeMenu.type,
                     left: left + 'px',
                     top: top + 'px',
                     ico: nodeMenu.ico,
-                    state: 'success'
+                    state: 'success',
+                    queryId: this.queryId
                 }
                 /**
                  * 这里可以进行业务判断、是否能够添加该节点
                  */
+
+                const res = await addNewJobToGraph({
+                    graphStrId: this.queryId,
+                    type: nodeMenu.name,
+                    name: nodeName,
+                    ico: nodeMenu.ico,
+                    left: left + 'px',
+                    top: top + 'px',
+                    owner: this.userInfo.name
+                })
+                node.id = res.data.strId
                 this.data.nodeList.push(node)
                 this.$nextTick(function () {
-                    this.jsPlumb.makeSource(nodeId, this.jsplumbSourceOptions)
-                    this.jsPlumb.makeTarget(nodeId, this.jsplumbTargetOptions)
-                    this.jsPlumb.draggable(nodeId, {
+                    this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
+                    this.jsPlumb.makeTarget(node.id, this.jsplumbTargetOptions)
+                    this.jsPlumb.draggable(node.id, {
                         containment: 'parent',
                         stop: function (el) {
                             // 拖拽节点结束后的对调
@@ -446,7 +462,13 @@
                         }
                         return true
                     })
+                    console.log(nodeId)
+                    deleteJob({
+                        graphStrId: this.queryId,
+                        jobStrId: nodeId
+                    })
                     this.$nextTick(function () {
+                        this.activeElement.type = undefined
                         this.jsPlumb.removeAllEndpoints(nodeId);
                     })
                 }).catch(() => {

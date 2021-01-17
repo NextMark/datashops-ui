@@ -14,8 +14,6 @@
                 <svg :class="nodeIcoClass" aria-hidden="true">
                     <use :xlink:href="'#' + node.ico"></use>
                 </svg>
-
-<!--            <i :class="nodeIcoClass"></i>-->
         </div>
         <!-- 节点名称 -->
         <div class="ef-node-text" :show-overflow-tooltip="true">

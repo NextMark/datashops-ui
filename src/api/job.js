@@ -53,7 +53,7 @@ export const deleteJob = (params) => {
     return service({
         url: "/v1/job/deleteJob",
         method: 'post',
-        params
+        data: params
     })
 }
 
@@ -76,6 +76,14 @@ export const getJobGraphById = (params) => {
 export const modifyPosition = (params) => {
     return service({
         url: "/v1/job/modifyPosition",
+        method: 'post',
+        data: params
+    })
+}
+
+export const addNewJobToGraph = (params) => {
+    return service({
+        url: "/v1/job/addNewJobToGraph",
         method: 'post',
         data: params
     })

@@ -74,8 +74,8 @@
                     },
                     {
                         id: '7',
-                        type: 'clickhouse',
-                        name: 'ClickHouse',
+                        type: 'click_house',
+                        name: 'Click_House',
                         ico: 'el-icon-my-clickhouse',
                     }
                 ],
@@ -117,6 +117,7 @@
             },
             // 拖拽结束时触发
             end(evt) {
+                this.nodeMenu.type = 1
                 this.$emit('addNode', evt, this.nodeMenu, mousePosition)
             },
             // 是否是火狐浏览器
