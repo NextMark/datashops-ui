@@ -124,7 +124,7 @@
                 zoom: 1,
                 drawer: false,
                 graphSetting: false,
-                queryId: this.$route.query.strid
+                queryId: this.$route.query.maskid
             }
         },
         // 一些基础配置移动该文件中
@@ -274,8 +274,8 @@
                                 // 拖拽节点结束后的对调
                                 console.log('拖拽结束: ', el)
                                 modifyPosition({
-                                    graphStrId: q,
-                                    jobStrId: el.el.id,
+                                    graphMaskId: q,
+                                    jobMaskId: el.el.id,
                                     left: el.pos[0] + 'px',
                                     top: el.pos[1] + 'px'
                                 })
@@ -418,7 +418,7 @@
                  */
 
                 const res = await addNewJobToGraph({
-                    graphStrId: this.queryId,
+                    graphMaskId: this.queryId,
                     type: nodeMenu.name,
                     name: nodeName,
                     ico: nodeMenu.ico,
@@ -426,7 +426,7 @@
                     top: top + 'px',
                     owner: this.userInfo.name
                 })
-                node.id = res.data.strId
+                node.id = res.data.maskId
                 this.data.nodeList.push(node)
                 this.$nextTick(function () {
                     this.jsPlumb.makeSource(node.id, this.jsplumbSourceOptions)
@@ -464,8 +464,8 @@
                     })
                     console.log(nodeId)
                     deleteJob({
-                        graphStrId: this.queryId,
-                        jobStrId: nodeId
+                        graphMaskId: this.queryId,
+                        jobMaskId: nodeId
                     })
                     this.$nextTick(function () {
                         this.activeElement.type = undefined

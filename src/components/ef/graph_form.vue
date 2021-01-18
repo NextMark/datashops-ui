@@ -5,7 +5,9 @@
                 <el-form :model="data" ref="dataForm" label-width="150px">
                     <el-divider content-position="left">基础属性</el-divider>
                     <el-form-item label="名称">
-                        <span>{{data.name}}</span>
+                        <el-col :span="8">
+                            <el-input v-model="data.name"></el-input>
+                        </el-col>
                     </el-form-item>
                     <el-form-item label="描述">
                         <el-col :span="8">
@@ -17,15 +19,9 @@
                         <span>{{data.owner}}</span>
                     </el-form-item>
                     <el-divider content-position="left">时间属性</el-divider>
-                    <el-form-item label="调度属性">
-                        <el-radio-group v-model="data.resource">
-                            <el-radio label="正常调度"></el-radio>
-                            <el-radio label="空跑调度"></el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="自动重跑">
+                    <el-form-item label="重试">
                         <el-switch
-                                v-model="data.autoRerun"
+                                v-model="data.retry"
                                 active-color="#13ce66"
                                 inactive-color="#BFBFBF"
                                 :active-value=1
@@ -33,13 +29,11 @@
                                 @change='handleSchedulerStatus(scope.row)'>
                         </el-switch>
                     </el-form-item>
-                    <el-form-item label="重跑次数">
+                    <el-form-item label="重试次数">
                         <el-input-number v-model="data.retryTimes" @change="" :min="1" :max="10"></el-input-number>
-
                     </el-form-item>
-                    <el-form-item label="重跑间隔">
-                        <el-input-number v-model="data.retryInterval" @change="" :min="1"
-                                          :max="10"></el-input-number>
+                    <el-form-item label="重试间隔">
+                        <el-input-number v-model="data.retryInterval" @change="" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                     <el-form-item label="生效时间">
                         <el-col :span="6">
@@ -54,29 +48,32 @@
                     </el-form-item>
                     <el-form-item label="调度周期">
                         <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期">
-                            <el-option label="分钟" value="minute"></el-option>
-                            <el-option label="小时" value="hour"></el-option>
-                            <el-option label="天" value="day"></el-option>
-                            <el-option label="周" value="week"></el-option>
-                            <el-option label="月" value="month"></el-option>
+                            <el-option
+                                    v-for="item in schedulingPeriod"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每周">
                         <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
-                            <el-option label="星期一" value="minute"></el-option>
-                            <el-option label="星期二" value="hour"></el-option>
-                            <el-option label="星期一" value="day"></el-option>
-                            <el-option label="星期一" value="week"></el-option>
-                            <el-option label="星期一" value="month"></el-option>
-                            <el-option label="星期一" value="day"></el-option>
-                            <el-option label="星期一" value="day"></el-option>
+                            <el-option
+                                    v-for="item in week"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每月">
                         <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
-                            <el-option label="1号" value="minute"></el-option>
-                            <el-option label="2号" value="hour"></el-option>
-                            <el-option label="3号" value="day"></el-option>
+                            <el-option
+                                    v-for="item in date"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="调度时间">
@@ -179,6 +176,7 @@
         addJobToGraph
     } from "@/api/job";
     import infoList from "@/mixins/infoList";
+    import { schedulingPeriod, week, date } from '@/utils/job';
 
     export default {
         mixins: [infoList],
@@ -189,10 +187,12 @@
                 activeName: 'first',
                 visible: true,
                 data: {},
+                schedulingPeriod,
+                week,
+                date
             }
         },
         methods: {
-
             async handleClick(tab, event) {
                 if (tab.index === '1') {
                     this.listApi = getJobList
@@ -203,13 +203,12 @@
                     await this.getTableData()
                 }
             },
-
             async handleAdd(row) {
                 let type = 1;
                 if (this.activeName === 'first') {
                     type = 0;
                 }
-                await addJobToGraph({graphStrId: this.queryId, jobStrId: row.strId, type: type})
+                await addJobToGraph({graphMaskId: this.queryId, jobMaskId: row.maskId, type: type})
 
             },
             graphInit(data, id) {
