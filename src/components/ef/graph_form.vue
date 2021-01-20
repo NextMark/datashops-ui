@@ -11,12 +11,18 @@
                     </el-form-item>
                     <el-form-item label="描述">
                         <el-col :span="8">
-                        <el-input v-model="data.description"></el-input>
+                        <el-input type="textarea" v-model="data.description"></el-input>
                         </el-col>
                     </el-form-item>
 
                     <el-form-item label="创建人">
                         <span>{{data.owner}}</span>
+                    </el-form-item>
+                    <el-form-item label="资源组">
+                        <el-select v-model="data.name" placeholder="请选择资源组">
+                            <el-option label="队列一" value="queue1"></el-option>
+                            <el-option label="队列二" value="queue2"></el-option>
+                        </el-select>
                     </el-form-item>
                     <el-divider content-position="left">时间属性</el-divider>
                     <el-form-item label="重试">
@@ -151,13 +157,6 @@
                         </el-tabs>
                     </el-form-item>
 
-                    <el-divider content-position="left">资源属性</el-divider>
-                    <el-form-item label="资源组">
-                        <el-select v-model="data.name" placeholder="请选择资源组">
-                            <el-option label="队列一" value="queue1"></el-option>
-                            <el-option label="队列二" value="queue2"></el-option>
-                        </el-select>
-                    </el-form-item>
                     <el-form-item>
                         <el-button icon="el-icon-close">重置</el-button>
                         <el-button type="primary" icon="el-icon-check" @click="save">保存</el-button>

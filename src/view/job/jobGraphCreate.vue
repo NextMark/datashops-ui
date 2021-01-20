@@ -1,6 +1,16 @@
 <template>
-    <div>
-        <flow-panel></flow-panel>
+    <div class="outerContainer">
+        <div v-show="!queryId" class="innerContent">
+            <div style="text-align: center; padding-bottom: 20px">通过以下按钮创建作业</div>
+            <div style="text-align: center">
+                <el-button icon="el-icon-plus">新建作业流</el-button>
+                <el-button icon="el-icon-plus">新建离线作业</el-button>
+            </div>
+        </div>
+
+        <div v-show="queryId" class="innerContent">
+            <flow-panel ></flow-panel>
+        </div>
     </div>
 </template>
 <script>
@@ -37,7 +47,8 @@
                     messageDefs: [],
                 },
                 groups: [],
-                categorys: []
+                categorys: [],
+                queryId: this.$route.query.maskid
             };
         },
         methods: {
@@ -89,8 +100,8 @@
                         id: item.authorityId,
                         name: item.authorityName
                     });
-                    if(item.children){
-                        this.fmtAuthority(item.children,list)
+                    if (item.children) {
+                        this.fmtAuthority(item.children, list)
                     }
                 });
             }
@@ -100,3 +111,15 @@
         }
     };
 </script>
+
+<style>
+    .outerContainer{
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .innerContent{
+        width: 100%;
+        height: 100%;
+    }
+</style>

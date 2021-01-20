@@ -10,7 +10,6 @@
         <div :class="node.type === 1 ? 'ef-node-left' : 'ef-node-left-graph'"></div>
         <!-- 节点类型的图标 -->
         <div class="ef-node-left-ico flow-node-drag">
-
                 <svg :class="nodeIcoClass" aria-hidden="true">
                     <use :xlink:href="'#' + node.ico"></use>
                 </svg>

@@ -7,7 +7,7 @@ export const easyFlowMixin = {
                 // 容器ID
                 Container: 'efContainer',
                 // 连线的样式，直线或者曲线等，可选值:  StateMachine、Flowchart，Bezier、Straight
-                Connector: ['Bezier', {curviness: 100}],
+                Connector: ['Bezier', {curviness: 50}],
                 // Connector: ['Straight', {stub: 20, gap: 1}],
                 // Connector: ['Flowchart', {stub: 30, gap: 1, alwaysRespectStubs: false, midpoint: 0.5, cornerRadius: 10}],
                 // Connector: ['StateMachine', {margin: 5, curviness: 10, proximityLimit: 80}],
@@ -19,7 +19,7 @@ export const easyFlowMixin = {
                  * 连线的两端端点类型：圆形
                  * radius: 圆的半径，越大圆越大
                  */
-                // Endpoint: ['Dot', {radius: 5, cssClass: 'ef-dot', hoverClass: 'ef-dot-hover'}],
+                Endpoint: ['Dot', {radius: 3, cssClass: 'ef-dot', hoverClass: 'ef-dot-hover'}],
                 /**
                  * 连线的两端端点类型：矩形
                  * height: 矩形的高
@@ -33,7 +33,7 @@ export const easyFlowMixin = {
                 /**
                  * 空白端点
                  */
-                Endpoint: ['Blank', {Overlays: ''}],
+                // Endpoint: ['Blank', {Overlays: ''}],
                 // Endpoints: [['Dot', {radius: 5, cssClass: 'ef-dot', hoverClass: 'ef-dot-hover'}], ['Rectangle', {height: 20, width: 20, cssClass: 'ef-rectangle', hoverClass: 'ef-rectangle-hover'}]],
                 /**
                  * 连线的两端端点样式
