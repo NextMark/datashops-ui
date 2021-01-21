@@ -113,13 +113,5 @@
 </script>
 
 <style>
-    .outerContainer{
-        display:flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .innerContent{
-        width: 100%;
-        height: 100%;
-    }
+
 </style>
