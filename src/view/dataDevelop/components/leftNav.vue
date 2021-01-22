@@ -1,28 +1,39 @@
 <template>
     <div>
-            <el-row>
-                <el-button icon="el-icon-plus" size="mini" circle></el-button>
-                <el-button icon="el-icon-refresh" size="mini" circle></el-button>
-            </el-row>
-            <el-input placeholder="请输入内容">
-                <template slot="prepend">搜索</template>
-            </el-input>
-            <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">
-                <el-submenu index="1">
+        <el-row style="float: right">
+            <el-button type="text" icon="el-icon-plus" style="font-size:20px"></el-button>
+            <el-button type="text" icon="el-icon-refresh" style="font-size:20px"></el-button>
+        </el-row>
+        <el-input placeholder="请输入内容">
+            <template slot="prepend">搜索</template>
+        </el-input>
+        <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+                 :collapse="isCollapse">
+            <el-submenu index="1">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span slot="title">作业</span>
+                </template>
+                <el-menu-item index="1-2-1">
                     <template slot="title">
                         <i class="el-icon-location"></i>
-                        <span slot="title">作业</span>
+                        <span slot="title">作业aa</span>
                     </template>
-                    <el-submenu index="1-4">
-                        <span slot="title">作业汇总</span>
-                        <el-menu-item index="1-4-1">新增日活</el-menu-item>
-                    </el-submenu>
-                </el-submenu>
-                <el-menu-item index="2">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">HSQL</span>
                 </el-menu-item>
-            </el-menu>
+            </el-submenu>
+            <el-submenu index="2">
+                <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span slot="title">HSQL</span>
+                </template>
+                <el-menu-item index="1-2-1">
+                    <template slot="title">
+                        <i class="el-icon-location"></i>
+                        <span slot="title">作业aa</span>
+                    </template>
+                </el-menu-item>
+            </el-submenu>
+        </el-menu>
     </div>
 
 </template>
