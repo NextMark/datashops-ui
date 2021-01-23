@@ -1,14 +1,14 @@
 <template>
     <div>
         <el-row>
-            <el-button type="text" icon="el-icon-document-checked" style="font-size:20px"></el-button>
+            <el-button type="text" icon="el-icon-document-checked" style="font-size:20px" @click="save"></el-button>
             <el-button type="text" icon="el-icon-video-play" style="font-size:20px"></el-button>
             <el-button type="text" icon="el-icon-video-pause" style="font-size:20px"></el-button>
             <el-button type="text" icon="el-icon-set-up" style="font-size:20px"></el-button>
         </el-row>
         <MonacoEditor
                 style="padding-top: 10px"
-                height="500"
+                height="400"
                 language="sql"
                 theme="vs-dark"
                 :code="code"
@@ -48,6 +48,7 @@
                     fontSize: 20,
                     mouseWheelZoom: true
                 },
+                name: 'test'
             }
         },
         computed: {
@@ -64,6 +65,9 @@
                 this.editor = editor;
             },
             onCodeChange(editor) {
+            },
+            save(name) {
+                this.$bus.emit("save-hsql-job", this.name)
             }
         }
     }

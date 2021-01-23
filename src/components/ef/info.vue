@@ -14,19 +14,19 @@
         </el-alert>
         <br/>
         <!--一个高亮显示的插件-->
-        <codemirror
-                :value="flowJsonData"
-                :options="options"
-                class="code"
-        ></codemirror>
+<!--        <codemirror-->
+<!--                :value="flowJsonData"-->
+<!--                :options="options"-->
+<!--                class="code"-->
+<!--        ></codemirror>-->
     </el-dialog>
 </template>
 
 <script>
-    import 'codemirror/lib/codemirror.css'
-    import { codemirror } from 'vue-codemirror'
+    // import 'codemirror/lib/codemirror.css'
+    // import { codemirror } from 'vue-codemirror'
 
-    require("codemirror/mode/javascript/javascript.js")
+    // require("codemirror/mode/javascript/javascript.js")
 
     export default {
         props: {
@@ -43,7 +43,6 @@
             }
         },
         components: {
-            codemirror
         },
         methods: {
             init() {

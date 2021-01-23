@@ -1,3 +1,5 @@
+import ca from "element-ui/src/locale/lang/ca";
+
 export const schedulingPeriod = [
     { name: '分钟', value: 4 },
     { name: '小时', value: 3 },
@@ -49,3 +51,22 @@ export const date = [
     { name: '30号', value: 30 },
     { name: '31号', value: 31 }
 ];
+
+export function getJobName(code) {
+    switch (code) {
+        case 0:
+            return 'hsql'
+        case 1:
+            return 'shell'
+        case 2:
+            return 'spark'
+        case 3:
+            return 'flink'
+        case 4:
+            return 'click_house'
+        case 5:
+            return 'fsql'
+        case 6:
+            return 'mysql'
+    }
+}
