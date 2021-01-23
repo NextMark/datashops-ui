@@ -1,7 +1,7 @@
 <template>
     <div class="parent">
         <div class="left">
-            <left-nav @add-new-job="addTab"></left-nav>
+            <left-nav @add-new-job="addTab" @click-job="clickJob"></left-nav>
         </div>
         <div class="right outerContainer">
             <div class="innerContent" v-show="editableTabs.length === 0">
@@ -10,7 +10,7 @@
                     <el-button icon="el-icon-plus" @click="addJobDialog = true">新建作业</el-button>
                 </div>
             </div>
-            <div class="innerContent" v-show="editableTabs.length > 0">
+            <div class="innerContentTop" v-if="editableTabs.length > 0">
                 <el-tabs v-model="editableTabsValue" closable @tab-remove="removeTab">
                     <el-tab-pane
                             v-for="(item, index) in editableTabs"
@@ -36,24 +36,39 @@
                             <span>数据开发</span>
                         </el-row>
                         <el-divider></el-divider>
-                        <el-button type="text" @click="createNewJob(1, 0)" style="margin-left: 10px">Hive SQL
-                        </el-button>
-                        <el-button type="text" @click="createNewJob(1, 1)">Shell</el-button>
-                        <el-button type="text" @click="createNewJob(1, 2)">Spark</el-button>
-                        <el-button type="text" @click="createNewJob(1, 4)">Click House</el-button>
-                        <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(1, 0)">Hive SQL</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(1, 1)">Shell</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(1, 2)">Spark</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(1, 4)">Click House</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>
+                        </el-row>
                     </el-col>
                     <el-col :span="4" :offset="6">
                         <el-row>
                             <span>数据集成</span>
                         </el-row>
                         <el-divider></el-divider>
-                        <el-button type="text" @click="createNewJob(2)" style="margin-left: 10px">Kafka ->
-                            Hive</el-button>
-                        <el-button type="text" @click="createNewJob(2)">Kafka -> HDFS</el-button>
-                        <el-button type="text" @click="createNewJob(2)">Hive -> MySQL</el-button>
-                        <el-button type="text" @click="createNewJob(2)">MySQL -> Hive</el-button>
-
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(2)">Kafka2Hive</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(2)">Kafka2HDFS</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(2)">Hive2MySQL</el-button>
+                        </el-row>
+                        <el-row>
+                            <el-button type="text" @click="createNewJob(2)">MySQL2Hive</el-button>
+                        </el-row>
                     </el-col>
                 </el-row>
             </el-dialog>
@@ -122,6 +137,21 @@
                 const job = {
                     name: 'hsql'
                 }
+            },
+            clickJob(data) {
+                var res = this.editableTabs.some(item=>{
+                    if(item.name === data.name){
+                        return true
+                    }
+                })
+                if (!res) {
+                    this.editableTabs.push({
+                        title: data.name,
+                        name: data.name,
+                        type: data.type
+                    });
+                }
+                this.editableTabsValue = data.name
             }
         }
     }
@@ -146,5 +176,8 @@
     }
     .el-button--text {
         color: unset !important;
+    }
+    /deep/ .el-tabs__header {
+        margin-bottom: 0 !important;
     }
 </style>

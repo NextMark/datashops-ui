@@ -7,7 +7,6 @@
             <el-button type="text" icon="el-icon-set-up" style="font-size:20px"></el-button>
         </el-row>
         <MonacoEditor
-                style="padding-top: 10px"
                 height="400"
                 language="sql"
                 theme="vs-dark"
