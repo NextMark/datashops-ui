@@ -11,7 +11,8 @@
                 </div>
             </div>
             <div class="innerContentTop" v-if="editableTabs.length > 0">
-                <el-tabs v-model="editableTabsValue" closable @tab-remove="removeTab">
+
+                <el-tabs v-model="editableTabsValue" closable @tab-remove="removeTab" type="border-card">
                     <el-tab-pane
                             v-for="(item, index) in editableTabs"
                             :key="item.name"
@@ -23,6 +24,25 @@
                     </el-tab-pane>
                 </el-tabs>
             </div>
+<!--            <div class="innerContentTop" style="width: 10px">-->
+<!--                <div style="float: right;margin: 27px 5px 0">-->
+<!--                    <el-button type="success" plain round icon="el-icon-setting"-->
+<!--                               size="mini" @click="openJobSetting">作业设置-->
+<!--                    </el-button>-->
+<!--                    <el-button type="primary" plain round icon="el-icon-document" @click="openJobSetting"-->
+<!--                               size="mini">DAG信息-->
+<!--                    </el-button>-->
+<!--                </div>-->
+<!--            </div>-->
+            <template>
+                <div class="tabBox">
+                    <el-tabs tab-position="right">
+                        <el-tab-pane label="作业设置"></el-tab-pane>
+                        <el-tab-pane label="依赖图"></el-tab-pane>
+                    </el-tabs>
+                </div>
+            </template>
+
         </div>
         <div>
             <el-dialog
@@ -73,6 +93,13 @@
                 </el-row>
             </el-dialog>
         </div>
+        <el-drawer
+                title="作业组配置"
+                :visible.sync="jobSetting"
+                size="60%"
+                direction="rtl">
+            <job-setting ref="graphForm" queryId="1"></job-setting>
+        </el-drawer>
     </div>
 </template>
 
@@ -81,6 +108,7 @@
     import hsql from "@/view/dataDevelop/components/hsql";
     import shell from "@/view/dataDevelop/components/shell";
     import spark from "@/view/dataDevelop/components/spark";
+    import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { getJobName } from '@/utils/job';
 
@@ -91,17 +119,22 @@
             leftNav,
             hsql,
             shell,
-            spark
+            spark,
+            jobSetting
         },
         data() {
             return {
                 editableTabsValue: '1',
                 editableTabs: [],
                 tabIndex: 2,
-                addJobDialog: false
+                addJobDialog: false,
+                jobSetting: false
             }
         },
         methods: {
+            openJobSetting() {
+                this.jobSetting = true
+            },
             addTab() {
                 this.addJobDialog = true
             },
@@ -157,7 +190,7 @@
     }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
     .parent {
         display: flex;
     }
@@ -177,7 +210,24 @@
     .el-button--text {
         color: unset !important;
     }
-    /deep/ .el-tabs__header {
+    .el-tabs__header {
         margin-bottom: 0 !important;
+    }
+
+    .tabBox {
+        height: 400px;
+        .el-tabs--right {
+            height: auto !important;
+
+            .el-tabs__item {
+                width: 20px !important;
+                line-height: 16px;
+                height: auto;
+                padding: 0 20px 0 10px;
+                word-wrap: break-word;
+                white-space: pre-line;
+                margin-bottom: 20px;
+            }
+        }
     }
 </style>

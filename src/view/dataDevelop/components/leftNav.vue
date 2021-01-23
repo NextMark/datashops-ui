@@ -5,7 +5,7 @@
                 <el-button type="text" icon="el-icon-plus" style="font-size:20px" @click="clickAdd"></el-button>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="刷新" placement="top-start">
-                <el-button type="text" icon="el-icon-refresh" style="font-size:20px" @click="clickAdd"></el-button>
+                <el-button type="text" icon="el-icon-refresh" style="font-size:20px" @click="refresh"></el-button>
             </el-tooltip>
         </el-row>
 
@@ -93,33 +93,36 @@
             this.listenAddEvent()
         },
         async created() {
-            await this.getTableData();
-            for (let i = 0; i < this.tableData.length; i++) {
-                const job = this.tableData[i]
-                if (job.type === 0) {
-                    this.hsqlList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type
-                    })
-                }
-                if (job.type === 1) {
-                    this.shellList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type
-                    })
-                }
-                if (job.type === 2) {
-                    this.sparkList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type
-                    })
-                }
-            }
+            this.init()
         },
         methods: {
+            async init() {
+                await this.getTableData();
+                for (let i = 0; i < this.tableData.length; i++) {
+                    const job = this.tableData[i]
+                    if (job.type === 0) {
+                        this.hsqlList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type
+                        })
+                    }
+                    if (job.type === 1) {
+                        this.shellList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type
+                        })
+                    }
+                    if (job.type === 2) {
+                        this.sparkList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type
+                        })
+                    }
+                }
+            },
             handleOpen(key, keyPath) {
                 if (key === '1') {
                     this.hsqlFolderOpen = true
@@ -151,13 +154,19 @@
             clickAdd() {
                 this.$emit("add-new-job")
             },
+            refresh() {
+                this.hsqlList = []
+                this.shellList = []
+                this.sparkList = []
+                this.integrationList = []
+                this.init()
+            },
             listenAddEvent() {
                 const that = this
                 this.$bus.on("save-hsql-job", function(value) {
                     that.hsqlList.push({
                         name: value
                     })
-                    console.log(that.hsqlList)
                 })
             },
             clickJob(data) {
