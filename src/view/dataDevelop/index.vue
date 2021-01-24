@@ -35,10 +35,10 @@
 <!--                </div>-->
 <!--            </div>-->
             <template>
-                <div class="tabBox">
-                    <el-tabs tab-position="right">
-                        <el-tab-pane label="作业设置"></el-tab-pane>
-                        <el-tab-pane label="依赖图"></el-tab-pane>
+                <div class="tabBox" v-show="editableTabs.length > 0">
+                    <el-tabs v-model="activeName" tab-position="right" @tab-click="tabClick">
+                        <el-tab-pane label="作业设置" name="jobSetting"></el-tab-pane>
+                        <el-tab-pane label="依赖图" name="jobDag"></el-tab-pane>
                     </el-tabs>
                 </div>
             </template>
@@ -50,7 +50,7 @@
                     width="50%"
                     :visible.sync="addJobDialog"
                     center>
-                <el-row>
+                <el-row >
                     <el-col :span="4" :offset="5">
                         <el-row>
                             <span>数据开发</span>
@@ -128,10 +128,22 @@
                 editableTabs: [],
                 tabIndex: 2,
                 addJobDialog: false,
-                jobSetting: false
+                jobSetting: false,
+                activeName: ''
             }
         },
         methods: {
+            tabClick(tab, event) {
+                if(tab.name === 'jobSetting'){
+                    // 触发‘配置管理’事件
+                    this.activeName = 'jobSetting'
+                    this.jobSetting = true
+                }else{
+                    // 触发‘用户管理’事件
+                    this.activeName = 'jobSetting'
+                    this.jobSetting = true
+                }
+            },
             openJobSetting() {
                 this.jobSetting = true
             },
@@ -215,7 +227,7 @@
     }
 
     .tabBox {
-        height: 400px;
+        height: 100%;
         .el-tabs--right {
             height: auto !important;
 
