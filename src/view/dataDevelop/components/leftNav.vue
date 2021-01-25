@@ -104,21 +104,24 @@
                         this.hsqlList.push({
                             id: job.id,
                             name: job.name,
-                            type: job.type
+                            type: job.type,
+                            maskId: job.maskId
                         })
                     }
                     if (job.type === 1) {
                         this.shellList.push({
                             id: job.id,
                             name: job.name,
-                            type: job.type
+                            type: job.type,
+                            maskId: job.maskId
                         })
                     }
                     if (job.type === 2) {
                         this.sparkList.push({
                             id: job.id,
                             name: job.name,
-                            type: job.type
+                            type: job.type,
+                            maskId: job.maskId
                         })
                     }
                 }
@@ -163,7 +166,7 @@
             },
             listenAddEvent() {
                 const that = this
-                this.$bus.on("save-hsql-job", function(value) {
+                this.$bus.on("add-hsql-nav", function(value) {
                     that.hsqlList.push({
                         name: value
                     })

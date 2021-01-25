@@ -68,5 +68,7 @@ export function getJobName(code) {
             return 'fsql'
         case 6:
             return 'mysql'
+        default:
+            return ''
     }
 }

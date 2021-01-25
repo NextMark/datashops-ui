@@ -18,22 +18,12 @@
                             :key="item.name"
                             :label="item.title"
                             :name="item.name">
-                        <hsql v-if="item.type === 0" @save-hsql-job="saveHsqlJob"></hsql>
+                        <hsql v-if="item.type === 0" @add-hsql-nav="saveHsqlJob" :job-info="jobInfo"></hsql>
                         <shell v-if="item.type === 1"></shell>
                         <spark v-if="item.type === 2"></spark>
                     </el-tab-pane>
                 </el-tabs>
             </div>
-<!--            <div class="innerContentTop" style="width: 10px">-->
-<!--                <div style="float: right;margin: 27px 5px 0">-->
-<!--                    <el-button type="success" plain round icon="el-icon-setting"-->
-<!--                               size="mini" @click="openJobSetting">作业设置-->
-<!--                    </el-button>-->
-<!--                    <el-button type="primary" plain round icon="el-icon-document" @click="openJobSetting"-->
-<!--                               size="mini">DAG信息-->
-<!--                    </el-button>-->
-<!--                </div>-->
-<!--            </div>-->
             <template>
                 <div class="tabBox" v-show="editableTabs.length > 0">
                     <el-tabs v-model="activeName" tab-position="right" @tab-click="tabClick">
@@ -42,7 +32,6 @@
                     </el-tabs>
                 </div>
             </template>
-
         </div>
         <div>
             <el-dialog
@@ -91,6 +80,23 @@
                         </el-row>
                     </el-col>
                 </el-row>
+                <el-dialog
+                        width="30%"
+                        :title="dialogTitle"
+                        :visible.sync="jobNameVisible"
+                        append-to-body>
+                    <el-row>
+                        <el-col :span="19">
+                            <el-input v-model="jobInfo.name" maxlength="30">
+                                <template slot="prepend">作业名</template>
+                            </el-input>
+                        </el-col>
+                        <el-col :span="4" :offset="1">
+                            <el-button type="primary" @click="setJobName">新建</el-button>
+                        </el-col>
+                    </el-row>
+
+                </el-dialog>
             </el-dialog>
         </div>
         <el-drawer
@@ -98,7 +104,7 @@
                 :visible.sync="jobSetting"
                 size="60%"
                 direction="rtl">
-            <job-setting ref="graphForm" queryId="1"></job-setting>
+            <job-setting ref="jobSettingForm" :job-info="jobInfo"></job-setting>
         </el-drawer>
     </div>
 </template>
@@ -109,8 +115,14 @@
     import shell from "@/view/dataDevelop/components/shell";
     import spark from "@/view/dataDevelop/components/spark";
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
+    import { mapGetters } from "vuex";
+
 
     import { getJobName } from '@/utils/job';
+    import {
+        getJobByMaskId,
+        addNewJob
+    } from "@/api/job";
 
 
     export default {
@@ -122,14 +134,21 @@
             spark,
             jobSetting
         },
+        computed: {
+            ...mapGetters("user", ["userInfo"])
+        },
         data() {
             return {
                 editableTabsValue: '1',
                 editableTabs: [],
                 tabIndex: 2,
                 addJobDialog: false,
+                jobNameVisible: false,
                 jobSetting: false,
-                activeName: ''
+                activeName: '',
+                jobInfo: {},
+                dialogTitle: '新建作业名称',
+                newJobType: 0
             }
         },
         methods: {
@@ -144,22 +163,25 @@
                     this.jobSetting = true
                 }
             },
-            openJobSetting() {
-                this.jobSetting = true
-            },
             addTab() {
                 this.addJobDialog = true
             },
             createNewJob(type, value) {
-                const name = getJobName(value)
+                this.dialogTitle = '新建' + getJobName(value) + '作业'
+                this.jobNameVisible = true
+                this.newJobType = value
+            },
+            async setJobName() {
                 let newTabName = ++this.tabIndex + '';
                 this.editableTabs.push({
-                    title: name + '_tmp',
+                    title: this.jobInfo.name,
                     name: newTabName,
-                    type: value
+                    type: this.newJobType
                 });
                 this.editableTabsValue = newTabName;
                 this.addJobDialog = false
+                this.jobNameVisible = false
+                await addNewJob({name: this.jobInfo.name, type: this.newJobType, owner: this.userInfo.name, projectId: 1})
             },
             removeTab(targetName) {
                 let tabs = this.editableTabs;
@@ -179,11 +201,12 @@
                 this.editableTabs = tabs.filter(tab => tab.name !== targetName);
             },
             saveHsqlJob() {
+                console.log('aaa')
                 const job = {
                     name: 'hsql'
                 }
             },
-            clickJob(data) {
+            async clickJob(data) {
                 var res = this.editableTabs.some(item=>{
                     if(item.name === data.name){
                         return true
@@ -197,12 +220,17 @@
                     });
                 }
                 this.editableTabsValue = data.name
+                const job = await getJobByMaskId({maskId: data.maskId})
+                this.jobInfo = job.data
             }
         }
     }
 </script>
 
 <style lang="scss">
+    :focus {
+        outline: 0;
+    }
     .parent {
         display: flex;
     }

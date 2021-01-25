@@ -2,58 +2,58 @@
     <div>
         <div class="ef-node-form">
             <div class="ef-node-form-body">
-                <el-form :model="data" ref="dataForm" label-width="150px">
+                <el-form :model="jobInfo" ref="dataForm" label-width="150px">
                     <el-divider content-position="left">基础属性</el-divider>
                     <el-form-item label="名称">
                         <el-col :span="8">
-                            <el-input v-model="data.name"></el-input>
+                            <el-input v-model="jobInfo.name"></el-input>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="描述">
                         <el-col :span="8">
-                            <el-input type="textarea" v-model="data.description"></el-input>
+                            <el-input type="textarea" v-model="jobInfo.description"></el-input>
                         </el-col>
                     </el-form-item>
 
                     <el-form-item label="创建人">
-                        <span>{{data.owner}}</span>
+                        <span>{{jobInfo.owner}}</span>
                     </el-form-item>
                     <el-form-item label="资源组">
-                        <el-select v-model="data.name" placeholder="请选择资源组">
-                            <el-option label="队列一" value="queue1"></el-option>
-                            <el-option label="队列二" value="queue2"></el-option>
+                        <el-select v-model="jobInfo.queueId" placeholder="请选择资源组">
+                            <el-option label="队列一" value="1"></el-option>
+                            <el-option label="队列二" value="2"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-divider content-position="left">时间属性</el-divider>
                     <el-form-item label="重试">
                         <el-switch
-                                v-model="data.retry"
+                                v-model="jobInfo.retry"
                                 active-color="#13ce66"
                                 inactive-color="#BFBFBF"
                                 :active-value=1
                                 :inactive-value=0
-                                @change='handleSchedulerStatus(scope.row)'>
+                                @change='handleSchedulerStatus'>
                         </el-switch>
                     </el-form-item>
                     <el-form-item label="重试次数">
-                        <el-input-number v-model="data.retryTimes" @change="" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="jobInfo.retryTimes" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                     <el-form-item label="重试间隔">
-                        <el-input-number v-model="data.retryInterval" @change="" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="jobInfo.retryInterval" :min="1" :max="10"></el-input-number>
                     </el-form-item>
                     <el-form-item label="生效时间">
                         <el-col :span="6">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="data.date1"
+                            <el-date-picker type="date" placeholder="选择日期" v-model="jobInfo.date1"
                                             style="width: 100%;"></el-date-picker>
                         </el-col>
                         <el-col class="line" :span="1" :offset="1">-</el-col>
                         <el-col :span="6">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="data.date2"
+                            <el-date-picker type="date" placeholder="选择日期" v-model="jobInfo.date2"
                                             style="width: 100%;"></el-date-picker>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="调度周期">
-                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期">
+                        <el-select v-model="jobInfo.schedulingPeriod" placeholder="请选择调度周期">
                             <el-option
                                     v-for="item in schedulingPeriod"
                                     :key="item.value"
@@ -63,7 +63,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每周">
-                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
+                        <el-select v-model="jobInfo.schedulingPeriod" placeholder="请选择调度周期" >
                             <el-option
                                     v-for="item in week"
                                     :key="item.value"
@@ -73,7 +73,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="每月">
-                        <el-select v-model="data.schedulingPeriod" placeholder="请选择调度周期" >
+                        <el-select v-model="jobInfo.schedulingPeriod" placeholder="请选择调度周期" >
                             <el-option
                                     v-for="item in date"
                                     :key="item.value"
@@ -84,7 +84,7 @@
                     </el-form-item>
                     <el-form-item label="调度时间">
                         <el-time-picker
-                                v-model="data.createTime"
+                                v-model="jobInfo.createTime"
                                 :picker-options="{
                                     format: 'HH:mm'
                                 }"
@@ -92,11 +92,11 @@
                         </el-time-picker>
                     </el-form-item>
                     <el-form-item label="cron表达式">
-                        <span>{{data.cronExpression}}</span>
+                        <span>{{jobInfo.cronExpression}}</span>
                     </el-form-item>
                     <el-form-item label="超时时间">
                         <el-col :span="4">
-                            <el-input v-model="data.timeout">
+                            <el-input v-model="jobInfo.timeout">
                                 <template slot="append">s</template>
                             </el-input>
                         </el-col>
@@ -156,10 +156,8 @@
                             ></el-pagination>
                         </el-tabs>
                     </el-form-item>
-
                     <el-form-item>
-                        <el-button icon="el-icon-close">重置</el-button>
-                        <el-button type="primary" icon="el-icon-check" @click="save">保存</el-button>
+                        <el-button type="primary" icon="el-icon-check" @click="modifyJob">保存</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -172,6 +170,8 @@
     import {
         getJobGraphList,
         getJobList,
+        modifySchedulerStatus,
+        modifyJob,
         addJobToGraph
     } from "@/api/job";
     import infoList from "@/mixins/infoList";
@@ -179,13 +179,13 @@
 
     export default {
         mixins: [infoList],
-        props: ['queryId'],
+        props: ['jobInfo'],
         data() {
             return {
                 listApi: getJobGraphList,
                 activeName: 'first',
                 visible: true,
-                data: {},
+                //data: {},
                 schedulingPeriod,
                 week,
                 date
@@ -207,15 +207,31 @@
                 if (this.activeName === 'first') {
                     type = 0;
                 }
-                await addJobToGraph({graphMaskId: this.queryId, jobMaskId: row.maskId, type: type})
+                //await addJobToGraph({graphMaskId: this.queryId, jobMaskId: row.maskId, type: type})
 
             },
             graphInit(data, id) {
                 this.type = 'graph'
                 this.data = data
             },
-            save() {
-
+            async handleSchedulerStatus() {
+                const res = await modifySchedulerStatus({maskId: this.jobInfo.maskId, status: this.jobInfo.schedulerStatus});
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "调度修改成功"
+                    });
+                }
+            },
+            async modifyJob() {
+                const res = await modifyJob(this.jobInfo)
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "作业修改成功",
+                        center: true
+                    });
+                }
             }
         },
         async created() {
