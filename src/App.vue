@@ -35,4 +35,12 @@ export default {
   fill: currentColor;
   overflow: hidden;
 }
+.icon-1-5 {
+  //margin-right: 10px;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
 </style>

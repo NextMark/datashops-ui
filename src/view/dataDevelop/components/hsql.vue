@@ -40,7 +40,7 @@
         components: {
             MonacoEditor
         },
-        props: ['jobInfo'],
+
         data() {
             return {
                 sql: '-- Type your SQL! \n',
@@ -57,16 +57,33 @@
                     formatOnPaste: true,
                     formatOnType: true,
                     fontSize: 20,
-                    mouseWheelZoom: true
+                    mouseWheelZoom: true,
                 },
-                name: 'test'
+                defaultSql: '-- Type your SQL! \n'
+            }
+        },
+        props: ['jobInfo'],
+
+        watch:{
+            jobInfo: {
+                handler(val) {
+                    this.sql = val.jobContext;
+                    if (this.editor) {
+                        if (this.sql) {
+                            this.editor.setValue(this.sql)
+                        } else {
+                            this.editor.setValue(this.defaultSql)
+                        }
+                    }
+                }
             }
         },
         computed: {
             ...mapGetters("user", ["userInfo"])
         },
-        created() {
-            this.sql += '-- Author: ' + this.userInfo.name + '\n'
+        mounted() {
+            this.sql = this.jobInfo.jobContext
+            this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
         },
         methods: {
             formatSQL() {
@@ -77,8 +94,7 @@
             },
             onCodeChange(editor) {
             },
-            async save(name) {
-                console.log(this.jobInfo)
+            async save() {
                 if (this.jobInfo.maskId) {
                     await saveHiveSql({maskId: this.jobInfo.maskId, sql: this.editor.getValue()})
                     this.$message.success({

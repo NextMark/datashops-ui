@@ -13,8 +13,11 @@
                  :collapse="isCollapse" style="width: 200px">
             <el-submenu index="1" >
                 <template slot="title">
-                    <i :class="hsqlFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
-                    <span slot="title">HSQL</span>
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-folder-open"></use>
+                    </svg>
+<!--                    <i :class="hsqlFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
+                    <span slot="title" class="pad-left-10">HSQL作业</span>
                 </template>
                 <el-menu-item :index="'1' + index" v-for="(data, index) in hsqlList" v-bind:key="data.id"
                               @click="clickJob(data)">
@@ -26,8 +29,11 @@
             </el-submenu>
             <el-submenu index="2">
                 <template slot="title">
-                    <i :class="shellFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
-                    <span slot="title">Shell</span>
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-folder-open"></use>
+                    </svg>
+<!--                    <i :class="shellFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
+                    <span slot="title" class="pad-left-10" >Shell作业</span>
                 </template>
                 <el-menu-item :index="'2' + index" v-for="(data, index) in shellList" v-bind:key="data.id" @click="clickJob(data)">
                     <template slot="title">
@@ -38,8 +44,11 @@
             </el-submenu>
             <el-submenu index="3">
                 <template slot="title">
-                    <i :class="sparkFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
-                    <span slot="title">Spark</span>
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-folder-open"></use>
+                    </svg>
+<!--                    <i :class="sparkFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
+                    <span slot="title" class="pad-left-10">Spark作业</span>
                 </template>
                 <el-menu-item :index="'3' + index" v-for="(data, index) in sparkList" v-bind:key="data.id" @click="clickJob(data)">
                     <template slot="title">
@@ -50,8 +59,11 @@
             </el-submenu>
             <el-submenu index="4">
                 <template slot="title">
-                    <i :class="integrationFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
-                    <span slot="title">数据集成</span>
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-folder-open"></use>
+                    </svg>
+<!--                    <i :class="integrationFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
+                    <span slot="title" class="pad-left-10">数据集成</span>
                 </template>
                 <el-menu-item :index="'4' + index" v-for="(data, index) in integrationList" v-bind:key="data.id" @click="clickJob(data)">
                     <template slot="title">
@@ -83,10 +95,6 @@
                 shellList: [],
                 sparkList: [],
                 integrationList: [],
-                hsqlFolderOpen: false,
-                shellFolderOpen: false,
-                sparkFolderOpen: false,
-                integrationFolderOpen: false
             };
         },
         mounted() {
@@ -127,32 +135,10 @@
                 }
             },
             handleOpen(key, keyPath) {
-                if (key === '1') {
-                    this.hsqlFolderOpen = true
-                }
-                if (key === '2') {
-                    this.shellFolderOpen = true
-                }
-                if (key === '3') {
-                    this.sparkFolderOpen = true
-                }
-                if (key === '4') {
-                    this.integrationFolderOpen = true
-                }
+
             },
             handleClose(key, keyPath) {
-                if (key === '1') {
-                    this.hsqlFolderOpen = false
-                }
-                if (key === '2') {
-                    this.shellFolderOpen = false
-                }
-                if (key === '3') {
-                    this.sparkFolderOpen = false
-                }
-                if (key === '4') {
-                    this.integrationFolderOpen = false
-                }
+
             },
             clickAdd() {
                 this.$emit("add-new-job")
