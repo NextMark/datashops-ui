@@ -84,6 +84,10 @@
         mounted() {
             this.sql = this.jobInfo.jobContext
             this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
+
+            if (!this.sql) {
+                this.sql = this.defaultSql
+            }
         },
         methods: {
             formatSQL() {
