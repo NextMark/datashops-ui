@@ -190,6 +190,13 @@
                     </el-form-item>
                     <el-divider content-position="left">调度依赖</el-divider>
                     <el-form-item>
+                        <el-button
+                                size="mini"
+                                type="primary"
+                                icon="el-icon-plus"
+                                @click="handleAddDependency">添加依赖</el-button>
+                    </el-form-item>
+                    <el-form-item label="依赖任务">
                         <el-table
                                 :data="tableData"
                                 style="width: 100%">
@@ -244,6 +251,60 @@
                 </el-form>
             </div>
         </div>
+        <el-drawer
+                title="添加依赖"
+                width="50%"
+                :append-to-body="true"
+                :visible.sync="addDependencyDialog"
+                center>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%">
+                <el-table-column
+                        label="名称"
+                        prop="name">
+                    <template slot="header" slot-scope="scope">
+                        <el-input
+                                v-model="searchInfo.name"
+                                size="mini"
+                                placeholder="关键字搜索"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="责任人"
+                        prop="owner"
+                        width="80">
+                </el-table-column>
+                <el-table-column
+                        label="偏移"
+                        width="100">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.offset ? 1 : 0"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="操作"
+                        width="90">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                type="primary"
+                                icon="el-icon-plus"
+                                @click="handleAdd(scope.row)">添加</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    :current-page="pageNum"
+                    :page-size="pageSize"
+                    :page-sizes="[10, 30, 50, 100]"
+                    :style="{ float: 'right', padding: '20px' }"
+                    :total="total"
+                    @current-change="handleCurrentChange"
+                    @size-change="handleSizeChange"
+                    layout="total, sizes, prev, pager, next, jumper"
+            ></el-pagination>
+        </el-drawer>
     </div>
 
 </template>
@@ -253,8 +314,7 @@
         getJobGraphList,
         getJobList,
         modifySchedulerStatus,
-        modifyJob,
-        addJobToGraph
+        modifyJob
     } from "@/api/job";
     import infoList from "@/mixins/infoList";
     import { schedulingPeriod, week, date, options, hours } from '@/utils/job';
@@ -294,10 +354,15 @@
                 hourMinute: moment().subtract(0, 'days').format('HH:mm'),
                 options,
                 validRange: [],
-                jobInfoCopy: {}
+                jobInfoCopy: {},
+                addDependencyDialog: false
             }
         },
         methods: {
+            handleAddDependency() {
+                this.addDependencyDialog = true
+                this.getTableData()
+            },
             async handleClick(tab, event) {
                 if (tab.index === '1') {
                     this.listApi = getJobList;
@@ -363,7 +428,7 @@
             }
         },
         async created() {
-            await this.getTableData();
+            //await this.getTableData();
             this.jobInfoCopy = this.jobInfo
             if (this.jobInfoCopy.validStartDate) {
                 this.validRange = [
