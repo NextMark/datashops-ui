@@ -196,18 +196,27 @@
                                 icon="el-icon-plus"
                                 @click="handleAddDependency">添加依赖</el-button>
                     </el-form-item>
-                    <el-form-item label="依赖任务">
+                    <el-form-item label="依赖上游任务">
                         <el-table
-                                :data="tableData"
+                                :data="dependency"
                                 style="width: 100%">
                             <el-table-column
                                     label="名称"
                                     prop="name">
-                                <template slot="header" slot-scope="scope">
+                                <template slot="header">
                                     <el-input
                                             v-model="searchInfo.name"
                                             size="mini"
                                             placeholder="关键字搜索"/>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="类型"
+                                    width="70">
+                                <template slot-scope="scope">
+                                    <svg class="icon-1-5" aria-hidden="true">
+                                        <use :xlink:href="scope.row.type |getJobIcon"></use>
+                                    </svg>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -219,31 +228,29 @@
                                     label="偏移"
                                     width="100">
                                 <template slot-scope="scope">
-                                    <el-input v-model="scope.row.offset ? 1 : 0"></el-input>
+                                    <el-input v-model="scope.row.offset"></el-input>
                                 </template>
                             </el-table-column>
                             <el-table-column
                                     label="操作"
-                                    width="90">
+                                    width="80">
                                 <template slot-scope="scope">
                                     <el-button
-                                            size="mini"
-                                            type="primary"
-                                            icon="el-icon-plus"
-                                            @click="handleAdd(scope.row)">添加</el-button>
+                                            type="text"
+                                            size="mini">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
-                        <el-pagination
-                                :current-page="pageNum"
-                                :page-size="pageSize"
-                                :page-sizes="[10, 30, 50, 100]"
-                                :style="{ float: 'right', padding: '20px' }"
-                                :total="total"
-                                @current-change="handleCurrentChange"
-                                @size-change="handleSizeChange"
-                                layout="total, sizes, prev, pager, next, jumper"
-                        ></el-pagination>
+<!--                        <el-pagination-->
+<!--                                :current-page="pageNum"-->
+<!--                                :page-size="pageSize"-->
+<!--                                :page-sizes="[10, 30, 50, 100]"-->
+<!--                                :style="{ float: 'right', padding: '20px' }"-->
+<!--                                :total="total"-->
+<!--                                @current-change="handleCurrentChange"-->
+<!--                                @size-change="handleSizeChange"-->
+<!--                                layout="total, sizes, prev, pager, next, jumper"-->
+<!--                        ></el-pagination>-->
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" icon="el-icon-check" @click="modifyJob">保存</el-button>
@@ -253,7 +260,7 @@
         </div>
         <el-drawer
                 title="添加依赖"
-                width="50%"
+                width="70%"
                 :append-to-body="true"
                 :visible.sync="addDependencyDialog"
                 center>
@@ -263,11 +270,20 @@
                 <el-table-column
                         label="名称"
                         prop="name">
-                    <template slot="header" slot-scope="scope">
+                    <template slot="header">
                         <el-input
                                 v-model="searchInfo.name"
                                 size="mini"
                                 placeholder="关键字搜索"/>
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        label="类型"
+                        width="70">
+                    <template slot-scope="scope">
+                        <svg class="icon-1-5" aria-hidden="true">
+                            <use :xlink:href="scope.row.type |getJobIcon"></use>
+                        </svg>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -277,19 +293,18 @@
                 </el-table-column>
                 <el-table-column
                         label="偏移"
-                        width="100">
+                        width="80">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.offset ? 1 : 0"></el-input>
+                        <el-input v-model="scope.row.offset"></el-input>
                     </template>
                 </el-table-column>
                 <el-table-column
                         label="操作"
-                        width="90">
+                        width="80">
                     <template slot-scope="scope">
                         <el-button
                                 size="mini"
-                                type="primary"
-                                icon="el-icon-plus"
+                                type="text"
                                 @click="handleAdd(scope.row)">添加</el-button>
                     </template>
                 </el-table-column>
@@ -311,21 +326,26 @@
 
 <script>
     import {
-        getJobGraphList,
         getJobList,
         modifySchedulerStatus,
-        modifyJob
+        modifyJob,
+        getJobDependency,
+        addDependency
     } from "@/api/job";
     import infoList from "@/mixins/infoList";
-    import { schedulingPeriod, week, date, options, hours } from '@/utils/job';
+    import { schedulingPeriod, week, date, options, hours, getJobName, getJobIcon } from '@/utils/job';
     var moment = require('moment');
 
     export default {
         mixins: [infoList],
         props: ['jobInfo'],
+        filters: {
+            getJobName,
+            getJobIcon
+        },
         data() {
             return {
-                listApi: getJobGraphList,
+                listApi: getJobList,
                 activeName: 'first',
                 visible: true,
                 schedulingPeriod,
@@ -355,7 +375,8 @@
                 options,
                 validRange: [],
                 jobInfoCopy: {},
-                addDependencyDialog: false
+                addDependencyDialog: false,
+                dependency: []
             }
         },
         methods: {
@@ -363,23 +384,24 @@
                 this.addDependencyDialog = true
                 this.getTableData()
             },
-            async handleClick(tab, event) {
-                if (tab.index === '1') {
-                    this.listApi = getJobList;
-                    await this.getTableData()
-                }
-                if (tab.index === '0') {
-                    this.listApi = getJobGraphList;
-                    await this.getTableData()
-                }
-            },
             async handleAdd(row) {
-                let type = 1;
-                if (this.activeName === 'first') {
-                    type = 0;
-                }
-                //await addJobToGraph({graphMaskId: this.queryId, jobMaskId: row.maskId, type: type})
-
+                await addDependency({
+                    sourceMaskId: row.maskId,
+                    targetMaskId: this.jobInfo.maskId,
+                    offset: row.offset
+                })
+                this.dependency.push({
+                    name: row.name,
+                    owner: row.owner,
+                    offset: row.offset,
+                    sourceMaskId: row.maskId,
+                    type: row.type
+                })
+                this.$message({
+                    type: "success",
+                    message: "依赖添加成功"
+                });
+                this.addDependencyDialog = false
             },
             graphInit(data, id) {
                 this.type = 'graph';
@@ -398,71 +420,99 @@
                 const that = this
                 let jobDto = that.jobInfoCopy
                 let timeConfigDto = that.timeConfig
-                if (that.hourMinute) {
-                    const timeArrs = that.hourMinute.split(":")
-                    timeConfigDto.hour = timeArrs[0]
-                    timeConfigDto.minute = timeArrs[1]
-                }
+
+                let timeParams = {}
+                // if (that.hourMinute) {
+                //     const timeArrs = that.hourMinute.split(":")
+                //     timeConfigDto.hour = timeArrs[0]
+                //     timeConfigDto.minute = timeArrs[1]
+                // }
                 console.log(timeConfigDto)
-                if (that.timeConfig.weeks) {
-                    timeConfigDto.weeks = timeConfigDto.weeks.join()
+                if (jobDto.schedulingPeriod === 0) {
+                    const timeArrs = that.hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
+                    timeParams.days = timeConfigDto.days.join()
                 }
-                if (that.timeConfig.days) {
-                    timeConfigDto.days = timeConfigDto.days.join()
+                if (jobDto.schedulingPeriod === 1) {
+                    const timeArrs = that.hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
+                    timeParams.weeks = timeConfigDto.weeks.join()
+                }
+                if (jobDto.schedulingPeriod === 2) {
+                    const timeArrs = that.hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
                 }
                 if (jobDto.schedulingPeriod === 3) {
-                    timeConfigDto.hours = timeConfigDto.hours.join()
+                    timeParams.type = timeConfigDto.type
+                    timeParams.hours = timeConfigDto.hours.join()
+                    timeParams.hourBegin = timeConfigDto.hourBegin
+                    timeParams.hourMinute = timeConfigDto.hourMinute
+                    timeParams.hourPeriod = timeConfigDto.hourPeriod
+                    timeParams.hourEnd = timeConfigDto.hourEnd
                 }
-                jobDto.timeConfig = JSON.stringify(timeConfigDto)
+                if (jobDto.schedulingPeriod === 4) {
+                    timeParams.minuteBegin = timeConfigDto.minuteBegin
+                    timeParams.minuteEnd = timeConfigDto.minuteEnd
+                    timeParams.period = timeConfigDto.period
+                }
+
+                jobDto.timeConfig = JSON.stringify(timeParams)
                 jobDto.validStartDate = that.validRange[0]
                 jobDto.validEndDate = that.validRange[1]
                 const res = await modifyJob(jobDto);
                 if (res.code === 1000) {
-                    that.jobInfoCopy = res.data
+                    that.formatJob(res.data)
                     that.$message({
                         type: "success",
                         message: "作业修改成功",
                         center: true
                     });
                 }
+            },
+            formatJob(jobInfo) {
+                this.jobInfoCopy = jobInfo
+                if (this.jobInfoCopy.validStartDate) {
+                    this.validRange = [
+                        this.jobInfoCopy.validStartDate,
+                        this.jobInfoCopy.validEndDate
+                    ]
+                } else {
+                    this.validRange = [
+                        moment().subtract(0, 'days').format('YYYY-MM-DD'),
+                        '9999-12-31'
+                    ]
+                }
+                let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig)
+
+                if (timeConfig.weeks) {
+                    this.timeConfig.weeks = timeConfig.weeks.split(',')
+                }
+                if (timeConfig.days) {
+                    this.timeConfig.days = timeConfig.days.split(',')
+                    console.log(this.timeConfig.days)
+                }
+                if (timeConfig.minuteBegin) {
+                    this.timeConfig.minuteBegin = timeConfig.minuteBegin
+                    this.timeConfig.period = timeConfig.period
+                    this.timeConfig.minuteEnd = timeConfig.minuteEnd
+                }
+                if (this.jobInfoCopy.schedulingPeriod === 3) {
+                    this.timeConfig.type = timeConfig.type
+                    this.timeConfig.hours = timeConfig.hours.split(',')
+                    this.timeConfig.hourBegin = timeConfig.hourBegin
+                    this.timeConfig.hourPeriod = timeConfig.hourPeriod
+                    this.timeConfig.hourMinute = timeConfig.hourMinute
+                    this.timeConfig.hourEnd = timeConfig.hourEnd
+                }
             }
         },
         async created() {
-            //await this.getTableData();
-            this.jobInfoCopy = this.jobInfo
-            if (this.jobInfoCopy.validStartDate) {
-                this.validRange = [
-                    this.jobInfoCopy.validStartDate,
-                    this.jobInfoCopy.validEndDate
-                ]
-            } else {
-                this.validRange = [
-                    moment().subtract(0, 'days').format('YYYY-MM-DD'),
-                    '9999-12-31'
-                ]
-            }
-            let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig)
-
-            if (timeConfig.weeks) {
-                this.timeConfig.weeks = timeConfig.weeks.split(',')
-            }
-            if (timeConfig.days) {
-                this.timeConfig.days = timeConfig.days.split(',')
-                console.log(this.timeConfig.days)
-            }
-            if (timeConfig.minuteBegin) {
-                this.timeConfig.minuteBegin = timeConfig.minuteBegin
-                this.timeConfig.period = timeConfig.period
-                this.timeConfig.minuteEnd = timeConfig.minuteEnd
-            }
-            if (this.jobInfoCopy.schedulingPeriod === 3) {
-                this.timeConfig.type = timeConfig.type
-                this.timeConfig.hours = timeConfig.hours.split(',')
-                this.timeConfig.hourBegin = timeConfig.hourBegin
-                this.timeConfig.hourPeriod = timeConfig.hourPeriod
-                this.timeConfig.hourMinute = timeConfig.hourMinute
-                this.timeConfig.hourEnd = timeConfig.hourEnd
-            }
+            this.formatJob(this.jobInfo)
+            const res = await getJobDependency({maskId: this.jobInfo.maskId})
+            this.dependency = res.data
         }
     }
 </script>

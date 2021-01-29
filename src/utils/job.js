@@ -99,6 +99,27 @@ export function getJobName(code) {
     }
 }
 
+export function getJobIcon(code) {
+    switch (code) {
+        case 0:
+            return '#el-icon-my-hive'
+        case 1:
+            return '#el-icon-my-bash'
+        case 2:
+            return '#el-icon-my-spark'
+        case 3:
+            return '#el-icon-my-flink'
+        case 4:
+            return '#el-icon-my-clickhouse'
+        case 5:
+            return '#el-icon-my-fsql'
+        case 6:
+            return '#el-icon-my-mysql'
+        default:
+            return ''
+    }
+}
+
 export const options = [
     {
         value: '5',

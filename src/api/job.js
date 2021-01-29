@@ -112,3 +112,19 @@ export const getJobByMaskId = (params) => {
         params
     })
 }
+
+export const getJobDependency = (params) => {
+    return service({
+        url: "/v1/jobDependency/getJobDependency",
+        method: 'post',
+        data: params
+    })
+}
+
+export const addDependency = (params) => {
+    return service({
+        url: "/v1/jobDependency/addDependency",
+        method: 'post',
+        data: params
+    })
+}
