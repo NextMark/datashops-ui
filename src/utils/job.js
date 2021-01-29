@@ -7,6 +7,24 @@ export const schedulingPeriod = [
     { name: '月', value: 0 }
 ];
 
+export function formatSchedulingPeriod(period) {
+    if (period === 0) {
+        return '月'
+    }
+    if (period === 1) {
+        return '周'
+    }
+    if (period === 2) {
+        return '天'
+    }
+    if (period === 3) {
+        return '小时'
+    }
+    if (period === 4) {
+        return '分钟'
+    }
+}
+
 export const week = [
     { name: '星期一', value: '1' },
     { name: '星期二', value: '2' },

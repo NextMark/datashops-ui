@@ -101,6 +101,8 @@
         deleteJobGraph
     } from "@/api/job"; //  此处请自行替换地址
     import infoList from "@/mixins/infoList";
+    import { formatSchedulingPeriod } from '@/utils/job';
+
 
     export default {
         name: "JobGraph",
@@ -115,23 +117,7 @@
             };
         },
         filters: {
-            formatSchedulingPeriod: function (period) {
-                if (period === 0) {
-                    return '月'
-                }
-                if (period === 1) {
-                    return '周'
-                }
-                if (period === 2) {
-                    return '天'
-                }
-                if (period === 3) {
-                    return '小时'
-                }
-                if (period === 4) {
-                    return '分钟'
-                }
-            }
+            formatSchedulingPeriod
         },
         methods: {
             //条件搜索前端看此方法

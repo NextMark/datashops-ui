@@ -333,14 +333,13 @@
         addDependency
     } from "@/api/job";
     import infoList from "@/mixins/infoList";
-    import { schedulingPeriod, week, date, options, hours, getJobName, getJobIcon } from '@/utils/job';
+    import { schedulingPeriod, week, date, options, hours, getJobIcon } from '@/utils/job';
     var moment = require('moment');
 
     export default {
         mixins: [infoList],
         props: ['jobInfo'],
         filters: {
-            getJobName,
             getJobIcon
         },
         data() {
