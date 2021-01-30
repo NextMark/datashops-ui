@@ -130,7 +130,7 @@ export function getJobIcon(code) {
         case 4:
             return '#el-icon-my-clickhouse'
         case 5:
-            return '#el-icon-my-fsql'
+            return '#el-icon-my-flink-sql'
         case 6:
             return '#el-icon-my-mysql'
         default:

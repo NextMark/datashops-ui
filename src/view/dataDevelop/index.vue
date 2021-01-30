@@ -319,6 +319,9 @@
     .el-tabs__header {
         margin-bottom: 0 !important;
     }
+    .el-tabs--border-card>.el-tabs__content {
+        padding-top: 0;
+    }
 
     .tabBox {
         height: 100%;
