@@ -149,6 +149,9 @@
                 }
             },
             runDuration: function(start, end) {
+                if (!start || !end) {
+                    return 0
+                }
                 const dateDiff = moment(end).unix() - moment(start).unix()
                 if (dateDiff <= 1000) {
                     return 0
