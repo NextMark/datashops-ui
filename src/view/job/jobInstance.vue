@@ -2,11 +2,11 @@
     <div>
         <div class="search-term">
             <el-form :inline="true" :model="searchInfo" class="demo-form-inline">
-                <el-form-item label="名称">
+                <el-form-item label="作业名">
                     <el-input placeholder="名称" v-model="searchInfo.name"></el-input>
                 </el-form-item>
-                <el-form-item label="创建人">
-                    <el-input placeholder="创建人" v-model="searchInfo.owner"></el-input>
+                <el-form-item label="执行人">
+                    <el-input placeholder="执行人" v-model="searchInfo.owner"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-button @click="onSubmit" type="primary">查询</el-button>
@@ -30,13 +30,11 @@
 
             <el-table-column label="名称" width="180">
                 <template slot-scope="scope">
-                    <router-link :to="{path: '/layout/dataDevelop', query:{id: scope.row.id}}">
                         {{scope.row.job.name}}
-                    </router-link>
                 </template>
             </el-table-column>
 
-            <el-table-column label="创建人" prop="job.owner" width="120"></el-table-column>
+            <el-table-column label="执行人" prop="operator" width="120"></el-table-column>
             <el-table-column label="类型" width="60">
                 <template slot-scope="scope">
                     <svg class="icon-1-5" aria-hidden="true">
@@ -44,19 +42,23 @@
                     </svg>
                 </template>
             </el-table-column>
-            <el-table-column label="资源" prop="job.queueId" width="100"></el-table-column>
-
             <el-table-column label="调度周期" width="80">
                 <template slot-scope="scope">{{scope.row.job.schedulingPeriod|formatSchedulingPeriod}}</template>
             </el-table-column>
+            <el-table-column label="基准时间" width="160">
+                <template slot-scope="scope">{{scope.row.bizTime}}</template>
+            </el-table-column>
             <el-table-column label="状态" width="100">
                 <template slot-scope="scope">
-                    <el-button type="primary" size="mini" plain>{{scope.row.state|formatState}}</el-button>
+                    <el-tag
+                            :type="scope.row.state | statusFilter "
+                            disable-transitions>{{scope.row.state | formatState}}</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="执行时长" width="150">
+            <el-table-column label="执行时长" width="130">
                 <template slot-scope="scope">{{scope.row.startTime|runDuration(scope.row.endTime)}}</template>
             </el-table-column>
+
 
             <el-table-column label="提交日期" width="160">
                 <template slot-scope="scope">{{scope.row.submitTime}}</template>
@@ -67,7 +69,7 @@
             <el-table-column label="结束日期" width="160">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column label="按钮组">
+            <el-table-column label="按钮组" min-width="140">
                 <template slot-scope="scope">
                     <el-button
                             class="table-button"
@@ -142,11 +144,15 @@
                     return '成功'
                 }
                 if (state === 6) {
-                    return '失败'
+                    return '取消'
                 }
                 if (state === 7) {
+                    return '失败'
+                }
+                if (state === 8) {
                     return '被杀'
                 }
+
             },
             runDuration: function(start, end) {
                 if (!start || !end) {
@@ -164,16 +170,30 @@
                 const leave3 = leave2 % 60;
                 const seconds = Math.round(leave3);
                 if (minutes === 0) {
-                    return seconds + ' 秒'
+                    return seconds + ' s'
                 }
                 if (hours === 0) {
-                    return minutes + ' 分钟 ' + seconds + ' 秒'
+                    return minutes + ' m ' + seconds + ' s'
                 }
                 if (dayDiff === 0) {
-                    return hours + ' 小时 ' + minutes + ' 分钟 ' + seconds + ' 秒'
+                    return hours + ' h ' + minutes + ' m ' + seconds + ' s'
                 }
-                return dayDiff + '天 ' + hours + ' 小时 ' + minutes + ' 分钟 ' + seconds + ' 秒'
+                return dayDiff + 'd ' + hours + ' h ' + minutes + ' m ' + seconds + ' s'
             },
+            statusFilter(status) {
+                const statusMap = {
+                    0: '',
+                    1: '',
+                    2: '',
+                    3: '',
+                    4: '',
+                    5: 'success',
+                    6: 'info',
+                    7: 'danger',
+                    8: 'warning'
+                }
+                return statusMap[status]
+            }
         },
         methods: {
             //条件搜索前端看此方法
