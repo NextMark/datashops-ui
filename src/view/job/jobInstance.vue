@@ -73,13 +73,13 @@
                 <template slot-scope="scope">
                     <el-button
                             class="table-button"
-                            @click="updateWorkflowProcess(scope.row)"
+                            @click="reRun(scope.row)"
                             size="small"
                             type="primary"
                     >重跑</el-button>
                     <el-button
                             class="table-button"
-                            @click="viewWorkflowProcess(scope.row)"
+                            @click="viewLog(scope.row)"
                             size="small"
                             type="warning"
                     >日志</el-button>
@@ -218,7 +218,11 @@
             },
             openDialog() {
                 this.dialogFormVisible = true;
-            }
+            },
+            reRun() {
+                console.log("rerun")
+            },
+            viewLog() {}
         },
         async created() {
             await this.getTableData();

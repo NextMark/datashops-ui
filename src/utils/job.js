@@ -156,3 +156,10 @@ export const options = [
         label: '30'
     }
 ]
+
+export const dataSourceType = [
+    { name: 'Hive', value: 0 },
+    { name: 'MySQL', value: 1 },
+    { name: 'ClickHouse', value: 2 },
+    { name: 'PostgreSQL', value: 3 }
+];
