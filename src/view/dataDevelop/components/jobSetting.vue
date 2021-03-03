@@ -385,15 +385,15 @@
             },
             async handleAdd(row) {
                 await addDependency({
-                    sourceMaskId: row.maskId,
-                    targetMaskId: this.jobInfo.maskId,
+                    sourceId: row.id,
+                    targetId: this.jobInfo.id,
                     offset: row.offset
                 })
                 this.dependency.push({
                     name: row.name,
                     owner: row.owner,
                     offset: row.offset,
-                    sourceMaskId: row.maskId,
+                    sourceId: row.id,
                     type: row.type
                 })
                 this.$message({
