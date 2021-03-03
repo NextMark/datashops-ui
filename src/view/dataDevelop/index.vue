@@ -19,11 +19,6 @@
                             :key="index + item.name"
                             :label="item.title"
                             :name="item.name">
-<!--                        <hsql v-if="item.type === 0" @add-hsql-nav="saveHsqlJob"-->
-<!--                              :jobContext="jobInfo.jobContext">-->
-<!--                        </hsql>-->
-<!--                        <shell v-if="item.type === 1"></shell>-->
-<!--                        <spark v-if="item.type === 2"></spark>-->
                     </el-tab-pane>
                     <component :is="currentView" :jobInfo="jobInfo"></component>
 
@@ -61,6 +56,18 @@
                                 <use xlink:href="#el-icon-my-bash"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(1, 1)">Shell</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-python"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(1, 11)">Python</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-bash"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(1, 3)">Flink</el-button>
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
@@ -237,8 +244,14 @@
                 this.jobActiveTab = this.newJob.name;
                 this.addJobDialog = false
                 this.jobNameVisible = false
-                const res = await addNewJob({name: this.newJob.name, type: this.newJob.type, owner: this.userInfo.name,
-                    projectId: 1})
+                const params = {
+                    name: this.newJob.name,
+                    type: this.newJob.type,
+                    owner: this.userInfo.name,
+                    projectId: 1,
+                    hostSelector: 0
+                }
+                const res = await addNewJob(params)
                 this.jobInfo = res.data
             },
             removeTab(targetName) {
@@ -262,9 +275,7 @@
                 const index = this.jobList.findIndex(j => j.id.toString() === this.jobActiveTab)
                 this.jobInfo = this.jobList[index]
             },
-            saveHsqlJob() {
-                console.log('aaa')
-            },
+
             async clickJob(job) {
                 var res = this.openedTabs.some(item=>{
                     if(item.name === job.id.toString()){

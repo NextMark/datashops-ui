@@ -71,3 +71,19 @@ export const getDataSourceList = (data) => {
         data
     })
 }
+
+export const getMasterList = (data) => {
+    return service({
+        url: "/v1/resource/getMasterList",
+        method: 'post',
+        data
+    })
+}
+
+export const getWorkerList = (data) => {
+    return service({
+        url: "/v1/resource/getWorkerList",
+        method: 'post',
+        data
+    })
+}

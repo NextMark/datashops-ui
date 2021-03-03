@@ -20,8 +20,12 @@
                     </el-form-item>
                     <el-form-item label="资源组">
                         <el-select v-model="jobInfoCopy.queueId" placeholder="请选择资源组">
-                            <el-option label="默认队列" value="1"></el-option>
-                            <el-option label="队列二" value="2"></el-option>
+                            <el-option
+                                    v-for="item in queue"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
                         </el-select>
                     </el-form-item>
                     <el-divider content-position="left">时间属性</el-divider>
@@ -34,6 +38,24 @@
                                 :inactive-value=0
                                 @change='handleSchedulerStatus'>
                         </el-switch>
+                    </el-form-item>
+                    <el-form-item label="执行机分发策略">
+                        <el-select v-model="jobInfoCopy.hostSelector" placeholder="选择分发策略">
+                            <el-option
+                                    v-for="item in hostSelector"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                        <el-select v-if="jobInfoCopy.hostSelector === 2" v-model="jobInfoCopy.host">
+                            <el-option
+                                    v-for="item in workers"
+                                    :key="item.ip"
+                                    :label="item.ip"
+                                    :value="item.ip">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="重试次数">
                         <el-input-number v-model="jobInfoCopy.retryTimes" :min="1" :max="10"></el-input-number>
@@ -325,15 +347,11 @@
 </template>
 
 <script>
-    import {
-        getJobList,
-        modifySchedulerStatus,
-        modifyJob,
-        getJobDependency,
-        addDependency
-    } from "@/api/job";
+    import {addDependency, getJobDependency, getJobList, modifyJob, modifySchedulerStatus} from "@/api/job";
+    import {getQueueList, getWorkerList} from "@/api/resource";
     import infoList from "@/mixins/infoList";
-    import { schedulingPeriod, week, date, options, hours, getJobIcon } from '@/utils/job';
+    import {date, getJobIcon, hours, options, schedulingPeriod, week} from '@/utils/job';
+
     var moment = require('moment');
 
     export default {
@@ -373,9 +391,23 @@
                 hourMinute: moment().subtract(0, 'days').format('HH:mm'),
                 options,
                 validRange: [],
-                jobInfoCopy: {},
+                jobInfoCopy: {
+                    hostSelector: 0
+                },
                 addDependencyDialog: false,
-                dependency: []
+                dependency: [],
+                queue: [],
+                workers: [],
+                hostSelector: [
+                    {
+                        name: '随机',
+                        id: 0
+                    },
+                    {
+                        name: '负载',
+                        id: 1
+                    }
+                ]
             }
         },
         methods: {
@@ -510,8 +542,10 @@
         },
         async created() {
             this.formatJob(this.jobInfo)
-            const res = await getJobDependency({maskId: this.jobInfo.maskId})
+            const res = await getJobDependency({maskId: this.jobInfo.id})
             this.dependency = res.data
+            const queue = await getQueueList({pageSize: 20, pageNum: 1})
+            this.queue = queue.data.content
         }
     }
 </script>
