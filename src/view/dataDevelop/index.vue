@@ -27,7 +27,7 @@
             <template>
                 <div class="tabBox" v-show="openedTabs.length > 0">
                     <el-tabs v-model="activeName" tab-position="right" @tab-click="tabClick">
-                        <el-tab-pane label="作业设置" name="jobSetting"></el-tab-pane>
+                        <el-tab-pane label="调度设置" name="jobSetting"></el-tab-pane>
                         <el-tab-pane label="依赖图" name="jobDag"></el-tab-pane>
                     </el-tabs>
                 </div>
@@ -65,7 +65,7 @@
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-bash"></use>
+                                <use xlink:href="#el-icon-my-flink"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(1, 3)">Flink</el-button>
                         </el-row>
@@ -165,6 +165,13 @@
     import hsql from "@/view/dataDevelop/components/hsql";
     import shell from "@/view/dataDevelop/components/shell";
     import spark from "@/view/dataDevelop/components/spark";
+    import python from "@/view/dataDevelop/components/python";
+    import mysql from "@/view/dataDevelop/components/mysql";
+    import flink from "@/view/dataDevelop/components/flink";
+    import clickhouse from "@/view/dataDevelop/components/clickhouse";
+    import kafka2hdfs from "@/view/dataDevelop/components/kafka2hdfs";
+    import kafka2hive from "@/view/dataDevelop/components/kafka2hive";
+
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { mapGetters } from "vuex";
@@ -184,11 +191,44 @@
             hsql,
             shell,
             spark,
-            jobSetting
+            python,
+            mysql,
+            flink,
+            clickhouse,
+            jobSetting,
+            kafka2hdfs,
+            kafka2hive
         },
         computed: {
             ...mapGetters("user", ["userInfo"]),
             currentView() {
+                if (this.jobInfo.type === 0) {
+                    return 'hsql'
+                }
+                if (this.jobInfo.type === 1) {
+                    return 'shell'
+                }
+                if (this.jobInfo.type === 2) {
+                    return 'spark'
+                }
+                if (this.jobInfo.type === 3) {
+                    return 'flink'
+                }
+                if (this.jobInfo.type === 6) {
+                    return 'mysql'
+                }
+                if (this.jobInfo.type === 11) {
+                    return 'python'
+                }
+                if (this.jobInfo.type === 4) {
+                    return 'clickhouse'
+                }
+                if (this.jobInfo.type === 8) {
+                    return 'kafka2hdfs'
+                }
+                if (this.jobInfo.type === 7) {
+                    return 'kafka2hive'
+                }
                 return 'hsql';
             }
         },

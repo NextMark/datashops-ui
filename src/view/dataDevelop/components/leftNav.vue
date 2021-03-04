@@ -16,44 +16,15 @@
                     <svg class="icon-1-5" aria-hidden="true">
                         <use xlink:href="#el-icon-my-folder-open"></use>
                     </svg>
-<!--                    <i :class="hsqlFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
-                    <span slot="title" class="pad-left-10">HSQL作业</span>
+                    <span slot="title" class="pad-left-10">数据开发</span>
                 </template>
-                <el-menu-item :index="'1' + index" v-for="(data, index) in hsqlList" v-bind:key="data.id"
+                <el-menu-item :index="'1' + index" v-for="(data, index) in jobList" v-bind:key="data.id"
                               @click="clickJob(data)">
                     <template slot="title">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">{{data.name}}</span>
-                    </template>
-                </el-menu-item>
-            </el-submenu>
-            <el-submenu index="2">
-                <template slot="title">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-folder-open"></use>
-                    </svg>
-<!--                    <i :class="shellFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
-                    <span slot="title" class="pad-left-10" >Shell作业</span>
-                </template>
-                <el-menu-item :index="'2' + index" v-for="(data, index) in shellList" v-bind:key="data.id" @click="clickJob(data)">
-                    <template slot="title">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">{{data.name}}</span>
-                    </template>
-                </el-menu-item>
-            </el-submenu>
-            <el-submenu index="3">
-                <template slot="title">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-folder-open"></use>
-                    </svg>
-<!--                    <i :class="sparkFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
-                    <span slot="title" class="pad-left-10">Spark作业</span>
-                </template>
-                <el-menu-item :index="'3' + index" v-for="(data, index) in sparkList" v-bind:key="data.id" @click="clickJob(data)">
-                    <template slot="title">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">{{data.name}}</span>
+                        <svg class="icon-1-5" aria-hidden="true">
+                            <use :xlink:href="data.type |getJobIcon"></use>
+                        </svg>
+                        <span slot="title" class="pad-left-10">{{data.name}}</span>
                     </template>
                 </el-menu-item>
             </el-submenu>
@@ -62,13 +33,14 @@
                     <svg class="icon-1-5" aria-hidden="true">
                         <use xlink:href="#el-icon-my-folder-open"></use>
                     </svg>
-<!--                    <i :class="integrationFolderOpen ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>-->
                     <span slot="title" class="pad-left-10">数据集成</span>
                 </template>
                 <el-menu-item :index="'4' + index" v-for="(data, index) in integrationList" v-bind:key="data.id" @click="clickJob(data)">
                     <template slot="title">
-                        <i class="el-icon-document"></i>
-                        <span slot="title">{{data.name}}</span>
+                        <svg class="icon-1-5" aria-hidden="true">
+                            <use :xlink:href="data.type |getJobIcon"></use>
+                        </svg>
+                        <span slot="title" class="pad-left-10">{{data.name}}</span>
                     </template>
                 </el-menu-item>
             </el-submenu>
@@ -81,6 +53,8 @@
     import {
         getJobList
     } from "@/api/job";
+    import { getJobIcon } from '@/utils/job';
+
     import infoList from "@/mixins/infoList";
 
     export default {
@@ -89,13 +63,14 @@
         data() {
             return {
                 listApi: getJobList,
-
                 isCollapse: false,
-                hsqlList: [],
-                shellList: [],
-                sparkList: [],
                 integrationList: [],
+                jobList: [],
+                dataDevelopTypes: [0, 1, 2, 3, 4, 6, 11]
             };
+        },
+        filters: {
+            getJobIcon
         },
         mounted() {
             this.listenAddEvent()
@@ -108,24 +83,15 @@
                 await this.getTableData();
                 for (let i = 0; i < this.tableData.length; i++) {
                     const job = this.tableData[i]
-                    if (job.type === 0) {
-                        this.hsqlList.push({
+                    if (this.dataDevelopTypes.indexOf(job.type) === -1) {
+                        this.integrationList.push({
                             id: job.id,
                             name: job.name,
                             type: job.type,
                             maskId: job.maskId
                         })
-                    }
-                    if (job.type === 1) {
-                        this.shellList.push({
-                            id: job.id,
-                            name: job.name,
-                            type: job.type,
-                            maskId: job.maskId
-                        })
-                    }
-                    if (job.type === 2) {
-                        this.sparkList.push({
+                    } else {
+                        this.jobList.push({
                             id: job.id,
                             name: job.name,
                             type: job.type,
@@ -144,16 +110,14 @@
                 this.$emit("add-new-job")
             },
             refresh() {
-                this.hsqlList = []
-                this.shellList = []
-                this.sparkList = []
+                this.jobList = []
                 this.integrationList = []
                 this.init()
             },
             listenAddEvent() {
                 const that = this
                 this.$bus.on("add-hsql-nav", function(value) {
-                    that.hsqlList.push({
+                    that.jobList.push({
                         name: value
                     })
                 })

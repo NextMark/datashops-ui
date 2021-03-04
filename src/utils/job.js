@@ -133,6 +133,16 @@ export function getJobIcon(code) {
             return '#el-icon-my-flink-sql'
         case 6:
             return '#el-icon-my-mysql'
+        case 7:
+            return '#el-icon-my-kafka'
+        case 8:
+            return '#el-icon-my-kafka'
+        case 9:
+            return '#el-icon-my-kafka'
+        case 10:
+            return '#el-icon-my-kafka'
+        case 11:
+            return '#el-icon-my-python'
         default:
             return ''
     }

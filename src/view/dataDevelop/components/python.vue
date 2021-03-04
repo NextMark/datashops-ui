@@ -1,9 +1,18 @@
 <template>
     <div>
         <el-button type="text" icon="el-icon-document-checked" style="font-size:20px"></el-button>
+        <el-divider></el-divider>
+        <el-form ref="form" :model="form" label-width="100px">
+            <el-form-item label="Python版本">
+                <el-select v-model="form.pythonVersion" placeholder="选择版本">
+                    <el-option label="Python3" value="python3"></el-option>
+                    <el-option label="Python2" value="python2"></el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
         <MonacoEditor
                 height="400"
-                language="shell"
+                language="python"
                 theme="vs-dark"
                 :code="sql"
                 :editorOptions="monacoEditorOption"
@@ -17,9 +26,8 @@
     import MonacoEditor from 'vue-monaco-editor'
     import { monacoEditorOption } from '@/utils/constants';
 
-
     export default {
-        name: "shell",
+        name: "python",
         components: {
             MonacoEditor
         },
@@ -27,13 +35,13 @@
             return {
                 form: {
                     name: '',
-                    region: '',
+                    pythonVersion: 'python3',
                     type: [],
                     resource: '',
                     desc: ''
                 },
-                sql: '#!/bin/bash\n',
-                monacoEditorOption,
+                sql: '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n',
+                monacoEditorOption
             }
         },
         methods: {

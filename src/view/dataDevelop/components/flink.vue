@@ -1,39 +1,31 @@
 <template>
     <div>
         <el-button type="text" icon="el-icon-document-checked" style="font-size:20px"></el-button>
-        <MonacoEditor
-                height="400"
-                language="shell"
-                theme="vs-dark"
-                :code="sql"
-                :editorOptions="monacoEditorOption"
-                @mounted="onMounted"
-                @codeChange="onCodeChange">
-        </MonacoEditor>
+        <el-divider></el-divider>
+        <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="flink">
+                <el-input v-model="form.name"></el-input>
+            </el-form-item>
+
+        </el-form>
     </div>
 </template>
 
 <script>
-    import MonacoEditor from 'vue-monaco-editor'
-    import { monacoEditorOption } from '@/utils/constants';
-
-
     export default {
-        name: "shell",
-        components: {
-            MonacoEditor
-        },
+        name: "flink",
         data() {
             return {
                 form: {
                     name: '',
                     region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
                     type: [],
                     resource: '',
                     desc: ''
-                },
-                sql: '#!/bin/bash\n',
-                monacoEditorOption,
+                }
             }
         },
         methods: {

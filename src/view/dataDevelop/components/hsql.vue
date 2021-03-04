@@ -19,7 +19,7 @@
                 language="sql"
                 theme="vs-dark"
                 :code="sql"
-                :editorOptions="options"
+                :editorOptions="monacoEditorOption"
                 @mounted="onMounted"
                 @codeChange="onCodeChange">
         </MonacoEditor>
@@ -34,6 +34,8 @@
     import {
         saveHiveSql
     } from "@/api/job";
+    import { monacoEditorOption } from '@/utils/constants';
+
 
     export default {
         name: "hsql",
@@ -44,21 +46,7 @@
         data() {
             return {
                 sql: '-- Type your SQL! \n',
-                options: {
-                    selectOnLineNumbers: true,
-                    autoIndent: true,
-                    smoothScrolling: true,
-                    snippetSuggestions: 'top',
-                    automaticLayout: true,
-                    autoClosingBrackets: true,
-                    acceptSuggestionOnEnter: 'on',
-                    colorDecorators: true,
-                    dragAndDrop: true,
-                    formatOnPaste: true,
-                    formatOnType: true,
-                    fontSize: 20,
-                    mouseWheelZoom: true,
-                },
+                monacoEditorOption,
                 defaultSql: '-- Type your SQL! \n'
             }
         },
