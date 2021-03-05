@@ -2,7 +2,7 @@ import service from '@/utils/request'
 
 export const addProject = (data) => {
     return service({
-        url: "/v1/resource/addProject",
+        url: "/v1/project/addProject",
         method: 'post',
         data
     })
@@ -10,7 +10,7 @@ export const addProject = (data) => {
 
 export const deleteProject = (data) => {
     return service({
-        url: "/v1/resource/deleteProject",
+        url: "/v1/project/deleteProject",
         method: 'post',
         data
     })
@@ -18,7 +18,7 @@ export const deleteProject = (data) => {
 
 export const getProjectList = (data) => {
     return service({
-        url: "/v1/resource/getProjectList",
+        url: "/v1/project/getProjectList",
         method: 'post',
         data
     })
@@ -26,7 +26,7 @@ export const getProjectList = (data) => {
 
 export const addQueue = (data) => {
     return service({
-        url: "/v1/resource/addQueue",
+        url: "/v1/project/addQueue",
         method: 'post',
         data
     })
@@ -34,7 +34,7 @@ export const addQueue = (data) => {
 
 export const deleteQueue = (data) => {
     return service({
-        url: "/v1/resource/deleteQueue",
+        url: "/v1/project/deleteQueue",
         method: 'post',
         data
     })
@@ -42,7 +42,7 @@ export const deleteQueue = (data) => {
 
 export const getQueueList = (data) => {
     return service({
-        url: "/v1/resource/getQueueList",
+        url: "/v1/project/getQueueList",
         method: 'post',
         data
     })
@@ -50,7 +50,7 @@ export const getQueueList = (data) => {
 
 export const addDataSource = (data) => {
     return service({
-        url: "/v1/resource/addDataSource",
+        url: "/v1/project/addDataSource",
         method: 'post',
         data
     })
@@ -58,7 +58,7 @@ export const addDataSource = (data) => {
 
 export const deleteDataSource = (data) => {
     return service({
-        url: "/v1/resource/deleteDataSource",
+        url: "/v1/project/deleteDataSource",
         method: 'post',
         data
     })
@@ -66,7 +66,7 @@ export const deleteDataSource = (data) => {
 
 export const getDataSourceList = (data) => {
     return service({
-        url: "/v1/resource/getDataSourceList",
+        url: "/v1/project/getDataSourceList",
         method: 'post',
         data
     })
@@ -74,7 +74,7 @@ export const getDataSourceList = (data) => {
 
 export const getMasterList = (data) => {
     return service({
-        url: "/v1/resource/getMasterList",
+        url: "/v1/project/getMasterList",
         method: 'post',
         data
     })
@@ -82,7 +82,7 @@ export const getMasterList = (data) => {
 
 export const getWorkerList = (data) => {
     return service({
-        url: "/v1/resource/getWorkerList",
+        url: "/v1/project/getWorkerList",
         method: 'post',
         data
     })
