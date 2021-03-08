@@ -151,7 +151,7 @@
             </el-dialog>
         </div>
         <el-drawer
-                title="作业组配置"
+                title="调度配置"
                 :visible.sync="jobSetting"
                 size="60%"
                 direction="rtl">

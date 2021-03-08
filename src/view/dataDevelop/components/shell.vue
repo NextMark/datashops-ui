@@ -1,6 +1,14 @@
 <template>
     <div>
-        <el-button type="text" icon="el-icon-document-checked" style="font-size:20px"></el-button>
+        <el-row>
+            <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start">
+                <el-button type="text" style="font-size:15px" @click="save">
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-baocun"></use>
+                    </svg>
+                </el-button>
+            </el-tooltip>
+        </el-row>
         <MonacoEditor
                 height="400"
                 language="shell"
@@ -39,7 +47,12 @@
         methods: {
             onSubmit() {
                 console.log('submit!');
-            }
+            },
+            onMounted(editor) {
+                this.editor = editor;
+            },
+            onCodeChange(editor) {
+            },
         }
     }
 </script>

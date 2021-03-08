@@ -58,10 +58,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="重试次数">
-                        <el-input-number v-model="jobInfoCopy.retryTimes" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="jobInfoCopy.retryTimes" :min="0" :max="10"></el-input-number>
                     </el-form-item>
                     <el-form-item label="重试间隔">
-                        <el-input-number v-model="jobInfoCopy.retryInterval" :min="1" :max="10"></el-input-number>
+                        <el-input-number v-model="jobInfoCopy.retryInterval" :min="5"></el-input-number>
                     </el-form-item>
                     <el-form-item label="生效时间">
                         <el-date-picker
@@ -392,7 +392,10 @@
                 options,
                 validRange: [],
                 jobInfoCopy: {
-                    hostSelector: 0
+                    queueId: 3,
+                    hostSelector: 0,
+                    retryTimes: 0,
+                    retryInterval: 3600
                 },
                 addDependencyDialog: false,
                 dependency: [],
@@ -453,12 +456,6 @@
                 let timeConfigDto = that.timeConfig
 
                 let timeParams = {}
-                // if (that.hourMinute) {
-                //     const timeArrs = that.hourMinute.split(":")
-                //     timeConfigDto.hour = timeArrs[0]
-                //     timeConfigDto.minute = timeArrs[1]
-                // }
-                console.log(timeConfigDto)
                 if (jobDto.schedulingPeriod === 0) {
                     const timeArrs = that.hourMinute.split(":")
                     timeParams.hour = timeArrs[0]
@@ -515,6 +512,9 @@
                         moment().subtract(0, 'days').format('YYYY-MM-DD'),
                         '9999-12-31'
                     ]
+                }
+                if (!this.jobInfoCopy.timeConfig) {
+                    return
                 }
                 let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig)
 
