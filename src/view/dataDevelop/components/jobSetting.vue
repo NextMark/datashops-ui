@@ -362,11 +362,8 @@
                 deep:true,
                 handler(val) {
                     this.jobInfoCopy = val
-                    console.log(this.jobInfoCopy)
                     if (!this.jobInfoCopy.schedulingPeriod) {
                         this.jobInfoCopy.schedulingPeriod = 2
-                        console.log(this.jobInfoCopy)
-
                     }
                 },
             }
@@ -465,59 +462,8 @@
                     });
                 }
             },
-            async modifyJob() {
-                const that = this;
-                let jobDto = that.jobInfoCopy;
-                let timeConfigDto = that.timeConfig;
-
-                let timeParams = {};
-                if (jobDto.schedulingPeriod === 0) {
-                    const timeArrs = that.hourMinute.split(":");
-                    timeParams.hour = timeArrs[0];
-                    timeParams.minute = timeArrs[1];
-                    timeParams.days = timeConfigDto.days.join()
-                }
-                if (jobDto.schedulingPeriod === 1) {
-                    const timeArrs = that.hourMinute.split(":");
-                    timeParams.hour = timeArrs[0];
-                    timeParams.minute = timeArrs[1];
-                    timeParams.weeks = timeConfigDto.weeks.join()
-                }
-                if (jobDto.schedulingPeriod === 2) {
-                    const timeArrs = that.hourMinute.split(":");
-                    timeParams.hour = timeArrs[0];
-                    timeParams.minute = timeArrs[1]
-                }
-                if (jobDto.schedulingPeriod === 3) {
-                    timeParams.type = timeConfigDto.type;
-                    timeParams.hours = timeConfigDto.hours.join();
-                    timeParams.hourBegin = timeConfigDto.hourBegin;
-                    timeParams.hourMinute = timeConfigDto.hourMinute;
-                    timeParams.hourPeriod = timeConfigDto.hourPeriod;
-                    timeParams.hourEnd = timeConfigDto.hourEnd
-                }
-                if (jobDto.schedulingPeriod === 4) {
-                    timeParams.minuteBegin = timeConfigDto.minuteBegin;
-                    timeParams.minuteEnd = timeConfigDto.minuteEnd;
-                    timeParams.period = timeConfigDto.period
-                }
-
-                jobDto.timeConfig = JSON.stringify(timeParams);
-                jobDto.validStartDate = that.validRange[0];
-                jobDto.validEndDate = that.validRange[1];
-                const res = await modifyJob(jobDto);
-                if (res.code === 1000) {
-                    that.formatJob(res.data);
-                    that.$message({
-                        type: "success",
-                        message: "作业修改成功",
-                        center: true
-                    });
-                }
-            },
             formatJob(jobInfo) {
                 this.jobInfoCopy = jobInfo;
-                console.log(this.jobInfoCopy)
                 if (this.jobInfoCopy.validStartDate) {
                     this.validRange = [
                         this.jobInfoCopy.validStartDate,
@@ -539,7 +485,6 @@
                 }
                 if (timeConfig.days) {
                     this.timeConfig.days = timeConfig.days.split(',');
-                    console.log(this.timeConfig.days)
                 }
                 if (timeConfig.minuteBegin) {
                     this.timeConfig.minuteBegin = timeConfig.minuteBegin;

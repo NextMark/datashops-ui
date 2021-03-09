@@ -27,14 +27,21 @@
                         </span>
 
                     </el-tab-pane>
-                    <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start">
+                    <el-tooltip class="item" effect="dark" content="保存作业">
                         <el-button type="text" style="font-size:15px" @click="save">
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-baocun"></use>
                             </svg>
                         </el-button>
                     </el-tooltip>
-                    <component :is="currentView" :jobInfo="jobInfo"></component>
+                    <el-tooltip v-if="jobInfo.type === 0" class="item" effect="dark" content="格式化" placement="top-start" hide-after="500">-->
+                        <el-button type="text" style="font-size:15px" @click="format">
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-wancheng"></use>
+                            </svg>
+                        </el-button>
+                    </el-tooltip>
+                    <component :is="currentView" :jobInfo="jobInfo" ref="jobForm" ></component>
 
                 </el-tabs>
             </div>
@@ -348,8 +355,31 @@
                 }
                 this.jobActiveTab = job.id.toString()
             },
+            format() {
+                this.$refs.jobForm.formatSQL()
+            },
             async save() {
-                console.log(this.$refs.jobSettingForm.jobInfoCopy)
+                if (!this.$refs.jobSettingForm) {
+                    console.log("aaaaa")
+                    const jobDto = this.jobInfo
+
+                    if (jobDto.type === 0 || jobDto.type === 1) {
+                        jobDto.data = {
+                            value: this.$refs.jobForm.value
+                        }
+                        jobDto.data = JSON.stringify(jobDto.data)
+                    }
+                    if (jobDto.type === 11) {
+                        jobDto.data = {
+                            version: this.$refs.jobForm.version,
+                            value: this.$refs.jobForm.value
+                        }
+                        jobDto.data = JSON.stringify(jobDto.data)
+                    }
+
+                    const res = await modifyJob(jobDto);
+                    return
+                }
                 const jobDto = this.$refs.jobSettingForm.jobInfoCopy
                 let timeConfigDto = this.$refs.jobSettingForm.timeConfig
                 const hourMinute = this.$refs.jobSettingForm.hourMinute
@@ -390,6 +420,14 @@
                 jobDto.timeConfig = JSON.stringify(timeParams)
                 jobDto.validStartDate = validRange[0]
                 jobDto.validEndDate = validRange[1]
+                //
+                if (jobDto.type === 11) {
+                    jobDto.data = {
+                        version: this.$refs.jobForm.version,
+                        value: this.$refs.jobForm.value
+                    }
+                    jobDto.data = JSON.stringify(jobDto.data)
+                }
                 const res = await modifyJob(jobDto);
                 if (res.code === 1000) {
                     this.$refs.jobSettingForm.formatJob(res.data)

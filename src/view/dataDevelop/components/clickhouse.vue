@@ -12,17 +12,12 @@
 <script>
     export default {
         name: "clickhouse",
+        props: ['jobInfo'],
+
         data() {
             return {
                 form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
+                    name: ''
                 }
             }
         },

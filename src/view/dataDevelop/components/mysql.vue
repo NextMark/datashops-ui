@@ -50,6 +50,8 @@
 <script>
     export default {
         name: "mysql",
+        props: ['jobInfo'],
+
         data() {
             return {
                 form: {

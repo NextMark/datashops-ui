@@ -12,6 +12,8 @@
 <script>
     export default {
         name: "flink",
+        props: ['jobInfo'],
+
         data() {
             return {
                 form: {

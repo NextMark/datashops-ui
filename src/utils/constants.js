@@ -3,14 +3,14 @@ export const monacoEditorOption = {
     autoIndent: true,
     smoothScrolling: true,
     snippetSuggestions: 'top',
-    automaticLayout: true,
+    automaticLayout: false,
     autoClosingBrackets: true,
     acceptSuggestionOnEnter: 'on',
     colorDecorators: true,
     dragAndDrop: true,
     formatOnPaste: true,
     formatOnType: true,
-    fontSize: 28,
+    fontSize: 14,
     mouseWheelZoom: true,
-    quickSuggestionsDelay: 500
+    theme: "vs-dark"
 }

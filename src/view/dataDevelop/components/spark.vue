@@ -6,7 +6,9 @@
 
 <script>
     export default {
-        name: "spark"
+        name: "spark",
+        props: ['jobInfo'],
+
     }
 </script>
 

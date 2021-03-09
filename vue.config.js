@@ -3,6 +3,8 @@
 const path = require('path')
 const buildConf = require('./build.config')
 const packageConf = require('./package.json')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+
 
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -57,6 +59,13 @@ module.exports = {
             .when(process.env.NODE_ENV === 'development',
             config => config.devtool('cheap-source-map')
         )
+
+        config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+            {
+                // Languages are loaded on demand at runtime
+                languages: ['javascript', 'html', 'shell', 'python', 'sql']
+            }
+        ])
 
         config
             .when(process.env.NODE_ENV !== 'development',
