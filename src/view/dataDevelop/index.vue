@@ -19,17 +19,33 @@
                             :key="index + item.name"
                             :label="item.title"
                             :name="item.name">
+                        <span slot="label">
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use :xlink:href="item.type |getJobIcon"></use>
+                            </svg>
+                            <span slot="title" class="pad-left-10">{{item.title}}</span>
+                        </span>
+
                     </el-tab-pane>
+                    <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start">
+                        <el-button type="text" style="font-size:15px" @click="save">
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-baocun"></use>
+                            </svg>
+                        </el-button>
+                    </el-tooltip>
                     <component :is="currentView" :jobInfo="jobInfo"></component>
 
                 </el-tabs>
             </div>
             <template>
                 <div class="tabBox" v-show="openedTabs.length > 0">
-                    <el-tabs v-model="activeName" tab-position="right" @tab-click="tabClick">
-                        <el-tab-pane label="调度设置" name="jobSetting"></el-tab-pane>
-                        <el-tab-pane label="依赖图" name="jobDag"></el-tab-pane>
-                    </el-tabs>
+                    <div class="right-setting">
+                        <span @click="tabClick">调度设置</span>
+                    </div>
+                    <div class="right-setting">
+                        <span @click="tabClick">依赖图</span>
+                    </div>
                 </div>
             </template>
         </div>
@@ -177,10 +193,11 @@
     import { mapGetters } from "vuex";
 
 
-    import { getJobName } from '@/utils/job';
+    import { getJobName, getJobIcon } from '@/utils/job';
     import {
         getJobByMaskId,
-        addNewJob
+        addNewJob,
+        modifyJob
     } from "@/api/job";
 
 
@@ -198,6 +215,9 @@
             jobSetting,
             kafka2hdfs,
             kafka2hive
+        },
+        filters: {
+            getJobIcon
         },
         computed: {
             ...mapGetters("user", ["userInfo"]),
@@ -240,7 +260,6 @@
                 addJobDialog: false,
                 jobNameVisible: false,
                 jobSetting: false,
-                activeName: '',
                 jobInfo: {},
                 dialogTitle: '新建作业名称',
                 newJob: {
@@ -255,16 +274,8 @@
                 const index = this.jobList.findIndex(job => job.id.toString() === tab.name)
                 this.jobInfo = this.jobList[index]
             },
-            tabClick(tab) {
-                if(tab.name === 'jobSetting'){
-                    // 触发‘配置管理’事件
-                    this.activeName = 'jobSetting'
-                    this.jobSetting = true
-                }else{
-                    // 触发‘用户管理’事件
-                    this.activeName = 'jobSetting'
-                    this.jobSetting = true
-                }
+            tabClick() {
+                this.jobSetting = true
             },
             addTab() {
                 this.addJobDialog = true
@@ -336,6 +347,58 @@
                     this.jobInfo = this.jobList[index]
                 }
                 this.jobActiveTab = job.id.toString()
+            },
+            async save() {
+                console.log(this.$refs.jobSettingForm.jobInfoCopy)
+                const jobDto = this.$refs.jobSettingForm.jobInfoCopy
+                let timeConfigDto = this.$refs.jobSettingForm.timeConfig
+                const hourMinute = this.$refs.jobSettingForm.hourMinute
+                const validRange = this.$refs.jobSettingForm.validRange
+
+                let timeParams = {}
+                if (jobDto.schedulingPeriod === 0) {
+                    const timeArrs = hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
+                    timeParams.days = timeConfigDto.days.join()
+                }
+                if (jobDto.schedulingPeriod === 1) {
+                    const timeArrs = hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
+                    timeParams.weeks = timeConfigDto.weeks.join()
+                }
+                if (jobDto.schedulingPeriod === 2) {
+                    const timeArrs = hourMinute.split(":")
+                    timeParams.hour = timeArrs[0]
+                    timeParams.minute = timeArrs[1]
+                }
+                if (jobDto.schedulingPeriod === 3) {
+                    timeParams.type = timeConfigDto.type
+                    timeParams.hours = timeConfigDto.hours.join()
+                    timeParams.hourBegin = timeConfigDto.hourBegin
+                    timeParams.hourMinute = timeConfigDto.hourMinute
+                    timeParams.hourPeriod = timeConfigDto.hourPeriod
+                    timeParams.hourEnd = timeConfigDto.hourEnd
+                }
+                if (jobDto.schedulingPeriod === 4) {
+                    timeParams.minuteBegin = timeConfigDto.minuteBegin
+                    timeParams.minuteEnd = timeConfigDto.minuteEnd
+                    timeParams.period = timeConfigDto.period
+                }
+
+                jobDto.timeConfig = JSON.stringify(timeParams)
+                jobDto.validStartDate = validRange[0]
+                jobDto.validEndDate = validRange[1]
+                const res = await modifyJob(jobDto);
+                if (res.code === 1000) {
+                    this.$refs.jobSettingForm.formatJob(res.data)
+                    this.$message({
+                        type: "success",
+                        message: "作业修改成功",
+                        center: true
+                    });
+                }
             }
         }
     }
@@ -389,5 +452,12 @@
                 margin-bottom: 20px;
             }
         }
+    }
+
+    .right-setting {
+        width: 25px;
+        margin-bottom: 25px;
+        margin-left: 12px;
+        cursor: pointer
     }
 </style>

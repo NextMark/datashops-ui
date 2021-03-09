@@ -274,9 +274,9 @@
 <!--                                layout="total, sizes, prev, pager, next, jumper"-->
 <!--                        ></el-pagination>-->
                     </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" icon="el-icon-check" @click="modifyJob">保存</el-button>
-                    </el-form-item>
+<!--                    <el-form-item>-->
+<!--                        <el-button type="primary" icon="el-icon-check" @click="modifyJob">保存</el-button>-->
+<!--                    </el-form-item>-->
                 </el-form>
             </div>
         </div>
@@ -348,7 +348,7 @@
 
 <script>
     import {addDependency, getJobDependency, getJobList, modifyJob, modifySchedulerStatus} from "@/api/job";
-    import {getQueueList, getWorkerList} from "@/api/resource";
+    import {getQueueList} from "@/api/resource";
     import infoList from "@/mixins/infoList";
     import {date, getJobIcon, hours, options, schedulingPeriod, week} from '@/utils/job';
 
@@ -357,6 +357,20 @@
     export default {
         mixins: [infoList],
         props: ['jobInfo'],
+        watch:{
+            jobInfo: {
+                deep:true,
+                handler(val) {
+                    this.jobInfoCopy = val
+                    console.log(this.jobInfoCopy)
+                    if (!this.jobInfoCopy.schedulingPeriod) {
+                        this.jobInfoCopy.schedulingPeriod = 2
+                        console.log(this.jobInfoCopy)
+
+                    }
+                },
+            }
+        },
         filters: {
             getJobIcon
         },
@@ -395,7 +409,8 @@
                     queueId: 3,
                     hostSelector: 0,
                     retryTimes: 0,
-                    retryInterval: 3600
+                    retryInterval: 3600,
+                    schedulingPeriod: 2
                 },
                 addDependencyDialog: false,
                 dependency: [],
@@ -415,7 +430,7 @@
         },
         methods: {
             handleAddDependency() {
-                this.addDependencyDialog = true
+                this.addDependencyDialog = true;
                 this.getTableData()
             },
             async handleAdd(row) {
@@ -423,14 +438,14 @@
                     sourceId: row.id,
                     targetId: this.jobInfo.id,
                     offset: row.offset
-                })
+                });
                 this.dependency.push({
                     name: row.name,
                     owner: row.owner,
                     offset: row.offset,
                     sourceId: row.id,
                     type: row.type
-                })
+                });
                 this.$message({
                     type: "success",
                     message: "依赖添加成功"
@@ -451,48 +466,48 @@
                 }
             },
             async modifyJob() {
-                const that = this
-                let jobDto = that.jobInfoCopy
-                let timeConfigDto = that.timeConfig
+                const that = this;
+                let jobDto = that.jobInfoCopy;
+                let timeConfigDto = that.timeConfig;
 
-                let timeParams = {}
+                let timeParams = {};
                 if (jobDto.schedulingPeriod === 0) {
-                    const timeArrs = that.hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
-                    timeParams.minute = timeArrs[1]
+                    const timeArrs = that.hourMinute.split(":");
+                    timeParams.hour = timeArrs[0];
+                    timeParams.minute = timeArrs[1];
                     timeParams.days = timeConfigDto.days.join()
                 }
                 if (jobDto.schedulingPeriod === 1) {
-                    const timeArrs = that.hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
-                    timeParams.minute = timeArrs[1]
+                    const timeArrs = that.hourMinute.split(":");
+                    timeParams.hour = timeArrs[0];
+                    timeParams.minute = timeArrs[1];
                     timeParams.weeks = timeConfigDto.weeks.join()
                 }
                 if (jobDto.schedulingPeriod === 2) {
-                    const timeArrs = that.hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
+                    const timeArrs = that.hourMinute.split(":");
+                    timeParams.hour = timeArrs[0];
                     timeParams.minute = timeArrs[1]
                 }
                 if (jobDto.schedulingPeriod === 3) {
-                    timeParams.type = timeConfigDto.type
-                    timeParams.hours = timeConfigDto.hours.join()
-                    timeParams.hourBegin = timeConfigDto.hourBegin
-                    timeParams.hourMinute = timeConfigDto.hourMinute
-                    timeParams.hourPeriod = timeConfigDto.hourPeriod
+                    timeParams.type = timeConfigDto.type;
+                    timeParams.hours = timeConfigDto.hours.join();
+                    timeParams.hourBegin = timeConfigDto.hourBegin;
+                    timeParams.hourMinute = timeConfigDto.hourMinute;
+                    timeParams.hourPeriod = timeConfigDto.hourPeriod;
                     timeParams.hourEnd = timeConfigDto.hourEnd
                 }
                 if (jobDto.schedulingPeriod === 4) {
-                    timeParams.minuteBegin = timeConfigDto.minuteBegin
-                    timeParams.minuteEnd = timeConfigDto.minuteEnd
+                    timeParams.minuteBegin = timeConfigDto.minuteBegin;
+                    timeParams.minuteEnd = timeConfigDto.minuteEnd;
                     timeParams.period = timeConfigDto.period
                 }
 
-                jobDto.timeConfig = JSON.stringify(timeParams)
-                jobDto.validStartDate = that.validRange[0]
-                jobDto.validEndDate = that.validRange[1]
+                jobDto.timeConfig = JSON.stringify(timeParams);
+                jobDto.validStartDate = that.validRange[0];
+                jobDto.validEndDate = that.validRange[1];
                 const res = await modifyJob(jobDto);
                 if (res.code === 1000) {
-                    that.formatJob(res.data)
+                    that.formatJob(res.data);
                     that.$message({
                         type: "success",
                         message: "作业修改成功",
@@ -501,7 +516,8 @@
                 }
             },
             formatJob(jobInfo) {
-                this.jobInfoCopy = jobInfo
+                this.jobInfoCopy = jobInfo;
+                console.log(this.jobInfoCopy)
                 if (this.jobInfoCopy.validStartDate) {
                     this.validRange = [
                         this.jobInfoCopy.validStartDate,
@@ -516,35 +532,39 @@
                 if (!this.jobInfoCopy.timeConfig) {
                     return
                 }
-                let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig)
+                let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig);
 
                 if (timeConfig.weeks) {
                     this.timeConfig.weeks = timeConfig.weeks.split(',')
                 }
                 if (timeConfig.days) {
-                    this.timeConfig.days = timeConfig.days.split(',')
+                    this.timeConfig.days = timeConfig.days.split(',');
                     console.log(this.timeConfig.days)
                 }
                 if (timeConfig.minuteBegin) {
-                    this.timeConfig.minuteBegin = timeConfig.minuteBegin
-                    this.timeConfig.period = timeConfig.period
+                    this.timeConfig.minuteBegin = timeConfig.minuteBegin;
+                    this.timeConfig.period = timeConfig.period;
                     this.timeConfig.minuteEnd = timeConfig.minuteEnd
                 }
                 if (this.jobInfoCopy.schedulingPeriod === 3) {
-                    this.timeConfig.type = timeConfig.type
-                    this.timeConfig.hours = timeConfig.hours.split(',')
-                    this.timeConfig.hourBegin = timeConfig.hourBegin
-                    this.timeConfig.hourPeriod = timeConfig.hourPeriod
-                    this.timeConfig.hourMinute = timeConfig.hourMinute
+                    this.timeConfig.type = timeConfig.type;
+                    this.timeConfig.hours = timeConfig.hours.split(',');
+                    this.timeConfig.hourBegin = timeConfig.hourBegin;
+                    this.timeConfig.hourPeriod = timeConfig.hourPeriod;
+                    this.timeConfig.hourMinute = timeConfig.hourMinute;
                     this.timeConfig.hourEnd = timeConfig.hourEnd
+                }
+                if (!this.jobInfoCopy.schedulingPeriod) {
+                    this.jobInfoCopy.schedulingPeriod = 2
                 }
             }
         },
-        async created() {
-            this.formatJob(this.jobInfo)
-            const res = await getJobDependency({maskId: this.jobInfo.id})
-            this.dependency = res.data
-            const queue = await getQueueList({pageSize: 20, pageNum: 1})
+
+        async mounted() {
+            this.formatJob(this.jobInfo);
+            const res = await getJobDependency({id: this.jobInfo.id});
+            this.dependency = res.data;
+            const queue = await getQueueList({pageSize: 20, pageNum: 1});
             this.queue = queue.data.content
         }
     }

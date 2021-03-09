@@ -1,14 +1,5 @@
 <template>
     <div>
-        <el-row>
-            <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start">
-                <el-button type="text" style="font-size:15px" @click="save">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-baocun"></use>
-                    </svg>
-                </el-button>
-            </el-tooltip>
-        </el-row>
         <el-form ref="form" :model="form" label-width="100px">
             <el-form-item label="Python版本">
                 <el-select v-model="form.pythonVersion" placeholder="选择版本">
@@ -41,11 +32,7 @@
         data() {
             return {
                 form: {
-                    name: '',
-                    pythonVersion: 'python3',
-                    type: [],
-                    resource: '',
-                    desc: ''
+                    pythonVersion: 'python3'
                 },
                 sql: '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n',
                 monacoEditorOption

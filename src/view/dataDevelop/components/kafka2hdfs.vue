@@ -1,7 +1,5 @@
 <template>
     <div>
-        <el-button type="text" icon="el-icon-document-checked" style="font-size:20px"></el-button>
-        <el-divider></el-divider>
         <el-row>
             <el-col :span="10">
                 <el-form ref="form" :model="form" :rules="rules" label-width="120px">

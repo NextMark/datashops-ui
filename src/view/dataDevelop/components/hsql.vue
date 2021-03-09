@@ -1,34 +1,34 @@
 <template>
     <div>
         <el-row>
-            <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start" hide-after="1000">
-                <el-button type="text" style="font-size:15px" @click="save">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-baocun"></use>
-                    </svg>
-                </el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="执行" placement="top-start" hide-after="1000">
-                <el-button type="text" style="font-size:15px">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-bofang"></use>
-                    </svg>
-                </el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="停止" placement="top-start" hide-after="1000">
-                <el-button type="text" style="font-size:15px">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-zanting"></use>
-                    </svg>
-                </el-button>
-            </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="格式化" placement="top-start" hide-after="1000">
-                <el-button type="text" style="font-size:15px" @click="formatSQL">
-                    <svg class="icon-1-5" aria-hidden="true">
-                        <use xlink:href="#el-icon-my-wancheng"></use>
-                    </svg>
-                </el-button>
-            </el-tooltip>
+<!--            <el-tooltip class="item" effect="dark" content="保存作业" placement="top-start" hide-after="500">-->
+<!--                <el-button type="text" style="font-size:15px" @click="save">-->
+<!--                    <svg class="icon-1-5" aria-hidden="true">-->
+<!--                        <use xlink:href="#el-icon-my-baocun"></use>-->
+<!--                    </svg>-->
+<!--                </el-button>-->
+<!--            </el-tooltip>-->
+<!--            <el-tooltip class="item" effect="dark" content="执行" placement="top-start" hide-after="500">-->
+<!--                <el-button type="text" style="font-size:15px">-->
+<!--                    <svg class="icon-1-5" aria-hidden="true">-->
+<!--                        <use xlink:href="#el-icon-my-bofang"></use>-->
+<!--                    </svg>-->
+<!--                </el-button>-->
+<!--            </el-tooltip>-->
+<!--            <el-tooltip class="item" effect="dark" content="停止" placement="top-start" hide-after="500">-->
+<!--                <el-button type="text" style="font-size:15px">-->
+<!--                    <svg class="icon-1-5" aria-hidden="true">-->
+<!--                        <use xlink:href="#el-icon-my-zanting"></use>-->
+<!--                    </svg>-->
+<!--                </el-button>-->
+<!--            </el-tooltip>-->
+<!--            <el-tooltip class="item" effect="dark" content="格式化" placement="top-start" hide-after="500">-->
+<!--                <el-button type="text" style="font-size:15px" @click="formatSQL">-->
+<!--                    <svg class="icon-1-5" aria-hidden="true">-->
+<!--                        <use xlink:href="#el-icon-my-wancheng"></use>-->
+<!--                    </svg>-->
+<!--                </el-button>-->
+<!--            </el-tooltip>-->
         </el-row>
         <MonacoEditor
                 height="400"

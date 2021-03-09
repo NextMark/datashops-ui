@@ -69,7 +69,7 @@
             <el-table-column label="结束日期" width="160">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column label="按钮组" min-width="140">
+            <el-table-column label="按钮组" min-width="240">
                 <template slot-scope="scope">
                     <el-button
                             class="table-button"
