@@ -1,28 +1,28 @@
 <template>
     <div>
-        <div id="container" class="monaco-editor" ref="editor" style="height: 400px"></div>
+        <Editor
+                style="margin-top: -30px"
+                language="sql"
+                :codes="value"
+                @onMounted="onMounted"
+                @onCodeChange="onCodeChange"/>
     </div>
 </template>
 
 <script>
-    import MonacoEditor from 'vue-monaco-editor'
     import sqlFormatter from 'sql-formatter'
     import { mapGetters } from "vuex";
-    import * as monaco from 'monaco-editor'
-
-    import { monacoEditorOption } from '@/utils/constants';
-
+    import Editor from './editor'
 
     export default {
         name: "hsql",
         components: {
-            MonacoEditor
+            Editor
         },
 
         data() {
             return {
                 value: '-- Type your SQL! \n',
-                monacoEditorOption,
                 defaultSql: '-- Type your SQL! \n'
             }
         },
@@ -47,8 +47,6 @@
             ...mapGetters("user", ["userInfo"])
         },
         mounted() {
-            monacoEditorOption.language = "sql"
-            this.initEditor()
             const data = JSON.parse(this.jobInfo.data)
             if (data) {
                 this.value = data.value
@@ -63,17 +61,14 @@
             }
         },
         methods: {
-            initEditor() {
-                this.editor = monaco.editor.create(document.getElementById('container'), monacoEditorOption)
-            },
             formatSQL() {
                 this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
             },
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(editor) {
-                this.value = editor.getValue()
+            onCodeChange(value, event) {
+                this.value = value
             },
             // async save() {
             //     if (this.jobInfo.maskId) {

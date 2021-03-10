@@ -48,10 +48,10 @@
             <template>
                 <div class="tabBox" v-show="openedTabs.length > 0">
                     <div class="right-setting">
-                        <span @click="tabClick">调度设置</span>
+                        <span @click="settingClick">调度设置</span>
                     </div>
                     <div class="right-setting">
-                        <span @click="tabClick">依赖图</span>
+                        <span @click="graphClick">依赖图</span>
                     </div>
                 </div>
             </template>
@@ -180,6 +180,13 @@
                 direction="rtl">
             <job-setting ref="jobSettingForm" :job-info="jobInfo"></job-setting>
         </el-drawer>
+        <el-drawer
+                title="依赖图"
+                :visible.sync="jobGraph"
+                size="60%"
+                direction="rtl">
+            <flow-panel ></flow-panel>
+        </el-drawer>
     </div>
 </template>
 
@@ -198,7 +205,7 @@
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { mapGetters } from "vuex";
-
+    import FlowPanel from '@/components/ef/panel'
 
     import { getJobName, getJobIcon } from '@/utils/job';
     import {
@@ -221,7 +228,8 @@
             clickhouse,
             jobSetting,
             kafka2hdfs,
-            kafka2hive
+            kafka2hive,
+            FlowPanel
         },
         filters: {
             getJobIcon
@@ -267,6 +275,7 @@
                 addJobDialog: false,
                 jobNameVisible: false,
                 jobSetting: false,
+                jobGraph: false,
                 jobInfo: {},
                 dialogTitle: '新建作业名称',
                 newJob: {
@@ -281,8 +290,11 @@
                 const index = this.jobList.findIndex(job => job.id.toString() === tab.name)
                 this.jobInfo = this.jobList[index]
             },
-            tabClick() {
+            settingClick() {
                 this.jobSetting = true
+            },
+            graphClick() {
+                this.jobGraph = true
             },
             addTab() {
                 this.addJobDialog = true

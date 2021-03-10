@@ -3,7 +3,7 @@ export const monacoEditorOption = {
     autoIndent: true,
     smoothScrolling: true,
     snippetSuggestions: 'top',
-    automaticLayout: false,
+    automaticLayout: true,
     autoClosingBrackets: true,
     acceptSuggestionOnEnter: 'on',
     colorDecorators: true,
@@ -12,5 +12,4 @@ export const monacoEditorOption = {
     formatOnType: true,
     fontSize: 14,
     mouseWheelZoom: true,
-    theme: "vs-dark"
 }

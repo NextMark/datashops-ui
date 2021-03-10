@@ -1,33 +1,31 @@
 <template>
     <div>
-        <div id="container" class="monaco-editor" ref="editor" style="height: 400px"></div>
+        <Editor
+                style="margin-top: -30px"
+                language="shell"
+                :codes="value"
+                @onMounted="onMounted"
+                @onCodeChange="onCodeChange"/>
     </div>
 </template>
 
 <script>
-    import MonacoEditor from 'vue-monaco-editor'
-    import { monacoEditorOption } from '@/utils/constants';
-    import * as monaco from 'monaco-editor'
+    import Editor from './editor'
 
 
     export default {
         name: "shell",
         components: {
-            MonacoEditor
+            Editor
         },
         props: ['jobInfo'],
 
         data() {
             return {
-                editor: null,
-
                 value: '#!/bin/bash\n',
-                monacoEditorOption,
             }
         },
         mounted() {
-            monacoEditorOption.language = "shell"
-            this.initEditor()
             const data = JSON.parse(this.jobInfo.data)
             if (data) {
                 this.value = data.value
@@ -35,17 +33,11 @@
             }
         },
         methods: {
-            initEditor() {
-                this.editor = monaco.editor.create(document.getElementById('container'), monacoEditorOption)
-            },
-            onSubmit() {
-                console.log('submit!');
-            },
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(editor) {
-                this.value = editor.getValue()
+            onCodeChange(value, event) {
+                this.value = value
             },
         }
     }
