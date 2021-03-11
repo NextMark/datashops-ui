@@ -89,6 +89,15 @@ export const getJobGraphById = (params) => {
     })
 }
 
+export const getJobGraphByMaskId = (params) => {
+    return service({
+        url: "/v1/job/getJobGraphByMaskId",
+        method: 'get',
+        params
+    })
+}
+
+
 export const modifyPosition = (params) => {
     return service({
         url: "/v1/job/modifyPosition",
@@ -134,5 +143,13 @@ export const getJobInstanceList = (params) => {
         url: "/v1/job/instance/getJobInstanceList",
         method: 'post',
         data: params
+    })
+}
+
+export const getJobGraph = (params) => {
+    return service({
+        url: "/v1/job/getJobGraph",
+        method: 'get',
+        params
     })
 }

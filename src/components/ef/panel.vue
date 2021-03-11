@@ -88,7 +88,7 @@
     import lodash from 'lodash'
     import { mapGetters } from "vuex";
     import {
-        getJobGraphById,
+        getJobGraphByMaskId,
         modifyPosition,
         addNewJobToGraph,
         deleteJob
@@ -173,7 +173,7 @@
             this.jsPlumb = jsPlumb.getInstance()
             this.$nextTick(() => {
                 // 默认加载流程A的数据、在这里可以根据具体的业务返回符合流程数据格式的数据即可
-                this.getJobGraphById()
+                this.getJobGraphByMaskId()
             })
         },
         computed: {
@@ -587,9 +587,9 @@
                     this.$refs.graphForm.graphInit(this.jobGraph, graphId)
                 });
             },
-            async getJobGraphById() {
+            async getJobGraphByMaskId() {
                 if (this.queryId) {
-                    const res = await getJobGraphById({id: this.queryId})
+                    const res = await getJobGraphByMaskId({id: this.queryId})
                     if (res.code === 1000) {
                         this.jobGraph = res.data
                         this.dataReload(this.jobGraph)

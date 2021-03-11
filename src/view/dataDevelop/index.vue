@@ -175,17 +175,17 @@
         </div>
         <el-drawer
                 title="调度配置"
-                :visible.sync="jobSetting"
+                :visible.sync="jobSettingDrawer"
                 size="60%"
                 direction="rtl">
             <job-setting ref="jobSettingForm" :job-info="jobInfo"></job-setting>
         </el-drawer>
         <el-drawer
                 title="依赖图"
-                :visible.sync="jobGraph"
+                :visible.sync="jobGraphDrawer"
                 size="60%"
                 direction="rtl">
-            <flow-panel ></flow-panel>
+            <graph :jobGraph="jobGraph"></graph>
         </el-drawer>
     </div>
 </template>
@@ -205,13 +205,14 @@
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { mapGetters } from "vuex";
-    import FlowPanel from '@/components/ef/panel'
+    import Graph from '@/components/graph/graph'
 
     import { getJobName, getJobIcon } from '@/utils/job';
     import {
         getJobByMaskId,
         addNewJob,
-        modifyJob
+        modifyJob,
+        getJobGraph
     } from "@/api/job";
 
 
@@ -229,7 +230,7 @@
             jobSetting,
             kafka2hdfs,
             kafka2hive,
-            FlowPanel
+            Graph
         },
         filters: {
             getJobIcon
@@ -274,15 +275,16 @@
                 tabIndex: 2,
                 addJobDialog: false,
                 jobNameVisible: false,
-                jobSetting: false,
-                jobGraph: false,
+                jobSettingDrawer: false,
+                jobGraphDrawer: false,
                 jobInfo: {},
                 dialogTitle: '新建作业名称',
                 newJob: {
                     name: '',
                     type: 0
                 },
-                jobList: []
+                jobList: [],
+                jobGraph: {}
             }
         },
         methods: {
@@ -291,10 +293,10 @@
                 this.jobInfo = this.jobList[index]
             },
             settingClick() {
-                this.jobSetting = true
+                this.jobSettingDrawer = true
             },
-            graphClick() {
-                this.jobGraph = true
+            async graphClick() {
+                this.jobGraphDrawer = true
             },
             addTab() {
                 this.addJobDialog = true
@@ -361,6 +363,9 @@
                     });
                     this.jobInfo = res.data
                     this.jobList.push(this.jobInfo)
+
+                    const dep = await getJobGraph({id: this.jobInfo.id})
+                    this.jobGraph = dep.data
                 } else {
                     const index = this.jobList.findIndex(j => j.id.toString() === job.id.toString())
                     this.jobInfo = this.jobList[index]
@@ -372,7 +377,6 @@
             },
             async save() {
                 if (!this.$refs.jobSettingForm) {
-                    console.log("aaaaa")
                     const jobDto = this.jobInfo
 
                     if (jobDto.type === 0 || jobDto.type === 1) {

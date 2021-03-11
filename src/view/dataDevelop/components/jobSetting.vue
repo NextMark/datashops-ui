@@ -347,7 +347,7 @@
 </template>
 
 <script>
-    import {addDependency, getJobDependency, getJobList, modifyJob, modifySchedulerStatus} from "@/api/job";
+    import {addDependency, getJobDependency, getJobList, modifySchedulerStatus} from "@/api/job";
     import {getQueueList} from "@/api/resource";
     import infoList from "@/mixins/infoList";
     import {date, getJobIcon, hours, options, schedulingPeriod, week} from '@/utils/job';

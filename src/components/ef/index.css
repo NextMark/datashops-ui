@@ -78,7 +78,6 @@
     cursor: move;
     background-color: #F0F7FF;
     /*box-shadow: #1879FF 0px 0px 12px 0px;*/
-    background-color: #F0F7FF;
     border: 1px dashed #1879FF;
 }
 
@@ -86,7 +85,6 @@
 .ef-node-active {
     background-color: #F0F7FF;
     /*box-shadow: #1879FF 0px 0px 12px 0px;*/
-    background-color: #F0F7FF;
     border: 1px solid #1879FF;
 }
 
