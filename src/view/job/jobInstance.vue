@@ -103,6 +103,7 @@
 <script>
     import {
         getJobInstanceList,
+        deleteJobGraph
     } from "@/api/job"; //  此处请自行替换地址
     import infoList from "@/mixins/infoList";
 

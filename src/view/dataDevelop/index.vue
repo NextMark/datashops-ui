@@ -205,7 +205,7 @@
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { mapGetters } from "vuex";
-    import Graph from '@/components/graph/graph'
+    import graph from '@/view/dataDevelop/components/graph'
 
     import { getJobName, getJobIcon } from '@/utils/job';
     import {
@@ -230,7 +230,7 @@
             jobSetting,
             kafka2hdfs,
             kafka2hive,
-            Graph
+            graph
         },
         filters: {
             getJobIcon
@@ -284,13 +284,15 @@
                     type: 0
                 },
                 jobList: [],
-                jobGraph: {}
+                jobGraph: {},
+                jobGraphList: []
             }
         },
         methods: {
             jobTabClick(tab) {
                 const index = this.jobList.findIndex(job => job.id.toString() === tab.name)
                 this.jobInfo = this.jobList[index]
+                this.jobGraph = this.jobGraphList[index]
             },
             settingClick() {
                 this.jobSettingDrawer = true
@@ -366,6 +368,7 @@
 
                     const dep = await getJobGraph({id: this.jobInfo.id})
                     this.jobGraph = dep.data
+                    this.jobGraphList.push(this.jobGraph)
                 } else {
                     const index = this.jobList.findIndex(j => j.id.toString() === job.id.toString())
                     this.jobInfo = this.jobList[index]
@@ -393,7 +396,7 @@
                         jobDto.data = JSON.stringify(jobDto.data)
                     }
 
-                    const res = await modifyJob(jobDto);
+                    await modifyJob(jobDto);
                     return
                 }
                 const jobDto = this.$refs.jobSettingForm.jobInfoCopy
