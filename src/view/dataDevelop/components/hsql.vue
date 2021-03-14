@@ -62,7 +62,9 @@
         },
         methods: {
             formatSQL() {
-                this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
+                this.editor.getAction('editor.action.formatDocument').run();
+
+                //this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
             },
             onMounted(editor) {
                 this.editor = editor;
@@ -70,21 +72,6 @@
             onCodeChange(value, event) {
                 this.value = value
             },
-            // async save() {
-            //     if (this.jobInfo.maskId) {
-            //         await saveHiveSql({maskId: this.jobInfo.maskId, sql: this.editor.getValue()})
-            //         this.$message.success({
-            //             message: '作业保存成功',
-            //             center: true
-            //         });
-            //     } else {
-            //         this.$message.error({
-            //             message: '请设置作业基本信息',
-            //             center: true
-            //         });
-            //         //this.$bus.emit("add-hsql-nav", this.name)
-            //     }
-            // }
         }
     }
 </script>

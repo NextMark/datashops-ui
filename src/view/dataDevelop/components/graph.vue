@@ -1,27 +1,24 @@
 <template>
     <div>
-        <svg id="svg" width="1000" height="800">
-            <g />
-            <rect />
-        </svg>
+        <div id="graph"></div>
     </div>
 </template>
 
 <script>
     import * as d3 from "d3";
     import dagreD3 from "dagre-d3";
-    import tippy from "tippy.js";
-    import "tippy.js/dist/tippy.css";
 
     export default {
-        name: 'Graph',
+        name: 'graph',
         props: ['jobGraph'],
         watch: {
             jobGraph: {
                 deep: true,
                 handler(val) {
                     this.graph = val
-                    this.render();
+                    this.$nextTick(() => {
+                        this.render();
+                    });
                 },
             }
         },
@@ -33,7 +30,7 @@
         },
         methods: {
             render() {
-                //d3.selectAll("#graph > *").remove();
+                d3.selectAll("#graph > *").remove();
                 var g = new dagreD3.graphlib.Graph().setGraph({});
                 this.graph.nodes.forEach(function (node) {
                     node.rx = node.ry = 5;
@@ -48,15 +45,12 @@
                     g.setEdge(edge.from, edge.to, {label: edge.label});
                 });
 
-                var svg = d3.select("#svg"),
-                    inner = svg.select("g");
-
-                // var svg = d3
-                //         .select(this.$el.querySelector("#graph"))
-                //         .append("svg")
-                //         .attr("width", document.body.clientWidth - 850)
-                //         .attr("height", 500),
-                //     inner = svg.append("g");
+                var svg = d3
+                        .select(this.$el.querySelector("#graph"))
+                        .append("svg")
+                        .attr("width", document.body.clientWidth - 850)
+                        .attr("height", 500),
+                    inner = svg.append("g");
                 // Set up zoom support  d3.zoomTransform(svg.node())
                 var zoom = d3.zoom().on("zoom", function () {
                     inner.attr("transform", d3.event.transform);
@@ -65,20 +59,6 @@
 
                 var render = new dagreD3.render();
                 render(inner, g);
-
-                inner
-                    .selectAll("g.node")
-                    .attr("title", function (v) {
-                        return "hello world";
-                    })
-                    .each(function (v) {
-                        tippy(this, {
-                            content: v,
-                            interactive: true,
-                            allowHTML: true,
-                            appendTo: document.body
-                        });
-                    });
 
                 var initialScale = 0.85;
                 svg.call(
@@ -91,13 +71,16 @@
                         .scale(initialScale)
                 );
 
-                svg.attr("height", g.graph().height * 2 + 40);
+                //svg.attr("height", g.graph().height * 2 + 40);
             }
         },
-        mounted() {
+        created() {
+            console.log('ss')
             this.graph = this.jobGraph
-            console.log(this.graph)
-            this.render();
+            this.$nextTick(() => {
+                this.render()
+            });
+            //this.render();
         }
     }
 </script>

@@ -5,6 +5,7 @@ export const user = {
     state: {
         userInfo: {
             uuid: "",
+            name: "",
             nickName: "",
             headerImg: "",
             authority: "",
@@ -21,7 +22,6 @@ export const user = {
             state.token = token
         },
         LoginOut(state) {
-            console.log(state)
             state.userInfo = {}
             state.token = ""
             router.push({ name: 'login', replace: true })

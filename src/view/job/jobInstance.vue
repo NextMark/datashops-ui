@@ -27,19 +27,16 @@
                              width="40"></el-table-column>
 
             <el-table-column label="ID" prop="job.maskId" width="170"></el-table-column>
-
-            <el-table-column label="名称" width="180">
-                <template slot-scope="scope">
-                        {{scope.row.job.name}}
-                </template>
-            </el-table-column>
-
-            <el-table-column label="执行人" prop="operator" width="120"></el-table-column>
             <el-table-column label="类型" width="60">
                 <template slot-scope="scope">
                     <svg class="icon-1-5" aria-hidden="true">
                         <use :xlink:href="scope.row.job.type |getJobIcon"></use>
                     </svg>
+                </template>
+            </el-table-column>
+            <el-table-column label="名称" width="180">
+                <template slot-scope="scope">
+                    {{scope.row.job.name}}
                 </template>
             </el-table-column>
             <el-table-column label="调度周期" width="80">
@@ -48,6 +45,8 @@
             <el-table-column label="基准时间" width="160">
                 <template slot-scope="scope">{{scope.row.bizTime}}</template>
             </el-table-column>
+            <el-table-column label="执行人" prop="operator" width="120"></el-table-column>
+
             <el-table-column label="状态" width="100">
                 <template slot-scope="scope">
                     <el-tag

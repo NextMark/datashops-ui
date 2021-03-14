@@ -362,9 +362,7 @@
                 deep:true,
                 handler(val) {
                     this.jobInfoCopy = val
-                    if (!this.jobInfoCopy.schedulingPeriod) {
-                        this.jobInfoCopy.schedulingPeriod = 2
-                    }
+                    this.init(this.jobInfoCopy)
                 },
             }
         },
@@ -426,6 +424,13 @@
             }
         },
         methods: {
+            async init(jobInfo) {
+                this.formatJob(jobInfo);
+                const res = await getJobDependency({id: this.jobInfo.id});
+                this.dependency = res.data;
+                const queue = await getQueueList({pageSize: 20, pageNum: 1});
+                this.queue = queue.data.content
+            },
             handleAddDependency() {
                 this.addDependencyDialog = true;
                 this.getTableData()
@@ -479,17 +484,17 @@
                     return
                 }
                 let timeConfig = JSON.parse(this.jobInfoCopy.timeConfig);
-
-                if (timeConfig.weeks) {
-                    this.timeConfig.weeks = timeConfig.weeks.split(',')
-                }
-                if (timeConfig.days) {
+                if (this.jobInfoCopy.schedulingPeriod === 0) {
+                    this.hourMinute = timeConfig.hour + ':' + timeConfig.minute
                     this.timeConfig.days = timeConfig.days.split(',');
                 }
-                if (timeConfig.minuteBegin) {
-                    this.timeConfig.minuteBegin = timeConfig.minuteBegin;
-                    this.timeConfig.period = timeConfig.period;
-                    this.timeConfig.minuteEnd = timeConfig.minuteEnd
+                if (this.jobInfoCopy.schedulingPeriod === 1) {
+                    this.hourMinute = timeConfig.hour + ':' + timeConfig.minute
+                    this.timeConfig.weeks = timeConfig.weeks.split(',')
+                }
+                if (this.jobInfoCopy.schedulingPeriod === 2) {
+                    this.hourMinute = timeConfig.hour + ':' + timeConfig.minute
+                    this.timeConfig.days = timeConfig.days.split(',');
                 }
                 if (this.jobInfoCopy.schedulingPeriod === 3) {
                     this.timeConfig.type = timeConfig.type;
@@ -499,18 +504,16 @@
                     this.timeConfig.hourMinute = timeConfig.hourMinute;
                     this.timeConfig.hourEnd = timeConfig.hourEnd
                 }
-                if (!this.jobInfoCopy.schedulingPeriod) {
-                    this.jobInfoCopy.schedulingPeriod = 2
+                if (this.jobInfoCopy.schedulingPeriod === 4) {
+                    this.timeConfig.minuteBegin = timeConfig.minuteBegin;
+                    this.timeConfig.period = timeConfig.period;
+                    this.timeConfig.minuteEnd = timeConfig.minuteEnd
                 }
             }
         },
 
         async mounted() {
-            this.formatJob(this.jobInfo);
-            const res = await getJobDependency({id: this.jobInfo.id});
-            this.dependency = res.data;
-            const queue = await getQueueList({pageSize: 20, pageNum: 1});
-            this.queue = queue.data.content
+            this.init(this.jobInfo)
         }
     }
 </script>

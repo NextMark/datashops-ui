@@ -1,7 +1,7 @@
 <template>
     <div class="parent">
         <div class="left">
-            <left-nav @add-new-job="addTab" @click-job="clickJob"></left-nav>
+            <left-nav ref="leftNav" @add-new-job="addTab" @click-job="clickJob"></left-nav>
         </div>
         <div class="right outerContainer">
             <div class="innerContent" v-show="openedTabs.length === 0">
@@ -166,7 +166,7 @@
                             </el-input>
                         </el-col>
                         <el-col :span="4" :offset="1">
-                            <el-button type="primary" @click="setJobName">新建</el-button>
+                            <el-button type="primary" @click="addJob">新建</el-button>
                         </el-col>
                     </el-row>
 
@@ -309,7 +309,7 @@
                 this.jobNameVisible = true
                 this.newJob.type = value
             },
-            async setJobName() {
+            async addJob() {
                 this.openedTabs.push({
                     title: this.newJob.name,
                     name: this.newJob.name,
@@ -327,6 +327,7 @@
                 }
                 const res = await addNewJob(params)
                 this.jobInfo = res.data
+                this.$refs.leftNav.refresh()
             },
             removeTab(targetName) {
                 let tabs = this.openedTabs;
@@ -397,6 +398,11 @@
                     }
 
                     await modifyJob(jobDto);
+                    this.$message({
+                        type: "success",
+                        message: "作业修改成功",
+                        center: true
+                    });
                     return
                 }
                 const jobDto = this.$refs.jobSettingForm.jobInfoCopy
@@ -450,6 +456,7 @@
                 const res = await modifyJob(jobDto);
                 if (res.code === 1000) {
                     this.$refs.jobSettingForm.formatJob(res.data)
+                    this.$refs.leftNav.refresh()
                     this.$message({
                         type: "success",
                         message: "作业修改成功",
@@ -512,7 +519,9 @@
     }
 
     .right-setting {
-        width: 25px;
+        text-align: center;
+        letter-spacing: 10px;
+        width: 35px;
         margin-bottom: 25px;
         margin-left: 12px;
         cursor: pointer

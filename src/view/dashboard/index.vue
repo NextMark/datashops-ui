@@ -13,7 +13,7 @@
                 </el-col>
                 <el-col :xs="20" :lg="12" :md="12">
                   <div class="text">
-                    <h4>早安，管理员， 请开始您一天的工作吧！</h4>
+                    <h4>请开始您一天的工作吧！</h4>
                     <p class="tips-text">
                       <i class="el-icon-sunny el-icon"></i>
                       <span>今日晴，0℃ - 10℃，天气寒冷，注意添加衣物。</span>
@@ -30,7 +30,7 @@
               <el-col :span="8"
                 ><div class="car-item">
                   <span class="flow"><i class="el-icon-s-grid"></i></span>
-                  <span>今日流量 </span>
+                  <span>今日执行任务 </span>
                   <b>13260</b>
                 </div></el-col
               >
@@ -39,8 +39,8 @@
                   <span class="user-number">
                     <i class="el-icon-s-custom"></i>
                   </span>
-                  <span>总用户 </span>
-                  <b>48286</b>
+                  <span>成功 </span>
+                  <b>8286</b>
                 </div></el-col
               >
               <el-col :span="8"
@@ -48,8 +48,8 @@
                   <span class="feedback">
                     <i class="el-icon-star-on"></i>
                   </span>
-                  <span>好评率 </span>
-                  <b>98%</b>
+                  <span>失败 </span>
+                  <b>98</b>
                 </div></el-col
               >
             </el-row>
