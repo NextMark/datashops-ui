@@ -63,7 +63,7 @@
                     :visible.sync="addJobDialog"
                     center>
                 <el-row >
-                    <el-col :span="4" :offset="5">
+                    <el-col :span="4" :offset="4">
                         <el-row>
                             <span>数据开发</span>
                         </el-row>
@@ -111,46 +111,46 @@
                             <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>
                         </el-row>
                     </el-col>
-                    <el-col :span="4" :offset="6">
+                    <el-col :span="4" :offset="2">
                         <el-row>
                             <span>数据集成</span>
                         </el-row>
                         <el-divider></el-divider>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-kafka"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-hive"></use>
-                            </svg>
-                        </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-kafka"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(2, 8)">Kafka2HDFS</el-button>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-hdfs"></use>
-                            </svg>
-                        </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-hive"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 9)">Hive2MySQL</el-button>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-mysql"></use>
-                            </svg>
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-mysql"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 10)">MySQL2Hive</el-button>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="4" :offset="2">
+                        <el-row>
+                            <span>流式作业</span>
+                        </el-row>
+                        <el-divider></el-divider>
+                        <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-hive"></use>
                             </svg>
+                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-hdfs"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(2, 8)">Kafka2HDFS</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-flink-sql"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(2, 5)">Flink SQL</el-button>
                         </el-row>
                     </el-col>
                 </el-row>
