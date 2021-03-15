@@ -34,6 +34,13 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
+                    <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3" class="item" effect="dark" content="运行">
+                        <el-button type="text" style="font-size:15px">
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-bofang"></use>
+                            </svg>
+                        </el-button>
+                    </el-tooltip>
                     <el-tooltip v-if="jobInfo.type === 0" class="item" effect="dark" content="格式化" placement="top-start" hide-after="500">-->
                         <el-button type="text" style="font-size:15px" @click="format">
                             <svg class="icon-1-5" aria-hidden="true">
@@ -47,7 +54,7 @@
             </div>
             <template>
                 <div class="tabBox" v-show="openedTabs.length > 0">
-                    <div class="right-setting">
+                    <div class="right-setting" v-if="jobInfo.type !== 2 && jobInfo.type !== 3">
                         <span @click="settingClick">调度设置</span>
                     </div>
                     <div class="right-setting">
@@ -383,17 +390,24 @@
                 if (!this.$refs.jobSettingForm) {
                     const jobDto = this.jobInfo
 
+                    // hive shell
                     if (jobDto.type === 0 || jobDto.type === 1) {
                         jobDto.data = {
                             value: this.$refs.jobForm.value
                         }
                         jobDto.data = JSON.stringify(jobDto.data)
                     }
+                    // python
                     if (jobDto.type === 11) {
                         jobDto.data = {
                             version: this.$refs.jobForm.version,
                             value: this.$refs.jobForm.value
                         }
+                        jobDto.data = JSON.stringify(jobDto.data)
+                    }
+                    // spark flink
+                    if (jobDto.type === 2 || jobDto.type === 3) {
+                        jobDto.data = this.$refs.jobForm.form
                         jobDto.data = JSON.stringify(jobDto.data)
                     }
 
@@ -431,9 +445,9 @@
                 if (jobDto.schedulingPeriod === 3) {
                     timeParams.type = timeConfigDto.type
                     timeParams.hours = timeConfigDto.hours.join()
-                    timeParams.hourBegin = timeConfigDto.hourBegin
-                    timeParams.hourMinute = timeConfigDto.hourMinute
-                    timeParams.hourPeriod = timeConfigDto.hourPeriod
+                    timeParams.hourBegin = timeConfigDto.hourBegin.split(":")[0];
+                    timeParams.hourPeriod = timeConfigDto.hourPeriod;
+                    timeParams.hourMinute = timeConfigDto.hourBegin.split(":")[1];
                     timeParams.hourEnd = timeConfigDto.hourEnd
                 }
                 if (jobDto.schedulingPeriod === 4) {

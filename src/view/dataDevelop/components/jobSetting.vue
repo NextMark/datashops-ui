@@ -18,8 +18,8 @@
                     <el-form-item label="创建人">
                         <span>{{jobInfoCopy.owner}}</span>
                     </el-form-item>
-                    <el-form-item label="资源组">
-                        <el-select v-model="jobInfoCopy.queueId" placeholder="请选择资源组">
+                    <el-form-item label="队列">
+                        <el-select v-model="jobInfoCopy.queueId" placeholder="请选择队列">
                             <el-option
                                     v-for="item in queue"
                                     :key="item.id"
@@ -118,7 +118,14 @@
                                         placeholder="选择时间">
                                 </el-time-picker>
                                 时间间隔
-                                <el-input v-model="timeConfig.hourPeriod" style="width: 20%"></el-input>
+                                <el-select v-model="timeConfig.hourPeriod" style="width:20%">
+                                    <el-option
+                                            v-for="item in hours"
+                                            :key="item.value"
+                                            :label="item.name + '小时'"
+                                            :value="item.value">
+                                    </el-option>
+                                </el-select>
                                 结束时间
                                 <el-time-picker
                                         v-model="timeConfig.hourEnd"
@@ -139,7 +146,7 @@
                                     <el-option
                                             v-for="item in hours"
                                             :key="item.value"
-                                            :label="item.name"
+                                            :label="item.name + '时'"
                                             :value="item.value">
                                     </el-option>
                                 </el-select>
@@ -274,9 +281,6 @@
 <!--                                layout="total, sizes, prev, pager, next, jumper"-->
 <!--                        ></el-pagination>-->
                     </el-form-item>
-<!--                    <el-form-item>-->
-<!--                        <el-button type="primary" icon="el-icon-check" @click="modifyJob">保存</el-button>-->
-<!--                    </el-form-item>-->
                 </el-form>
             </div>
         </div>
@@ -361,8 +365,7 @@
             jobInfo: {
                 deep:true,
                 handler(val) {
-                    this.jobInfoCopy = val
-                    this.init(this.jobInfoCopy)
+                    this.init(val)
                 },
             }
         },
@@ -384,17 +387,17 @@
                     weeks: '',
 
                     // minute
-                    minuteBegin: '',
+                    minuteBegin: moment().subtract(0, 'hours').format('HH'),
                     period: '5',
-                    minuteEnd: '',
+                    minuteEnd: moment().subtract(-1, 'hours').format('HH'),
 
                     // hour
                     type: '1',
                     hours: '',
-                    hourBegin: '',
+                    hourBegin: moment().subtract(0, 'days').format('HH:mm'),
                     hourPeriod: '1',
                     hourMinute: '',
-                    hourEnd: ''
+                    hourEnd: moment().subtract(-1, 'hours').format('HH:mm')
                 },
                 hours,
                 hourMinute: moment().subtract(0, 'days').format('HH:mm'),
@@ -454,10 +457,6 @@
                 });
                 this.addDependencyDialog = false
             },
-            graphInit(data, id) {
-                this.type = 'graph';
-                this.data = data
-            },
             async handleSchedulerStatus() {
                 const res = await modifySchedulerStatus({maskId: this.jobInfoCopy.maskId, status: this.jobInfoCopy.schedulerStatus});
                 if (res.code === 1000) {
@@ -468,7 +467,7 @@
                 }
             },
             formatJob(jobInfo) {
-                this.jobInfoCopy = jobInfo;
+                this.jobInfoCopy = JSON.parse(JSON.stringify(jobInfo));
                 if (this.jobInfoCopy.validStartDate) {
                     this.validRange = [
                         this.jobInfoCopy.validStartDate,
@@ -494,13 +493,14 @@
                 }
                 if (this.jobInfoCopy.schedulingPeriod === 2) {
                     this.hourMinute = timeConfig.hour + ':' + timeConfig.minute
-                    this.timeConfig.days = timeConfig.days.split(',');
                 }
                 if (this.jobInfoCopy.schedulingPeriod === 3) {
                     this.timeConfig.type = timeConfig.type;
-                    this.timeConfig.hours = timeConfig.hours.split(',');
-                    this.timeConfig.hourBegin = timeConfig.hourBegin;
-                    this.timeConfig.hourPeriod = timeConfig.hourPeriod;
+                    if (this.timeConfig.type === 2) {
+                        this.timeConfig.hours = timeConfig.hours.split(',');
+                    }
+                    this.timeConfig.hourBegin = timeConfig.hourBegin + ':' + timeConfig.hourMinute;
+                    this.timeConfig.period = timeConfig.period;
                     this.timeConfig.hourMinute = timeConfig.hourMinute;
                     this.timeConfig.hourEnd = timeConfig.hourEnd
                 }
