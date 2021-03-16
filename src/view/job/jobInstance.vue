@@ -26,7 +26,11 @@
                              type="index" fixed="left"
                              width="40"></el-table-column>
 
-            <el-table-column label="ID" prop="job.maskId" width="170"></el-table-column>
+            <el-table-column label="ID" width="170">
+                <template slot-scope="scope">
+                    {{scope.row.instanceId}}
+                </template>
+            </el-table-column>
             <el-table-column label="类型" width="60">
                 <template slot-scope="scope">
                     <svg class="icon-1-5" aria-hidden="true">
@@ -70,12 +74,18 @@
             </el-table-column>
             <el-table-column label="按钮组" min-width="240">
                 <template slot-scope="scope">
-                    <el-button
+                    <el-button v-if="scope.row.state >= 5"
                             class="table-button"
-                            @click="reRun(scope.row)"
+                            @click="reRun(scope.row.id)"
                             size="small"
                             type="primary"
                     >重跑</el-button>
+                    <el-button v-if="scope.row.state < 5"
+                               class="table-button"
+                               @click="cancel(scope.row.id)"
+                               size="small"
+                               type="danger"
+                    >终止</el-button>
                     <el-button
                             class="table-button"
                             @click="viewLog(scope.row)"
@@ -102,11 +112,16 @@
 <script>
     import {
         getJobInstanceList,
-        deleteJobGraph
+        deleteJobGraph,
+        reRunJob,
+        cancelJob
     } from "@/api/job"; //  此处请自行替换地址
     import infoList from "@/mixins/infoList";
 
     import { formatSchedulingPeriod, getJobIcon } from '@/utils/job';
+
+    import { mapGetters } from "vuex";
+
     var moment = require('moment');
 
     export default {
@@ -120,6 +135,9 @@
                 deleteVisible: false,
                 multipleSelection: []
             };
+        },
+        computed: {
+            ...mapGetters("user", ["userInfo"])
         },
         filters: {
             formatSchedulingPeriod,
@@ -219,10 +237,35 @@
             openDialog() {
                 this.dialogFormVisible = true;
             },
-            reRun() {
-                console.log("rerun")
+            async reRun(id) {
+                const res = await reRunJob({id: id, operator: this.userInfo.name});
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "重跑任务提交",
+                        center: true
+                    });
+                }
+                await this.getTableData();
             },
-            viewLog() {}
+            async cancel(id) {
+                const res = await cancelJob({id: id, operator: this.userInfo.name});
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "作业取消",
+                        center: true
+                    });
+                }
+                await this.getTableData();
+            },
+            viewLog() {
+                this.$message({
+                    type: "success",
+                    message: "敬请期待",
+                    center: true
+                });
+            }
         },
         async created() {
             await this.getTableData();

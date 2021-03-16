@@ -2,7 +2,7 @@
     <div>
         <el-row>
             <el-col :span="10">
-                <el-form ref="form" :model="form" :rules="rules" label-width="120px">
+                <el-form ref="form" :model="form" :rules="kafka2hdfsRules" label-width="120px">
                     <el-form-item label="类型:">
                         <span>Kafka</span>
                     </el-form-item>
@@ -21,7 +21,7 @@
                 </el-form>
             </el-col>
             <el-col :span="10" :offset="2">
-                <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+                <el-form ref="form" :model="form" :rules="kafka2hdfsRules" label-width="100px">
                     <el-form-item label="类型:">
                         <span>HDFS</span>
                     </el-form-item>
@@ -36,6 +36,8 @@
 </template>
 
 <script>
+    import { kafka2hdfsRules } from '@/utils/constants';
+
     export default {
         name: "kafka2hdfs",
         data() {
@@ -46,21 +48,7 @@
                     position: '',
                     hdfsPath: '',
                 },
-                rules: {
-                    address: [
-                        { required: true, message: '请输入kafka地址', trigger: 'blur' },
-                        { min: 8, max: 200, message: '长度在 8 到 200 个字符', trigger: 'blur' }
-                    ],
-                    topic: [
-                        { required: true, message: '请填写topic名称', trigger: 'change' }
-                    ],
-                    position: [
-                        { required: true, message: '请选择消费位置', trigger: 'change' }
-                    ],
-                    hdfsPath: [
-                        { required: true, message: '请填写hdfs路径', trigger: 'blur' }
-                    ]
-                }
+                kafka2hdfsRules
             }
         },
         methods: {

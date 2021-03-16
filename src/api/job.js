@@ -16,14 +16,6 @@ export const modifyJob = (data) => {
     })
 }
 
-export const saveHiveSql = (data) => {
-    return service({
-        url: "/v1/job/saveHiveSql",
-        method: 'post',
-        data
-    })
-}
-
 export const addNewJob = (data) => {
     return service({
         url: "/v1/job/addNewJob",
@@ -149,6 +141,30 @@ export const getJobInstanceList = (params) => {
 export const getJobGraph = (params) => {
     return service({
         url: "/v1/job/getJobGraph",
+        method: 'get',
+        params
+    })
+}
+
+export const runJob = (params) => {
+    return service({
+        url: "/v1/job/runJob",
+        method: 'get',
+        params
+    })
+}
+
+export const reRunJob = (params) => {
+    return service({
+        url: "/v1/job/reRunJob",
+        method: 'get',
+        params
+    })
+}
+
+export const cancelJob = (params) => {
+    return service({
+        url: "/v1/job/cancelJob",
         method: 'get',
         params
     })

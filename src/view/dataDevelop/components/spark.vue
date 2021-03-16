@@ -1,20 +1,20 @@
 <template>
     <div>
-        <el-form ref="form" :model="form" label-width="140px">
+        <el-form ref="form" :model="form" label-width="140px" :rules="sparkRules">
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="名称">
+                    <el-form-item label="名称" prop="name">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-form-item label="队列">
-                        <el-select v-model="form.queueId" placeholder="请选择队列">
+                    <el-form-item label="队列" prop="queue">
+                        <el-select v-model="form.queue" placeholder="请选择队列">
                             <el-option
                                     v-for="item in queue"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.id">
+                                    :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -23,21 +23,24 @@
 
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="Driver内存">
+                    <el-form-item label="Driver内存" prop="driverMemory">
                         <el-input v-model="form.driverMemory"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-form-item label="Executor内存">
+                    <el-form-item label="Executor内存" prop="executorMemory">
                         <el-input v-model="form.executorMemory"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-form-item label="Executor核数">
-                <el-input v-model="form.cores"></el-input>
+            <el-form-item label="Executor核数" prop="executorCore">
+                <el-input v-model="form.executorCore"></el-input>
             </el-form-item>
-            <el-form-item label="类名">
+            <el-form-item label="类名" prop="className">
                 <el-input v-model="form.className"></el-input>
+            </el-form-item>
+            <el-form-item label="扩展参数">
+                <el-input type="textarea" v-model="form.extension"></el-input>
             </el-form-item>
             <el-form-item label="jar">
                 <el-upload
@@ -60,19 +63,23 @@
 
 <script>
     import {getQueueList} from "@/api/resource";
+    import { sparkRules } from '@/utils/constants';
+
 
     export default {
         name: "spark",
         props: ['jobInfo'],
         data() {
             return {
+                sparkRules,
                 form: {
                     name: 'spark-submit',
-                    cores: 1,
                     driverMemory: '2048mb',
                     executorMemory: '1024mb',
                     className: '',
-                    queueId: 3
+                    queue: '',
+                    executorCore: 1,
+                    extension: ''
                 },
                 fileList: [
                     {

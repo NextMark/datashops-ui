@@ -35,7 +35,7 @@
                         </el-button>
                     </el-tooltip>
                     <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3" class="item" effect="dark" content="运行">
-                        <el-button type="text" style="font-size:15px">
+                        <el-button type="text" style="font-size:15px" @click="runJob(jobInfo.id)">
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-bofang"></use>
                             </svg>
@@ -219,7 +219,8 @@
         getJobByMaskId,
         addNewJob,
         modifyJob,
-        getJobGraph
+        getJobGraph,
+        runJob
     } from "@/api/job";
 
 
@@ -386,97 +387,112 @@
             format() {
                 this.$refs.jobForm.formatSQL()
             },
-            async save() {
-                if (!this.$refs.jobSettingForm) {
-                    const jobDto = this.jobInfo
-
-                    // hive shell
-                    if (jobDto.type === 0 || jobDto.type === 1) {
-                        jobDto.data = {
-                            value: this.$refs.jobForm.value
-                        }
-                        jobDto.data = JSON.stringify(jobDto.data)
-                    }
-                    // python
-                    if (jobDto.type === 11) {
-                        jobDto.data = {
-                            version: this.$refs.jobForm.version,
-                            value: this.$refs.jobForm.value
-                        }
-                        jobDto.data = JSON.stringify(jobDto.data)
-                    }
-                    // spark flink
-                    if (jobDto.type === 2 || jobDto.type === 3) {
-                        jobDto.data = this.$refs.jobForm.form
-                        jobDto.data = JSON.stringify(jobDto.data)
-                    }
-
-                    await modifyJob(jobDto);
-                    this.$message({
-                        type: "success",
-                        message: "作业修改成功",
-                        center: true
-                    });
-                    return
-                }
-                const jobDto = this.$refs.jobSettingForm.jobInfoCopy
-                let timeConfigDto = this.$refs.jobSettingForm.timeConfig
-                const hourMinute = this.$refs.jobSettingForm.hourMinute
-                const validRange = this.$refs.jobSettingForm.validRange
-
-                let timeParams = {}
-                if (jobDto.schedulingPeriod === 0) {
-                    const timeArrs = hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
-                    timeParams.minute = timeArrs[1]
-                    timeParams.days = timeConfigDto.days.join()
-                }
-                if (jobDto.schedulingPeriod === 1) {
-                    const timeArrs = hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
-                    timeParams.minute = timeArrs[1]
-                    timeParams.weeks = timeConfigDto.weeks.join()
-                }
-                if (jobDto.schedulingPeriod === 2) {
-                    const timeArrs = hourMinute.split(":")
-                    timeParams.hour = timeArrs[0]
-                    timeParams.minute = timeArrs[1]
-                }
-                if (jobDto.schedulingPeriod === 3) {
-                    timeParams.type = timeConfigDto.type
-                    timeParams.hours = timeConfigDto.hours.join()
-                    timeParams.hourBegin = timeConfigDto.hourBegin.split(":")[0];
-                    timeParams.hourPeriod = timeConfigDto.hourPeriod;
-                    timeParams.hourMinute = timeConfigDto.hourBegin.split(":")[1];
-                    timeParams.hourEnd = timeConfigDto.hourEnd
-                }
-                if (jobDto.schedulingPeriod === 4) {
-                    timeParams.minuteBegin = timeConfigDto.minuteBegin
-                    timeParams.minuteEnd = timeConfigDto.minuteEnd
-                    timeParams.period = timeConfigDto.period
-                }
-
-                jobDto.timeConfig = JSON.stringify(timeParams)
-                jobDto.validStartDate = validRange[0]
-                jobDto.validEndDate = validRange[1]
-                //
-                if (jobDto.type === 11) {
-                    jobDto.data = {
-                        version: this.$refs.jobForm.version,
-                        value: this.$refs.jobForm.value
-                    }
-                    jobDto.data = JSON.stringify(jobDto.data)
-                }
-                const res = await modifyJob(jobDto);
+            async runJob(id) {
+                const res = await runJob({id: id, operator: this.userInfo.name});
                 if (res.code === 1000) {
-                    this.$refs.jobSettingForm.formatJob(res.data)
-                    this.$refs.leftNav.refresh()
                     this.$message({
                         type: "success",
-                        message: "作业修改成功",
+                        message: "作业执行成功",
                         center: true
                     });
                 }
+            },
+            async save() {
+                this.$refs.jobForm.$refs['form'].validate(async valid => {
+                    if (valid) {
+                        if (!this.$refs.jobSettingForm) {
+                            const jobDto = this.jobInfo
+
+                            // hive shell
+                            if (jobDto.type === 0 || jobDto.type === 1) {
+                                jobDto.data = {
+                                    value: this.$refs.jobForm.value
+                                }
+                                jobDto.data = JSON.stringify(jobDto.data)
+                            }
+                            // python
+                            if (jobDto.type === 11) {
+                                jobDto.data = {
+                                    version: this.$refs.jobForm.version,
+                                    value: this.$refs.jobForm.value
+                                }
+                                jobDto.data = JSON.stringify(jobDto.data)
+                            }
+                            // spark flink
+                            if (jobDto.type === 2 || jobDto.type === 3) {
+                                jobDto.data = this.$refs.jobForm.form
+                                jobDto.data = JSON.stringify(jobDto.data)
+                            }
+
+                            await modifyJob(jobDto);
+                            this.$message({
+                                type: "success",
+                                message: "作业修改成功",
+                                center: true
+                            });
+                            return
+                        }
+                        const jobDto = this.$refs.jobSettingForm.jobInfoCopy
+                        let timeConfigDto = this.$refs.jobSettingForm.timeConfig
+                        const hourMinute = this.$refs.jobSettingForm.hourMinute
+                        const validRange = this.$refs.jobSettingForm.validRange
+
+                        let timeParams = {}
+                        if (jobDto.schedulingPeriod === 0) {
+                            const timeArrs = hourMinute.split(":")
+                            timeParams.hour = timeArrs[0]
+                            timeParams.minute = timeArrs[1]
+                            timeParams.days = timeConfigDto.days.join()
+                        }
+                        if (jobDto.schedulingPeriod === 1) {
+                            const timeArrs = hourMinute.split(":")
+                            timeParams.hour = timeArrs[0]
+                            timeParams.minute = timeArrs[1]
+                            timeParams.weeks = timeConfigDto.weeks.join()
+                        }
+                        if (jobDto.schedulingPeriod === 2) {
+                            const timeArrs = hourMinute.split(":")
+                            timeParams.hour = timeArrs[0]
+                            timeParams.minute = timeArrs[1]
+                        }
+                        if (jobDto.schedulingPeriod === 3) {
+                            timeParams.type = timeConfigDto.type
+                            timeParams.hours = timeConfigDto.hours.join()
+                            timeParams.hourBegin = timeConfigDto.hourBegin.split(":")[0];
+                            timeParams.hourPeriod = timeConfigDto.hourPeriod;
+                            timeParams.hourMinute = timeConfigDto.hourBegin.split(":")[1];
+                            timeParams.hourEnd = timeConfigDto.hourEnd
+                        }
+                        if (jobDto.schedulingPeriod === 4) {
+                            timeParams.minuteBegin = timeConfigDto.minuteBegin
+                            timeParams.minuteEnd = timeConfigDto.minuteEnd
+                            timeParams.period = timeConfigDto.period
+                        }
+
+                        jobDto.timeConfig = JSON.stringify(timeParams)
+                        jobDto.validStartDate = validRange[0]
+                        jobDto.validEndDate = validRange[1]
+                        //
+                        if (jobDto.type === 11) {
+                            jobDto.data = {
+                                version: this.$refs.jobForm.version,
+                                value: this.$refs.jobForm.value
+                            }
+                            jobDto.data = JSON.stringify(jobDto.data)
+                        }
+                        const res = await modifyJob(jobDto);
+                        if (res.code === 1000) {
+                            this.$refs.jobSettingForm.formatJob(res.data)
+                            this.$refs.leftNav.refresh()
+                            this.$message({
+                                type: "success",
+                                message: "作业修改成功",
+                                center: true
+                            });
+                        }
+                    }
+                })
+
             }
         }
     }
