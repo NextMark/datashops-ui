@@ -75,7 +75,7 @@
 </template>
 
 <script>
-    // import { jsPlumb } from 'jsplumb'
+    import { jsPlumb } from 'jsplumb'
     // 使用修改后的jsplumb
     import './jsplumb'
     import {easyFlowMixin} from '@/components/ef/mixins'
