@@ -73,8 +73,8 @@ export default {
       curYear: 0,
       lock: "lock",
       loginForm: {
-        name: "admin",
-        password: "123456",
+        name: "",
+        password: "",
       },
       rules: {
         username: [{ validator: checkUsername, trigger: "blur" }],
