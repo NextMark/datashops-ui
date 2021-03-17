@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-    title: 'xxx',
+    title: 'DataShops',
     baseCdnUrl: '//cdn.staticfile.org',
     cdns: [
         /**
