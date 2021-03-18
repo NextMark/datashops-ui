@@ -8,11 +8,7 @@
             <el-row>
               <el-col :span="8" :offset="8">
                 <a href="https://github.com/NextMark/datashops">
-                  <img
-                    class="org-img dom-center"
-                    src="@/assets/logo.png"
-                    alt="gin-vue-admin"
-                  />
+
                 </a>
               </el-col>
             </el-row>

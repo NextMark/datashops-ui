@@ -4,7 +4,7 @@
       <el-row :class="[isShadowBg?'shadowBg':'']" @click.native="changeShadow()"></el-row>
       <el-aside class="main-cont main-left">
         <div class="tilte">
-          <img alt class="logoimg" src="~@/assets/nav_logo.png" />
+          <img alt class="logoimg" src="~@/assets/logo.jpeg" />
           <h2 class="tit-text" v-if="isSider">DataShops</h2>
         </div>
         <Aside class="aside" />

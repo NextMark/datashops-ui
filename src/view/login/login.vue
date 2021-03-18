@@ -3,11 +3,10 @@
     <div class="container">
       <div class="top">
         <div class="desc">
-          <img class="logo_login" src="@/assets/logo_login.png" alt="" />
+          <img class="logo_login" src="@/assets/logo.jpeg" alt="" />
         </div>
         <div class="header">
           <a href="/">
-            <!-- <img src="~@/assets/logo.png" class="logo" alt="logo" /> -->
             <span class="title">DataShops</span>
           </a>
         </div>
