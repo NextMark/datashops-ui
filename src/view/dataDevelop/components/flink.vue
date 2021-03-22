@@ -72,10 +72,14 @@
             <el-form-item label="jar">
                 <el-upload
                         class="upload-demo"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action="http://localhost:8666/v1/res/uploadJar"
+                        :data="{'jobId': jobInfo.id}"
+                        :headers="{'Authorization': token}"
+                        :multiple="false"
                         :on-preview="handlePreview"
                         :on-remove="handleRemove"
                         :before-remove="beforeRemove"
+                        :on-success="handleSuccess"
                         :limit="1"
                         :on-exceed="handleExceed"
                         :file-list="fileList">
@@ -90,6 +94,7 @@
 <script>
     import {getQueueList} from "@/api/resource";
     import { flinkRules } from '@/utils/constants';
+    import { store } from '@/store/index'
 
 
     export default {
@@ -98,6 +103,7 @@
 
         data() {
             return {
+                token: store.getters['user/token'],
                 flinkRules,
                 flinkVersion: [{
                     value: '1.12.0',
@@ -122,14 +128,12 @@
                     ytm: '1024mb',
                     c: '',
                     yq: '',
-                    extension: ''
+                    extension: '',
+                    fileName: '',
+                    url: '',
+                    size: ''
                 },
-                fileList: [
-                    {
-                        name: 'aaa.jar',
-                        url: ''
-                    }
-                ],
+                fileList: [],
                 jobInfoCopy: {},
                 queue: []
             }
@@ -139,6 +143,12 @@
                 this.jobInfoCopy = JSON.parse(JSON.stringify(jobInfo));
                 if (this.jobInfoCopy.data) {
                     this.form = JSON.parse(this.jobInfoCopy.data)
+                    if (this.form.fileName) {
+                        this.fileList.push({
+                            name: this.form.fileName,
+                            url: this.form.url
+                        })
+                    }
                 }
                 const queue = await getQueueList({pageSize: 20, pageNum: 1});
                 this.queue = queue.data.content
@@ -154,6 +164,11 @@
             },
             beforeRemove(file, fileList) {
                 return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            handleSuccess(response, file, fileList) {
+                this.form.fileName = response.data.name
+                this.form.file = response.data.url
+                this.form.size = response.data.size
             }
         },
         created() {
