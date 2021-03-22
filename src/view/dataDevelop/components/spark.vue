@@ -123,7 +123,7 @@
             },
             handleSuccess(response, file, fileList) {
                 this.form.fileName = response.data.name
-                this.form.file = response.data.url
+                this.form.url = response.data.url
                 this.form.size = response.data.size
             }
         },
