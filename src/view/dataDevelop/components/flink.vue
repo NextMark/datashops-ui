@@ -2,21 +2,26 @@
     <div>
         <el-form ref="form" :model="form" :rules="flinkRules" label-width="140px">
             <el-row>
+<!--                <el-col :span="6">-->
+<!--                    <el-form-item label="flink版本" prop="version">-->
+<!--                        <el-select v-model="form.version" clearable placeholder="请选择">-->
+<!--                            <el-option-->
+<!--                                    v-for="item in flinkVersion"-->
+<!--                                    :key="item.value"-->
+<!--                                    :label="item.label"-->
+<!--                                    :value="item.value">-->
+<!--                            </el-option>-->
+<!--                        </el-select>-->
+<!--                    </el-form-item>-->
+<!--                </el-col>-->
                 <el-col :span="6">
-                    <el-form-item label="flink版本" prop="version">
-                        <el-select v-model="form.version" clearable placeholder="请选择">
-                            <el-option
-                                    v-for="item in flinkVersion"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="yarn任务名称" prop="yarnAppName">
+                        <el-input v-model="form.yarnAppName"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-form-item label="队列" prop="yq">
-                        <el-select v-model="form.yq" placeholder="请选择队列">
+                    <el-form-item label="队列" prop="yarnQueue">
+                        <el-select v-model="form.yarnQueue" placeholder="请选择队列">
                             <el-option
                                     v-for="item in queue"
                                     :key="item.id"
@@ -29,46 +34,34 @@
             </el-row>
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="yarn任务名称" prop="ynm">
-                        <el-input v-model="form.ynm"></el-input>
+                    <el-form-item label="并行度" prop="parallelism">
+                        <el-input v-model="form.parallelism"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-form-item label="并行度" prop="p">
-                        <el-input v-model="form.p"></el-input>
+                    <el-form-item label="Slot数" prop="taskSlotNum">
+                        <el-input v-model="form.taskSlotNum"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
                 <el-col :span="6">
-                    <el-form-item label="TaskManager数" prop="yn">
-                        <el-input v-model="form.yn"></el-input>
+                    <el-form-item label="JobManager内存" prop="jobManagerMemory">
+                        <el-input v-model="form.jobManagerMemory"></el-input>
                     </el-form-item>
                 </el-col>
                 <el-col :span="6" :offset="2">
-                    <el-form-item label="Slot数" prop="ys">
-                        <el-input v-model="form.ys"></el-input>
+                    <el-form-item label="TaskManager内存" prop="taskManagerMemory">
+                        <el-input v-model="form.taskManagerMemory"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
-            <el-row>
-                <el-col :span="6">
-                    <el-form-item label="JobManager内存" prop="yjm">
-                        <el-input v-model="form.yjm"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="6" :offset="2">
-                    <el-form-item label="TaskManager内存" prop="ytm">
-                        <el-input v-model="form.ytm"></el-input>
-                    </el-form-item>
-                </el-col>
-            </el-row>
-            <el-form-item label="类名" prop="c">
-                <el-input v-model="form.c"></el-input>
+            <el-form-item label="类名" prop="className">
+                <el-input v-model="form.className"></el-input>
             </el-form-item>
-            <el-form-item label="扩展参数">
-                <el-input type="textarea" v-model="form.extension"></el-input>
-            </el-form-item>
+<!--            <el-form-item label="扩展参数">-->
+<!--                <el-input type="textarea" v-model="form.extension"></el-input>-->
+<!--            </el-form-item>-->
             <el-form-item label="jar">
                 <el-upload
                         class="upload-demo"
@@ -120,14 +113,13 @@
                 }],
                 form: {
                     version: '1.12.0',
-                    ynm: '',
-                    yn: 1,
-                    ys: 1,
-                    p: 1,
-                    yjm: '2048mb',
-                    ytm: '1024mb',
-                    c: '',
-                    yq: '',
+                    yarnAppName: '',
+                    taskSlotNum: 1,
+                    parallelism: 1,
+                    jobManagerMemory: '2048mb',
+                    taskManagerMemory: '1024mb',
+                    className: '',
+                    yarnQueue: '',
                     extension: '',
                     fileName: '',
                     url: '',

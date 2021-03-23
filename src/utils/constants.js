@@ -34,28 +34,28 @@ export const flinkRules = {
     version: [
         { required: true, message: '请填写version名称', trigger: 'change' }
     ],
-    ynm: [
+    yarnAppName: [
         { required: true, message: '请填写ynm名称', trigger: 'change' }
     ],
-    yn: [
+    taskManagerNum: [
         { required: true, message: 'yn', trigger: 'change' }
     ],
-    ys: [
+    taskSlotNum: [
         { required: true, message: 'ys', trigger: 'change' }
     ],
-    p: [
+    parallelism: [
         { required: true, message: 'p', trigger: 'change' }
     ],
-    yjm: [
+    jobManagerMemory: [
         { required: true, message: 'yjm', trigger: 'change' }
     ],
-    ytm: [
+    taskManagerMemory: [
         { required: true, message: 'ytm', trigger: 'change' }
     ],
-    c: [
+    className: [
         { required: true, message: 'c', trigger: 'change' }
     ],
-    yq: [
+    yarnQueue: [
         { required: true, message: 'tq', trigger: 'change' }
     ]
 }
