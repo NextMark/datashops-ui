@@ -1,10 +1,9 @@
 <template>
     <div>
         <el-form ref="form" :model="form"></el-form>
-
         <Editor
                 style="margin-top: -30px"
-                language="shell"
+                language="sql"
                 :codes="value"
                 @onMounted="onMounted"
                 @onCodeChange="onCodeChange"/>
@@ -12,15 +11,25 @@
 </template>
 
 <script>
+    import sqlFormatter from 'sql-formatter'
+    import { mapGetters } from "vuex";
     import Editor from './editor'
 
-
     export default {
-        name: "shell",
+        name: "hsql",
         components: {
             Editor
         },
+
+        data() {
+            return {
+                form: {},
+                value: '-- Type your SQL! \n',
+                defaultSql: '-- Type your SQL! \n'
+            }
+        },
         props: ['jobInfo'],
+
         watch:{
             jobInfo: {
                 handler(val) {
@@ -28,16 +37,18 @@
                 }
             }
         },
-        data() {
-            return {
-                form: {},
-                value: '#!/bin/bash\n',
-            }
+        computed: {
+            ...mapGetters("user", ["userInfo"])
         },
         mounted() {
             this.init(this.jobInfo)
         },
         methods: {
+            formatSQL() {
+                this.editor.getAction('editor.action.formatDocument').run();
+
+                //this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
+            },
             onMounted(editor) {
                 this.editor = editor;
             },
@@ -48,18 +59,20 @@
                 const data = JSON.parse(jobInfo.data)
                 if (data) {
                     this.value = data.value
-                    this.editor.setValue(data.value)
-                } else {
-                    this.value = '#!/bin/bash\n'
+                }
+                this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
+
+                if (this.value) {
                     this.editor.setValue(this.value)
+                } else {
+                    this.value = this.defaultSql
+                    this.editor.setValue(this.defaultSql)
                 }
             }
         }
     }
 </script>
 
-<style scoped lang="scss">
-    .el-divider--horizontal {
-        margin: 10px 0 !important;
-    }
+<style scoped>
+
 </style>

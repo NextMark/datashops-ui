@@ -34,7 +34,9 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3" class="item" effect="dark" content="运行">
+                    <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3 || jobInfo.type === 5 || jobInfo.type
+                    === 9 || jobInfo.type === 10" class="item" effect="dark"
+                                content="立即运行">
                         <el-button type="text" style="font-size:15px" @click="runJob(jobInfo.id)">
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-bofang"></use>
@@ -95,12 +97,6 @@
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-flink"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(1, 3)">Flink</el-button>
-                        </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-spark"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(1, 2)">Spark</el-button>
@@ -143,21 +139,27 @@
                         <el-divider></el-divider>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-hive"></use>
+                                <use xlink:href="#el-icon-my-flink"></use>
                             </svg>
-                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>
-                        </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-hdfs"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(2, 8)">Kafka2HDFS</el-button>
+                            <el-button type="text" @click="createNewJob(1, 3)">Flink</el-button>
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-flink-sql"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 5)">Flink SQL</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-streaming"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>
+                        </el-row>
+                        <el-row>
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-streaming"></use>
+                            </svg>
+                            <el-button type="text" @click="createNewJob(2, 8)">Kafka2HDFS</el-button>
                         </el-row>
                     </el-col>
                 </el-row>
@@ -209,6 +211,8 @@
     import kafka2hdfs from "@/view/dataDevelop/components/kafka2hdfs";
     import kafka2hive from "@/view/dataDevelop/components/kafka2hive";
     import hive2mysql from "@/view/dataDevelop/components/hive2mysql";
+    import mysql2hive from "@/view/dataDevelop/components/mysql2hive";
+    import flinkSql from "@/view/dataDevelop/components/flinkSql";
 
 
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
@@ -241,7 +245,9 @@
             kafka2hdfs,
             kafka2hive,
             graph,
-            hive2mysql
+            hive2mysql,
+            mysql2hive,
+            flinkSql
         },
         filters: {
             getJobIcon
@@ -260,6 +266,9 @@
                 }
                 if (this.jobInfo.type === 3) {
                     return 'flink'
+                }
+                if (this.jobInfo.type === 5) {
+                    return 'flinkSql'
                 }
                 if (this.jobInfo.type === 6) {
                     return 'mysql'
@@ -280,7 +289,7 @@
                     return 'hive2mysql'
                 }
                 if (this.jobInfo.type === 10) {
-                    return 'hive2mysql'
+                    return 'mysql2hive'
                 }
                 return 'hsql';
             }
@@ -413,7 +422,7 @@
                             const jobDto = this.jobInfo
 
                             // hive shell
-                            if (jobDto.type === 0 || jobDto.type === 1) {
+                            if (jobDto.type === 0 || jobDto.type === 1 || jobDto.type === 5) {
                                 jobDto.data = {
                                     value: this.$refs.jobForm.value
                                 }
@@ -574,5 +583,10 @@
         margin-bottom: 25px;
         margin-left: 12px;
         cursor: pointer
+    }
+
+    .center-title {
+        font-weight: 500;
+        font-size: 16px;
     }
 </style>

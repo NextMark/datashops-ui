@@ -1,5 +1,7 @@
 <template>
     <div>
+        <el-form ref="form" :model="form"></el-form>
+
         <Editor
                 style="margin-top: -30px"
                 language="sql"
@@ -22,6 +24,7 @@
 
         data() {
             return {
+                form: {},
                 value: '-- Type your SQL! \n',
                 defaultSql: '-- Type your SQL! \n'
             }
@@ -31,15 +34,15 @@
         watch:{
             jobInfo: {
                 handler(val) {
-                    this.value = JSON.parse(val.data).value;
-                    console.log('this.sql')
-                    if (this.editor) {
-                        if (this.value) {
-                            this.editor.setValue(this.value)
-                        } else {
-                            this.editor.setValue(this.defaultSql)
-                        }
-                    }
+                    // this.value = JSON.parse(val.data).value;
+                    // if (this.editor) {
+                    //     if (this.value) {
+                    //         this.editor.setValue(this.value)
+                    //     } else {
+                    //         this.editor.setValue(this.defaultSql)
+                    //     }
+                    // }
+                    this.init(val)
                 }
             }
         },
@@ -47,18 +50,7 @@
             ...mapGetters("user", ["userInfo"])
         },
         mounted() {
-            const data = JSON.parse(this.jobInfo.data)
-            if (data) {
-                this.value = data.value
-            }
-            this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
-
-            if (this.value) {
-                this.editor.setValue(this.value)
-            } else {
-                this.value = this.defaultSql
-                this.editor.setValue(this.defaultSql)
-            }
+            this.init(this.jobInfo)
         },
         methods: {
             formatSQL() {
@@ -72,6 +64,20 @@
             onCodeChange(value, event) {
                 this.value = value
             },
+            init(jobInfo) {
+                const data = JSON.parse(jobInfo.data)
+                if (data) {
+                    this.value = data.value
+                }
+                this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
+
+                if (this.value) {
+                    this.editor.setValue(this.value)
+                } else {
+                    this.value = this.defaultSql
+                    this.editor.setValue(this.defaultSql)
+                }
+            }
         }
     }
 </script>

@@ -93,7 +93,13 @@
     export default {
         name: "flink",
         props: ['jobInfo'],
-
+        watch:{
+            jobInfo: {
+                handler(val) {
+                    this.init(val)
+                }
+            }
+        },
         data() {
             return {
                 token: store.getters['user/token'],
@@ -101,15 +107,6 @@
                 flinkVersion: [{
                     value: '1.12.0',
                     label: '1.12.0'
-                }, {
-                    value: '1.12.1',
-                    label: '1.12.1'
-                }, {
-                    value: '1.12.2',
-                    label: '1.12.2'
-                }, {
-                    value: '1.13.0',
-                    label: '1.13.0'
                 }],
                 form: {
                     version: '1.12.0',
@@ -141,9 +138,28 @@
                             url: this.form.url
                         })
                     }
+                } else {
+                    this.resetForm()
+                    this.fileList = []
                 }
                 const queue = await getQueueList({pageSize: 20, pageNum: 1});
                 this.queue = queue.data.content
+            },
+            resetForm() {
+                this.form = {
+                    version: '1.12.0',
+                        yarnAppName: '',
+                        taskSlotNum: 1,
+                        parallelism: 1,
+                        jobManagerMemory: '2048mb',
+                        taskManagerMemory: '1024mb',
+                        className: '',
+                        yarnQueue: '',
+                        extension: '',
+                        fileName: '',
+                        url: '',
+                        size: ''
+                }
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);

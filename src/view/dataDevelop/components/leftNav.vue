@@ -28,14 +28,32 @@
                     </template>
                 </el-menu-item>
             </el-submenu>
-            <el-submenu index="4">
+            <el-submenu index="2">
                 <template slot="title">
                     <svg class="icon-1-5" aria-hidden="true">
                         <use xlink:href="#el-icon-my-folder-open"></use>
                     </svg>
                     <span slot="title" class="pad-left-10">数据集成</span>
                 </template>
-                <el-menu-item :index="'4' + index" v-for="(data, index) in integrationList" v-bind:key="data.id" @click="clickJob(data)">
+                <el-menu-item :index="'2' + index" v-for="(data, index) in integrationList" v-bind:key="data.id"
+                              @click="clickJob(data)">
+                    <template slot="title">
+                        <svg class="icon-1-5" aria-hidden="true">
+                            <use :xlink:href="data.type |getJobIcon"></use>
+                        </svg>
+                        <span slot="title" class="pad-left-10">{{data.name}}</span>
+                    </template>
+                </el-menu-item>
+            </el-submenu>
+            <el-submenu index="3">
+                <template slot="title">
+                    <svg class="icon-1-5" aria-hidden="true">
+                        <use xlink:href="#el-icon-my-folder-open"></use>
+                    </svg>
+                    <span slot="title" class="pad-left-10">流式作业</span>
+                </template>
+                <el-menu-item :index="'3' + index" v-for="(data, index) in flowJobList" v-bind:key="data.id"
+                              @click="clickJob(data)">
                     <template slot="title">
                         <svg class="icon-1-5" aria-hidden="true">
                             <use :xlink:href="data.type |getJobIcon"></use>
@@ -66,7 +84,7 @@
                 isCollapse: false,
                 integrationList: [],
                 jobList: [],
-                dataDevelopTypes: [0, 1, 2, 3, 4, 6, 11]
+                flowJobList: []
             };
         },
         filters: {
@@ -83,8 +101,15 @@
                 await this.getTableData();
                 for (let i = 0; i < this.tableData.length; i++) {
                     const job = this.tableData[i]
-                    if (this.dataDevelopTypes.indexOf(job.type) === -1) {
+                    if (job.type === 9 || job.type === 10) {
                         this.integrationList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type,
+                            maskId: job.maskId
+                        })
+                    } else if(job.type === 3 || job.type === 5 || job.type === 7 || job.type === 8) {
+                        this.flowJobList.push({
                             id: job.id,
                             name: job.name,
                             type: job.type,

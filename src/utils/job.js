@@ -134,9 +134,9 @@ export function getJobIcon(code) {
         case 6:
             return '#el-icon-my-mysql'
         case 7:
-            return '#el-icon-my-kafka'
+            return '#el-icon-my-streaming'
         case 8:
-            return '#el-icon-my-kafka'
+            return '#el-icon-my-streaming'
         case 9:
             return '#el-icon-my-sqoop-import'
         case 10:

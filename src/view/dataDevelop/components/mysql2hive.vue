@@ -1,29 +1,10 @@
 <template>
     <div>
         <el-row style="text-align: center;">
-            <span class="center-title">同步Hive数据到MySQL</span>
+            <span class="center-title">同步Mysql数据到Hive</span>
         </el-row>
         <el-row>
             <el-col :span="10">
-                <el-form ref="form" :model="form" label-width="120px">
-                    <el-form-item>
-                        <span>Hive配置</span>
-                    </el-form-item>
-                    <el-form-item label="Hive路径:" prop="address">
-                        <el-input v-model="form.exportDir"></el-input>
-                    </el-form-item>
-                    <el-form-item label="map数:" prop="topic">
-                        <el-input v-model="form.mapNum"></el-input>
-                    </el-form-item>
-                    <el-form-item label="字段分隔符:" prop="topic">
-                        <el-input v-model="form.fieldsTerminated"></el-input>
-                    </el-form-item>
-                    <el-form-item label="行分隔符:" prop="topic">
-                        <el-input v-model="form.linesTerminated"></el-input>
-                    </el-form-item>
-                </el-form>
-            </el-col>
-            <el-col :span="10" :offset="2">
                 <el-form ref="form" :model="form" label-width="100px">
                     <el-form-item>
                         <span>MySQL配置</span>
@@ -45,13 +26,40 @@
                     </el-form-item>
                 </el-form>
             </el-col>
+            <el-col :span="10" :offset="2">
+                <el-form ref="form" :model="form" label-width="120px">
+                    <el-form-item>
+                        <span>Hive配置</span>
+                    </el-form-item>
+                    <el-form-item label="库名:" prop="hdfsPath">
+                        <el-input v-model="form.hiveDb"></el-input>
+                    </el-form-item>
+                    <el-form-item label="表名:" prop="hdfsPath">
+                        <el-input v-model="form.hiveTable"></el-input>
+                    </el-form-item>
+                    <el-form-item label="map数:" prop="topic">
+                        <el-input v-model="form.mapNum"></el-input>
+                    </el-form-item>
+                    <el-form-item label="字段分隔符:" prop="topic">
+                        <el-input v-model="form.fieldsTerminated"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分区字段:" prop="topic">
+                        <el-input v-model="form.partitionKey"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分区值:" prop="topic">
+                        <el-input v-model="form.partitionValue"></el-input>
+                    </el-form-item>
+
+                </el-form>
+            </el-col>
+
         </el-row>
     </div>
 </template>
 
 <script>
     export default {
-        name: "hive2mysql",
+        name: "mysql2hive",
         props: ['jobInfo'],
         watch: {
             jobInfo: {
@@ -63,7 +71,7 @@
         data() {
             return {
                 form: {
-                    type: 1,
+                    type: 2,
                     mysqlAddress: '',
                     mysqlJdbc: '',
                     mysqlUser: '',
@@ -73,7 +81,10 @@
                     linesTerminated: '\\n',
                     fieldsTerminated: '\\0001',
                     mapNum: '1',
-                    exportDir: ''
+                    hiveDb: '',
+                    hiveTable: '',
+                    partitionKey: '',
+                    partitionValue: ''
                 }
             }
         },
@@ -89,7 +100,7 @@
 
             resetForm() {
                 this.form = {
-                    type: 1,
+                    type: 2,
                     mysqlAddress: '',
                     mysqlJdbc: '',
                     mysqlUser: '',

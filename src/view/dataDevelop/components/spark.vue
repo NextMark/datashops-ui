@@ -74,6 +74,13 @@
     export default {
         name: "spark",
         props: ['jobInfo'],
+        watch:{
+            jobInfo: {
+                handler(val) {
+                    this.init(val)
+                }
+            }
+        },
         data() {
             return {
                 token: store.getters['user/token'],
@@ -105,9 +112,26 @@
                             url: this.form.url
                         })
                     }
+                } else {
+                    this.resetForm()
+                    this.fileList = []
                 }
                 const queue = await getQueueList({pageSize: 20, pageNum: 1});
                 this.queue = queue.data.content
+            },
+            resetForm() {
+                this.form = {
+                    name: 'spark-submit',
+                        driverMemory: '2048mb',
+                        executorMemory: '1024mb',
+                        className: '',
+                        queue: '',
+                        executorCore: 1,
+                        extension: '',
+                        fileName: '',
+                        url: '',
+                        size: ''
+                }
             },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
