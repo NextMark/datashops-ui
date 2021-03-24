@@ -105,18 +105,18 @@
                             </svg>
                             <el-button type="text" @click="createNewJob(1, 2)">Spark</el-button>
                         </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-clickhouse"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(1, 4)">Click House</el-button>
-                        </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-mysql"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>
-                        </el-row>
+<!--                        <el-row>-->
+<!--                            <svg class="icon-1-5" aria-hidden="true">-->
+<!--                                <use xlink:href="#el-icon-my-clickhouse"></use>-->
+<!--                            </svg>-->
+<!--                            <el-button type="text" @click="createNewJob(1, 4)">Click House</el-button>-->
+<!--                        </el-row>-->
+<!--                        <el-row>-->
+<!--                            <svg class="icon-1-5" aria-hidden="true">-->
+<!--                                <use xlink:href="#el-icon-my-mysql"></use>-->
+<!--                            </svg>-->
+<!--                            <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>-->
+<!--                        </el-row>-->
                     </el-col>
                     <el-col :span="4" :offset="2">
                         <el-row>
@@ -125,13 +125,13 @@
                         <el-divider></el-divider>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-hive"></use>
+                                <use xlink:href="#el-icon-my-sqoop-import"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 9)">Hive2MySQL</el-button>
                         </el-row>
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-mysql"></use>
+                                <use xlink:href="#el-icon-my-sqoop-import"></use>
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 10)">MySQL2Hive</el-button>
                         </el-row>
@@ -208,6 +208,8 @@
     import clickhouse from "@/view/dataDevelop/components/clickhouse";
     import kafka2hdfs from "@/view/dataDevelop/components/kafka2hdfs";
     import kafka2hive from "@/view/dataDevelop/components/kafka2hive";
+    import hive2mysql from "@/view/dataDevelop/components/hive2mysql";
+
 
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
@@ -238,7 +240,8 @@
             jobSetting,
             kafka2hdfs,
             kafka2hive,
-            graph
+            graph,
+            hive2mysql
         },
         filters: {
             getJobIcon
@@ -272,6 +275,12 @@
                 }
                 if (this.jobInfo.type === 7) {
                     return 'kafka2hive'
+                }
+                if (this.jobInfo.type === 9) {
+                    return 'hive2mysql'
+                }
+                if (this.jobInfo.type === 10) {
+                    return 'hive2mysql'
                 }
                 return 'hsql';
             }
@@ -421,6 +430,16 @@
                             // spark flink
                             if (jobDto.type === 2 || jobDto.type === 3) {
                                 jobDto.data = this.$refs.jobForm.form
+                                jobDto.data = JSON.stringify(jobDto.data)
+                            }
+
+                            // hive2mysql, mysql2hive
+                            if (jobDto.type === 9 || jobDto.type === 10) {
+                                jobDto.data = this.$refs.jobForm.form
+                                var mysqlJdbc = "jdbc:mysql://ip:3306/db?useUnicode=true&characterEncoding=utf-8"
+                                jobDto.data.mysqlJdbc = mysqlJdbc.replace("ip", jobDto.data.mysqlAddress).replace("db",
+                                    jobDto.data.mysqlDb)
+
                                 jobDto.data = JSON.stringify(jobDto.data)
                             }
 

@@ -138,9 +138,9 @@ export function getJobIcon(code) {
         case 8:
             return '#el-icon-my-kafka'
         case 9:
-            return '#el-icon-my-kafka'
+            return '#el-icon-my-sqoop-import'
         case 10:
-            return '#el-icon-my-kafka'
+            return '#el-icon-my-sqoop-import'
         case 11:
             return '#el-icon-my-python'
         default:
