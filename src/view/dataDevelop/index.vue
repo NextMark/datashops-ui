@@ -72,7 +72,7 @@
                     :visible.sync="addJobDialog"
                     center>
                 <el-row >
-                    <el-col :span="4" :offset="4">
+                    <el-col :span="5" :offset="4">
                         <el-row>
                             <span>数据开发</span>
                         </el-row>
@@ -114,7 +114,7 @@
 <!--                            <el-button type="text" @click="createNewJob(1, 6)">MySQL</el-button>-->
 <!--                        </el-row>-->
                     </el-col>
-                    <el-col :span="4" :offset="2">
+                    <el-col :span="5" :offset="2">
                         <el-row>
                             <span>数据集成</span>
                         </el-row>
@@ -132,7 +132,7 @@
                             <el-button type="text" @click="createNewJob(2, 10)">MySQL2Hive</el-button>
                         </el-row>
                     </el-col>
-                    <el-col :span="4" :offset="2">
+                    <el-col :span="5" :offset="2">
                         <el-row>
                             <span>流式作业</span>
                         </el-row>
