@@ -98,7 +98,7 @@
         },
         methods: {
             async init() {
-                await this.getTableData();
+                await this.getTableData(1, 100);
                 for (let i = 0; i < this.tableData.length; i++) {
                     const job = this.tableData[i]
                     if (job.type === 9 || job.type === 10) {
