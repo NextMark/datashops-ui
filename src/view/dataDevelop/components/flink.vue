@@ -14,12 +14,12 @@
 <!--                        </el-select>-->
 <!--                    </el-form-item>-->
 <!--                </el-col>-->
-                <el-col :span="6">
+                <el-col :span="10">
                     <el-form-item label="yarn任务名称" prop="yarnAppName">
                         <el-input v-model="form.yarnAppName"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="10" :offset="2">
                     <el-form-item label="队列" prop="yarnQueue">
                         <el-select v-model="form.yarnQueue" placeholder="请选择队列">
                             <el-option
@@ -33,24 +33,24 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="6">
+                <el-col :span="10">
                     <el-form-item label="并行度" prop="parallelism">
                         <el-input v-model="form.parallelism"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="10" :offset="2">
                     <el-form-item label="Slot数" prop="taskSlotNum">
                         <el-input v-model="form.taskSlotNum"></el-input>
                     </el-form-item>
                 </el-col>
             </el-row>
             <el-row>
-                <el-col :span="6">
+                <el-col :span="10">
                     <el-form-item label="JobManager内存" prop="jobManagerMemory">
                         <el-input v-model="form.jobManagerMemory"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="10" :offset="2">
                     <el-form-item label="TaskManager内存" prop="taskManagerMemory">
                         <el-input v-model="form.taskManagerMemory"></el-input>
                     </el-form-item>

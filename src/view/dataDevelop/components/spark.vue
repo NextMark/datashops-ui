@@ -2,12 +2,12 @@
     <div>
         <el-form ref="form" :model="form" label-width="140px" :rules="sparkRules">
             <el-row>
-                <el-col :span="6">
+                <el-col :span="10">
                     <el-form-item label="名称" prop="name">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="10" :offset="2">
                     <el-form-item label="队列" prop="queue">
                         <el-select v-model="form.queue" placeholder="请选择队列">
                             <el-option
@@ -22,12 +22,12 @@
             </el-row>
 
             <el-row>
-                <el-col :span="6">
+                <el-col :span="10">
                     <el-form-item label="Driver内存" prop="driverMemory">
                         <el-input v-model="form.driverMemory"></el-input>
                     </el-form-item>
                 </el-col>
-                <el-col :span="6" :offset="2">
+                <el-col :span="10" :offset="2">
                     <el-form-item label="Executor内存" prop="executorMemory">
                         <el-input v-model="form.executorMemory"></el-input>
                     </el-form-item>
