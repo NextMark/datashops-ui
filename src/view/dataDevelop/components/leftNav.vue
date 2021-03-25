@@ -137,6 +137,7 @@
             refresh() {
                 this.jobList = []
                 this.integrationList = []
+                this.flowJobList = []
                 this.init()
             },
             listenAddEvent() {
