@@ -397,7 +397,7 @@ export default {
     }
   },
   async created() {
-    await this.getTableData();
+    await this.getTableData(1, 1000);
   }
 };
 </script>

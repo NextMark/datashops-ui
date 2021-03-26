@@ -87,3 +87,27 @@ export const getWorkerList = (data) => {
         data
     })
 }
+
+export const getResourceFileList = (data) => {
+    return service({
+        url: "/v1/res/getResourceFileList",
+        method: 'post',
+        data
+    })
+}
+
+export const deleteResourceFile = (data) => {
+    return service({
+        url: "/v1/res/deleteResourceFile",
+        method: 'post',
+        data
+    })
+}
+
+export const addResourceFile = (data) => {
+    return service({
+        url: "/v1/res/addResourceFile",
+        method: 'post',
+        data
+    })
+}

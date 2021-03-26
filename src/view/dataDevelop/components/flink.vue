@@ -66,7 +66,7 @@
                 <el-upload
                         class="upload-demo"
                         action="http://localhost:8666/v1/res/uploadJar"
-                        :data="{'jobId': jobInfo.id}"
+                        :data="{'jobId': jobInfo.id, 'type': 1, 'name': jobInfo.name}"
                         :headers="{'Authorization': token}"
                         :multiple="false"
                         :on-preview="handlePreview"
