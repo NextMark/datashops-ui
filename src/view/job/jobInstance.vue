@@ -106,6 +106,19 @@
                 @size-change="handleSizeChange"
                 layout="total, sizes, prev, pager, next, jumper"
         ></el-pagination>
+        <el-drawer
+                title="任务实例日志"
+                :visible.sync="instanceLog"
+                size="60%"
+                direction="rtl">
+            <el-button
+                    class="table-button"
+                    @click="viewLog(selectedJob)"
+                    size="small"
+                    type="warning"
+            >刷新</el-button>
+            <span>{{logContent}}</span>
+        </el-drawer>
     </div>
 </template>
 
@@ -115,7 +128,10 @@
         deleteJobGraph,
         reRunJob,
         cancelJob
-    } from "@/api/job"; //  此处请自行替换地址
+    } from "@/api/job";
+    import {
+        rollReadLog
+    } from "@/api/log";
     import infoList from "@/mixins/infoList";
 
     import { formatSchedulingPeriod, getJobIcon } from '@/utils/job';
@@ -124,16 +140,19 @@
 
     var moment = require('moment');
 
+    var skipLines = 0
+
     export default {
         name: "JobGraph",
         mixins: [infoList],
         data() {
             return {
                 listApi: getJobInstanceList,
-                dialogFormVisible: false,
                 visible: false,
-                deleteVisible: false,
-                multipleSelection: []
+                instanceLog: false,
+                multipleSelection: [],
+                logContent: '',
+                selectedJob: {}
             };
         },
         computed: {
@@ -234,9 +253,6 @@
                     this.getTableData();
                 }
             },
-            openDialog() {
-                this.dialogFormVisible = true;
-            },
             async reRun(id) {
                 const res = await reRunJob({id: id, operator: this.userInfo.name});
                 if (res.code === 1000) {
@@ -259,12 +275,15 @@
                 }
                 await this.getTableData();
             },
-            viewLog() {
-                this.$message({
-                    type: "success",
-                    message: "敬请期待",
-                    center: true
-                });
+            async viewLog(row) {
+                this.selectedJob = row
+                this.instanceLog = true
+                const res = await rollReadLog({instanceId: row.instanceId, limit: 200, skipLines: skipLines})
+                this.logContent += res.data
+                let len = res.data.split('\n').length
+                if (len >= 200) {
+                    skipLines += len
+                }
             }
         },
         async created() {
