@@ -278,11 +278,14 @@
             async viewLog(row) {
                 this.selectedJob = row
                 this.instanceLog = true
+
                 const res = await rollReadLog({instanceId: row.instanceId, limit: 200, skipLines: skipLines})
-                this.logContent += res.data
-                let len = res.data.split('\n').length
-                if (len >= 200) {
-                    skipLines += len
+                if (res.code === 1000) {
+                    this.logContent += res.data
+                    let len = res.data.split('\n').length
+                    if (len >= 200) {
+                        skipLines += len
+                    }
                 }
             }
         },
