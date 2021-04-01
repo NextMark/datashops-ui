@@ -92,6 +92,12 @@
                             size="small"
                             type="warning"
                     >日志</el-button>
+                    <el-button
+                            class="table-button"
+                            @click="viewDag(scope.row)"
+                            size="small"
+                            type="success"
+                    >DAG</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -127,6 +133,21 @@
                     @onMounted="onMounted"
                     @onCodeChange="onCodeChange"/>
         </el-drawer>
+        <el-drawer
+                title="任务执行状态图"
+                :visible.sync="dagView"
+                size="60%"
+                direction="rtl">
+            <el-button
+                    icon="el-icon-refresh"
+                    style="margin-left: 20px; margin-bottom: 10px"
+                    class="table-button"
+                    @click="viewDag(selectedJob)"
+                    size="small"
+                    type="primary"
+            >刷新</el-button>
+            <graph :jobGraph="jobGraph"></graph>
+        </el-drawer>
     </div>
 </template>
 
@@ -135,7 +156,8 @@
         getJobInstanceList,
         deleteJobGraph,
         reRunJob,
-        cancelJob
+        cancelJob,
+        getJobGraph
     } from "@/api/job";
     import {
         rollReadLog
@@ -144,6 +166,7 @@
 
     import { formatSchedulingPeriod, getJobIcon } from '@/utils/job';
     import Editor from '../dataDevelop/components/editor'
+    import graph from '@/view/dataDevelop/components/graph'
 
     import { mapGetters } from "vuex";
 
@@ -158,11 +181,13 @@
             return {
                 listApi: getJobInstanceList,
                 visible: false,
+                dagView: false,
                 instanceLog: false,
                 multipleSelection: [],
                 logContent: '',
                 height: '600px',
-                selectedJob: {}
+                selectedJob: {},
+                jobGraph: {},
             };
         },
         computed: {
@@ -243,7 +268,8 @@
             }
         },
         components: {
-            Editor
+            Editor,
+            graph
         },
         methods: {
             //条件搜索前端看此方法
@@ -287,6 +313,15 @@
                     });
                 }
                 await this.getTableData();
+            },
+            async viewDag(row) {
+                this.selectedJob = row
+                this.jobGraph = {}
+                this.dagView = true
+                const res = await getJobGraph({id: row.jobId})
+                if (res.code === 1000) {
+                    this.jobGraph = res.data
+                }
             },
             async viewLog(row) {
                 if (this.selectedJob.id && row.id !== this.selectedJob.id) {

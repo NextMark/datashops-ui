@@ -61,15 +61,21 @@
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(value, event) {
+            onCodeChange(value) {
                 this.value = value
             },
             init(jobInfo) {
+                this.defaultSql = '-- Author: ' + this.userInfo.name + '\n'
+
+                if (!jobInfo.data) {
+                    this.value = this.defaultSql
+                    this.editor.setValue(this.defaultSql)
+                    return
+                }
                 const data = JSON.parse(jobInfo.data)
                 if (data) {
                     this.value = data.value
                 }
-                this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
 
                 if (this.value) {
                     this.editor.setValue(this.value)

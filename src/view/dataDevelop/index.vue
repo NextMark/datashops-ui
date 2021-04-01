@@ -43,7 +43,8 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip v-if="jobInfo.type === 0" class="item" effect="dark" content="格式化" placement="top-start" hide-after="500">-->
+                    <el-tooltip v-if="jobInfo.type === 0" class="item" effect="dark" content="格式化"
+                                placement="top-start">-->
                         <el-button type="text" style="font-size:15px" @click="format">
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-wancheng"></use>
@@ -385,17 +386,21 @@
                 })
                 if (!res) {
                     const res = await getJobByMaskId({maskId: job.maskId})
-                    this.openedTabs.push({
-                        title: job.name,
-                        name: res.data.id.toString(),
-                        type: job.type
-                    });
-                    this.jobInfo = res.data
-                    this.jobList.push(this.jobInfo)
+                    if (res.code === 1000) {
+                        this.openedTabs.push({
+                            title: job.name,
+                            name: res.data.id.toString(),
+                            type: job.type
+                        });
+                        this.jobInfo = res.data
+                        this.jobList.push(this.jobInfo)
+                    }
 
                     const dep = await getJobGraph({id: this.jobInfo.id})
-                    this.jobGraph = dep.data
-                    this.jobGraphList.push(this.jobGraph)
+                    if (dep.code === 1000) {
+                        this.jobGraph = dep.data
+                        this.jobGraphList.push(this.jobGraph)
+                    }
                 } else {
                     const index = this.jobList.findIndex(j => j.id.toString() === job.id.toString())
                     this.jobInfo = this.jobList[index]

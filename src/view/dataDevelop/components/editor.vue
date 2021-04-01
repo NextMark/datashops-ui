@@ -100,21 +100,22 @@
         methods:{
             initEditor(){
                 let self = this;
-                self.$refs.container.innerHTML = '';
-                self.monacoEditor = monaco.editor.create(document.getElementById('editor'), {
+                //self.$refs.container.innerHTML = '';
+                self.editor = monaco.editor.create(document.getElementById('editor'), {
                     value:self.codesCopy || self.code,
                     language: self.language,
                     theme: self.theme,
                     ...self.editorOptions
                 });
-                self.$emit('onMounted',self.monacoEditor);//编辑器创建完成回调
-                self.monacoEditor.onDidChangeModelContent(function(event){//编辑器内容changge事件
-                    self.codesCopy = self.monacoEditor.getValue();
-                    self.$emit('onCodeChange',self.monacoEditor.getValue(),event);
+                self.$emit('onMounted',self.editor);
+                self.editor.onDidChangeModelContent(function(event){
+                    self.codesCopy = self.editor.getValue();
+                    self.$emit('onCodeChange',self.editor.getValue(),event);
                 });
             },
             themeChange(){
-                this.initEditor();
+                let self = this
+                self.editor.updateOptions({theme: self.theme})
             }
         }
     }
