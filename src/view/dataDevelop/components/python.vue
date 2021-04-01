@@ -11,7 +11,7 @@
         <Editor
                 style="margin-top: -55px"
                 language="python"
-                :codes="value"
+                :code="value"
                 @onMounted="onMounted"
                 @onCodeChange="onCodeChange"/>
     </div>
@@ -32,6 +32,7 @@
                 form: {},
                 version: 'python3',
                 value: '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n',
+                editor: null
             }
         },
         mounted() {

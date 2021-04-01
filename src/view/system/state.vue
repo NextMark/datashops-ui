@@ -147,7 +147,7 @@ export default {
       ],
     };
   },
-  created() { 
+  created() {
     this.reload();
     this.timer = setInterval(() => {
       this.reload();

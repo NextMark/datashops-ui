@@ -4,7 +4,7 @@
         <Editor
                 style="margin-top: -30px"
                 language="sql"
-                :codes="value"
+                :code="value"
                 @onMounted="onMounted"
                 @onCodeChange="onCodeChange"/>
     </div>

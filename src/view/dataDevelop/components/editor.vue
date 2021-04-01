@@ -12,14 +12,20 @@
                 </el-select>
             </span>
         </div>
-        <div ref="container" style="height:400px"></div>
+        <div id="editor" ref="container" :style="'height:' + height"></div>
     </div>
 </template>
 <script>
     import * as monaco from 'monaco-editor';
     export default {
         props:{
-            codes:{
+            height: {
+                type:String,
+                default:function(){
+                    return '400px'
+                }
+            },
+            code:{
                 type:String,
                 default:function(){
                     return ''
@@ -35,6 +41,17 @@
                 type:Object,
                 default:function(){
                     return {
+                        fontSize: 14,
+                        renderLineHighlight: 'none',
+                        scrollBeyondLastLine: false,
+                        disableLayerHinting: true,
+                        overviewRulerBorder: true,
+                        fixedOverflowWidgets: true,
+                        scrollbar: {
+                            verticalSliderSize: 12,
+                            horizontalScrollbarSize: 12,
+                            useShadows: true
+                        },
                         selectOnLineNumbers: true,
                         autoIndent: true,
                         smoothScrolling: true,
@@ -43,10 +60,11 @@
                         autoClosingBrackets: true,
                         acceptSuggestionOnEnter: 'on',
                         colorDecorators: true,
+                        cursorStyle: 'line',
+                        useTabStops: false,
                         dragAndDrop: true,
                         formatOnPaste: true,
                         formatOnType: true,
-                        fontSize: 14,
                         mouseWheelZoom: true
                     }
                 }
@@ -70,6 +88,7 @@
                 ],
                 theme:'vs-dark',
                 codesCopy:null,
+                editor: null
             }
         },
         mounted(){
@@ -82,8 +101,8 @@
             initEditor(){
                 let self = this;
                 self.$refs.container.innerHTML = '';
-                self.monacoEditor = monaco.editor.create(self.$refs.container, {
-                    value:self.codesCopy || self.codes,
+                self.monacoEditor = monaco.editor.create(document.getElementById('editor'), {
+                    value:self.codesCopy || self.code,
                     language: self.language,
                     theme: self.theme,
                     ...self.editorOptions
@@ -101,8 +120,8 @@
     }
 </script>
 <style scoped>
-    #container{
-        height:100%;
-        text-align: left;
-    }
+    /*#container1{*/
+    /*    height:100%;*/
+    /*    text-align: left;*/
+    /*}*/
 </style>

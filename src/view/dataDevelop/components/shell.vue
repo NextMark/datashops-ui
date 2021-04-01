@@ -5,7 +5,7 @@
         <Editor
                 style="margin-top: -30px"
                 language="shell"
-                :codes="value"
+                :code="value"
                 @onMounted="onMounted"
                 @onCodeChange="onCodeChange"/>
     </div>

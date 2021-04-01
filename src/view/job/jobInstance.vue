@@ -46,7 +46,7 @@
             <el-table-column label="调度周期" width="80">
                 <template slot-scope="scope">{{scope.row.job.schedulingPeriod|formatSchedulingPeriod}}</template>
             </el-table-column>
-            <el-table-column label="基准时间" width="160">
+            <el-table-column label="基准时间" width="170">
                 <template slot-scope="scope">{{scope.row.bizTime}}</template>
             </el-table-column>
             <el-table-column label="执行人" prop="operator" width="120"></el-table-column>
@@ -63,13 +63,13 @@
             </el-table-column>
 
 
-            <el-table-column label="提交日期" width="160">
+            <el-table-column label="提交日期" width="170">
                 <template slot-scope="scope">{{scope.row.submitTime}}</template>
             </el-table-column>
-            <el-table-column label="执行日期" width="160">
+            <el-table-column label="执行日期" width="170">
                 <template slot-scope="scope">{{scope.row.startTime}}</template>
             </el-table-column>
-            <el-table-column label="结束日期" width="160">
+            <el-table-column label="结束日期" width="170">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
             <el-table-column label="按钮组" min-width="240">
@@ -112,12 +112,20 @@
                 size="60%"
                 direction="rtl">
             <el-button
+                    icon="el-icon-refresh"
+                    style="margin-left: 20px"
                     class="table-button"
                     @click="viewLog(selectedJob)"
                     size="small"
-                    type="warning"
+                    type="primary"
             >刷新</el-button>
-            <span>{{logContent}}</span>
+            <Editor
+                    style="margin-top: -30px"
+                    language="sql"
+                    :height="height"
+                    :code="logContent"
+                    @onMounted="onMounted"
+                    @onCodeChange="onCodeChange"/>
         </el-drawer>
     </div>
 </template>
@@ -135,12 +143,13 @@
     import infoList from "@/mixins/infoList";
 
     import { formatSchedulingPeriod, getJobIcon } from '@/utils/job';
+    import Editor from '../dataDevelop/components/editor'
 
     import { mapGetters } from "vuex";
 
     var moment = require('moment');
 
-    var skipLines = 0
+    var skipLines = 0;
 
     export default {
         name: "JobGraph",
@@ -152,6 +161,7 @@
                 instanceLog: false,
                 multipleSelection: [],
                 logContent: '',
+                height: '600px',
                 selectedJob: {}
             };
         },
@@ -232,6 +242,9 @@
                 return statusMap[status]
             }
         },
+        components: {
+            Editor
+        },
         methods: {
             //条件搜索前端看此方法
             onSubmit() {
@@ -276,6 +289,11 @@
                 await this.getTableData();
             },
             async viewLog(row) {
+                if (this.selectedJob.id && row.id !== this.selectedJob.id) {
+                    skipLines = 0
+                    this.logContent = ''
+                    this.editor.setValue(this.logContent)
+                }
                 this.selectedJob = row
                 this.instanceLog = true
 
@@ -284,10 +302,17 @@
                     this.logContent += res.data
                     let len = res.data.split('\n').length
                     if (len >= 200) {
-                        skipLines += len
+                        skipLines += len -1
                     }
+                    this.editor.setValue(this.logContent)
                 }
-            }
+            },
+            onMounted(editor) {
+                this.editor = editor;
+            },
+            onCodeChange(value, event) {
+                this.logContent = value
+            },
         },
         async created() {
             await this.getTableData();

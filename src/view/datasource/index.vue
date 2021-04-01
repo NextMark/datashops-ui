@@ -31,10 +31,10 @@
             <el-table-column label="用户名" width="140" prop="user"></el-table-column>
             <el-table-column label="密码" width="140" prop="password"></el-table-column>
 
-            <el-table-column label="创建时间" width="160">
+            <el-table-column label="创建时间" width="180">
                 <template slot-scope="scope">{{scope.row.createTime}}</template>
             </el-table-column>
-            <el-table-column label="修改时间" width="160">
+            <el-table-column label="修改时间" width="180">
                 <template slot-scope="scope">{{scope.row.updateTime}}</template>
             </el-table-column>
             <el-table-column label="操作">
