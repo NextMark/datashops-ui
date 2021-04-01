@@ -3,7 +3,7 @@
         <div class="left">
             <left-nav ref="leftNav" @add-new-job="addTab" @click-job="clickJob"></left-nav>
         </div>
-        <div class="right outerContainer">
+        <div class="right outerContainer" style="overflow: auto">
             <div class="innerContent" v-show="openedTabs.length === 0">
                 <div style="text-align: center; padding-bottom: 20px">通过以下按钮创建作业</div>
                 <div style="text-align: center">
@@ -312,20 +312,24 @@
                 },
                 jobList: [],
                 jobGraph: {},
-                jobGraphList: []
             }
         },
         methods: {
             jobTabClick(tab) {
+                this.jobGraph = {}
                 const index = this.jobList.findIndex(job => job.id.toString() === tab.name)
                 this.jobInfo = this.jobList[index]
-                this.jobGraph = this.jobGraphList[index]
             },
             settingClick() {
                 this.jobSettingDrawer = true
             },
             async graphClick() {
+                this.jobGraph = {}
                 this.jobGraphDrawer = true
+                const dep = await getJobGraph({id: this.jobInfo.id})
+                if (dep.code === 1000) {
+                    this.jobGraph = dep.data
+                }
             },
             addTab() {
                 this.addJobDialog = true
@@ -396,11 +400,7 @@
                         this.jobList.push(this.jobInfo)
                     }
 
-                    const dep = await getJobGraph({id: this.jobInfo.id})
-                    if (dep.code === 1000) {
-                        this.jobGraph = dep.data
-                        this.jobGraphList.push(this.jobGraph)
-                    }
+
                 } else {
                     const index = this.jobList.findIndex(j => j.id.toString() === job.id.toString())
                     this.jobInfo = this.jobList[index]

@@ -185,7 +185,7 @@
                 instanceLog: false,
                 multipleSelection: [],
                 logContent: '',
-                height: '600px',
+                height: document.body.clientHeight - 200 + 'px',
                 selectedJob: {},
                 jobGraph: {},
             };

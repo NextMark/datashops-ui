@@ -49,7 +49,7 @@
                         .select(this.$el.querySelector("#graph"))
                         .append("svg")
                         .attr("width", document.body.clientWidth - 850)
-                        .attr("height", 500),
+                        .attr("height", document.body.clientHeight - 150),
                     inner = svg.append("g");
                 // Set up zoom support  d3.zoomTransform(svg.node())
                 var zoom = d3.zoom().on("zoom", function () {
