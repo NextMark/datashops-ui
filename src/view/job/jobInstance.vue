@@ -185,7 +185,7 @@
                 instanceLog: false,
                 multipleSelection: [],
                 logContent: '',
-                height: document.body.clientHeight - 200 + 'px',
+                height: '80vh',
                 selectedJob: {},
                 jobGraph: {},
             };
@@ -231,9 +231,10 @@
                     return 0
                 }
                 const dateDiff = moment(end).unix() - moment(start).unix()
-                if (dateDiff <= 1000) {
-                    return 0
-                }
+
+                // if (dateDiff <= 1000) {
+                //     return 0
+                // }
                 const dayDiff = Math.floor(dateDiff / (24 * 3600));
                 const leave1 = dateDiff % (24 * 3600);
                 const hours = Math.floor(leave1 / (3600));
