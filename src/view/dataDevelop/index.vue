@@ -10,7 +10,7 @@
                     <el-button icon="el-icon-plus" @click="addJobDialog = true">新建作业</el-button>
                 </div>
             </div>
-            <div class="innerContentTop" v-if="openedTabs.length > 0">
+            <div class="innerContentTop" v-if="openedTabs.length > 0" style="overflow: auto">
 
                 <el-tabs v-model="jobActiveTab" closable @tab-remove="removeTab" type="border-card"
                          @tab-click="jobTabClick">
