@@ -227,6 +227,7 @@
                     </el-form-item>
                     <el-form-item label="依赖上游任务">
                         <el-table
+                                border
                                 :data="dependency"
                                 style="width: 100%">
                             <el-table-column
@@ -244,7 +245,7 @@
                                     width="70">
                                 <template slot-scope="scope">
                                     <svg class="icon-1-5" aria-hidden="true">
-                                        <use :xlink:href="scope.row.type |getJobIcon"></use>
+                                        <use :xlink:href="scope.row.jobType |getJobIcon"></use>
                                     </svg>
                                 </template>
                             </el-table-column>
@@ -255,9 +256,17 @@
                             </el-table-column>
                             <el-table-column
                                     label="偏移"
-                                    width="100">
+                                    width="200">
                                 <template slot-scope="scope">
-                                    <el-input v-model="scope.row.offset"></el-input>
+                                    <el-row>
+                                        <el-col :span="6">
+                                            <el-tag :type="scope.row.type === 1 ? 'success' : 'warning'">
+                                                {{scope.row.type === 1 ? '集合' : '区间'}}</el-tag>
+                                        </el-col>
+                                        <el-col :span="17" :offset="1">
+                                            <el-input v-model="scope.row.offset"></el-input>
+                                        </el-col>
+                                    </el-row>
                                 </template>
                             </el-table-column>
                             <el-table-column
@@ -286,11 +295,12 @@
         </div>
         <el-drawer
                 title="添加依赖"
-                width="70%"
+                width="90%"
                 :append-to-body="true"
                 :visible.sync="addDependencyDialog"
                 center>
             <el-table
+                    border
                     :data="tableData"
                     style="width: 100%">
                 <el-table-column
@@ -305,7 +315,7 @@
                 </el-table-column>
                 <el-table-column
                         label="类型"
-                        width="70">
+                        width="60">
                     <template slot-scope="scope">
                         <svg class="icon-1-5" aria-hidden="true">
                             <use :xlink:href="scope.row.type |getJobIcon"></use>
@@ -319,14 +329,28 @@
                 </el-table-column>
                 <el-table-column
                         label="偏移"
-                        width="80">
+                        width="220">
                     <template slot-scope="scope">
-                        <el-input v-model="scope.row.offset"></el-input>
+                        <el-row>
+                            <el-col :span="13">
+                                <el-select v-model="scope.row.dependencyType" placeholder="依赖类型">
+                                    <el-option
+                                            v-for="item in dependencyTypes"
+                                            :key="item.value"
+                                            :label="item.name"
+                                            :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="11">
+                                <el-input v-model="scope.row.offset"></el-input>
+                            </el-col>
+                        </el-row>
                     </template>
                 </el-table-column>
                 <el-table-column
                         label="操作"
-                        width="80">
+                        width="60">
                     <template slot-scope="scope">
                         <el-button
                                 size="mini"
@@ -380,6 +404,16 @@
                 schedulingPeriod,
                 week,
                 date,
+                dependencyTypes: [
+                    {
+                        name: '集合',
+                        value: 1
+                    },
+                    {
+                        name: '区间',
+                        value: 2
+                    }
+                ],
                 timeConfig: {
                     hour: '',
                     minute: '',
@@ -442,6 +476,7 @@
                 await addDependency({
                     sourceId: row.id,
                     targetId: this.jobInfo.id,
+                    type: row.dependencyType,
                     offset: row.offset
                 });
                 this.dependency.push({
