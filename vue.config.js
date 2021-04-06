@@ -3,8 +3,8 @@
 const path = require('path')
 const buildConf = require('./build.config')
 const packageConf = require('./package.json')
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
-
+// const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
+let webpack = require('webpack');
 
 function resolve(dir) {
     return path.join(__dirname, dir)
@@ -36,6 +36,8 @@ module.exports = {
         },
     },
     configureWebpack: {
+        plugins: [new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)],
+
         //    @路径走src文件夹
         resolve: {
             alias: {
@@ -44,6 +46,12 @@ module.exports = {
         }
     },
     chainWebpack(config) {
+        if (process.env.use_analyzer) {
+            config
+                .plugin('webpack-bundle-analyzer')
+                .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin)
+        }
+
         // set preserveWhitespace
         config.module
             .rule('vue')
@@ -60,12 +68,12 @@ module.exports = {
             config => config.devtool('cheap-source-map')
         )
 
-        config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
-            {
-                // Languages are loaded on demand at runtime
-                languages: ['javascript', 'html', 'shell', 'python', 'sql']
-            }
-        ])
+        // config.plugin('monaco-editor').use(MonacoWebpackPlugin, [
+        //     {
+        //         // Languages are loaded on demand at runtime
+        //         languages: ['shell', 'python', 'sql']
+        //     }
+        // ])
 
         config
             .when(process.env.NODE_ENV !== 'development',

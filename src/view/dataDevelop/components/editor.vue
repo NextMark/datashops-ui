@@ -16,7 +16,7 @@
     </div>
 </template>
 <script>
-    import * as monaco from 'monaco-editor';
+    // import * as monaco from 'monaco-editor';
     export default {
         props:{
             height: {
@@ -101,7 +101,7 @@
             initEditor(){
                 let self = this;
                 //self.$refs.container.innerHTML = '';
-                self.editor = monaco.editor.create(document.getElementById('editor'), {
+                self.editor = window.monaco.editor.create(document.getElementById('editor'), {
                     value:self.codesCopy || self.code,
                     language: self.language,
                     theme: self.theme,

@@ -59,13 +59,11 @@
                 <template slot-scope="scope">
                     <el-button
                             class="table-button"
-                            @click="updateWorkflowProcess(scope.row)"
                             size="small"
                             type="primary"
                     >手动执行</el-button>
                     <el-button
                             class="table-button"
-                            @click="viewWorkflowProcess(scope.row)"
                             size="small"
                             type="warning"
                     >查看</el-button>

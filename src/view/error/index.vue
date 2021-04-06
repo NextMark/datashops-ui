@@ -17,7 +17,7 @@ export default {
 
 <style lang="scss">
     .big{
-        width: 100%;
+        //width: 100%;
         height: calc(100vh - 220px);
         background-color: rgb(244,244,244);
         position: relative;

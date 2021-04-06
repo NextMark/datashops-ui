@@ -14,10 +14,6 @@
     </div>
 </template>
 <script>
-    import {
-        createWorkflowProcess,
-        updateWorkflowProcess
-    } from "@/api/workflowProcess";  //  此处请自行替换地址
     import FlowPanel from '@/components/ef/panel'
 
     export default {
@@ -69,23 +65,6 @@
                         message:"流程id必填，点击空白处填写流程基本信息"
                     })
                     return
-                }
-                if(this.$route.query.type == 'edit'){
-                    const res = await updateWorkflowProcess(processModel)
-                    if(res.code === 1000){
-                        this.$message({
-                            type:"success",
-                            message:"编辑成功"
-                        })
-                    }
-                }else{
-                    const res = await createWorkflowProcess(processModel)
-                    if(res.code === 1000){
-                        this.$message({
-                            type:"success",
-                            message:"创建成功"
-                        })
-                    }
                 }
             },
             saveXML() {
