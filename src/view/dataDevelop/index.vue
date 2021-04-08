@@ -445,6 +445,7 @@
                         message: "补数提交成功",
                         center: true
                     });
+                    this.runJobFormVisible = false
                 }
             },
             async runJob(id) {
