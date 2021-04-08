@@ -26,7 +26,7 @@
                              type="index" fixed="left"
                              width="40"></el-table-column>
 
-            <el-table-column label="ID" width="170">
+            <el-table-column label="ID" width="170" fixed="left">
                 <template slot-scope="scope">
                     {{scope.row.instanceId}}
                 </template>
@@ -72,7 +72,7 @@
             <el-table-column label="结束日期" width="170">
                 <template slot-scope="scope">{{scope.row.endTime}}</template>
             </el-table-column>
-            <el-table-column label="按钮组" min-width="240">
+            <el-table-column label="按钮组" min-width="240" fixed="right">
                 <template slot-scope="scope">
                     <el-button v-if="scope.row.state >= 5"
                             class="table-button"
@@ -97,7 +97,7 @@
                             @click="viewDag(scope.row)"
                             size="small"
                             type="success"
-                    >DAG</el-button>
+                    >依赖图</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -337,16 +337,17 @@
                 if (res.code === 1000) {
                     this.logContent += res.data
                     let len = res.data.split('\n').length
-                    if (len >= 200) {
-                        skipLines += len -1
+                    if (len === 0) {
+                        return
                     }
+                    skipLines += len -1
                     this.editor.setValue(this.logContent)
                 }
             },
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(value, event) {
+            onCodeChange(value) {
                 this.logContent = value
             },
         },

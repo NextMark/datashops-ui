@@ -30,31 +30,52 @@
         data() {
             return {
                 form: {},
+                defaultValue: '',
                 version: 'python3',
                 value: '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n',
                 editor: null
             }
         },
         mounted() {
-            const data = JSON.parse(this.jobInfo.data)
-            if (data) {
-                this.version = data.version
-                this.editor.setValue(data.value)
-                this.value = data.value
-            } else {
-                this.version = 'python3'
-                this.value = '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n'
+            this.init(this.jobInfo)
+        },
+        watch:{
+            jobInfo: {
+                handler(val) {
+                    this.init(val)
+                }
             }
         },
         methods: {
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(value, event) {
+            onCodeChange(value) {
                 this.value = value
             },
             saveEditor(){
-                this.value = this.monacoEditor.getValue();
+                this.value = this.editor.getValue();
+            },
+            init(jobInfo) {
+                this.defaultValue = '#！/usr/bin/env python\n# -*- coding:utf8 -*-\n'
+
+                if (!jobInfo.data) {
+                    this.value = this.defaultValue
+                    this.editor.setValue(this.defaultValue)
+                    return
+                }
+                const data = JSON.parse(jobInfo.data)
+                if (data) {
+                    this.value = data.value
+                    this.version = data.version
+                }
+
+                if (this.value) {
+                    this.editor.setValue(this.value)
+                } else {
+                    this.value = this.defaultValue
+                    this.editor.setValue(this.defaultValue)
+                }
             }
         }
     }

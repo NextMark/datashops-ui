@@ -41,7 +41,7 @@
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(value, event) {
+            onCodeChange(value) {
                 this.value = value
             },
             init(jobInfo) {

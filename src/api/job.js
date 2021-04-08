@@ -146,6 +146,14 @@ export const getJobGraph = (params) => {
     })
 }
 
+export const batchRunJob = (params) => {
+    return service({
+        url: "/v1/job/batchRunJob",
+        method: 'get',
+        params
+    })
+}
+
 export const runJob = (params) => {
     return service({
         url: "/v1/job/runJob",

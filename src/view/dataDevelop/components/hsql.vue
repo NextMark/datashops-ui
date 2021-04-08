@@ -34,14 +34,6 @@
         watch:{
             jobInfo: {
                 handler(val) {
-                    // this.value = JSON.parse(val.data).value;
-                    // if (this.editor) {
-                    //     if (this.value) {
-                    //         this.editor.setValue(this.value)
-                    //     } else {
-                    //         this.editor.setValue(this.defaultSql)
-                    //     }
-                    // }
                     this.init(val)
                 }
             }
@@ -54,9 +46,7 @@
         },
         methods: {
             formatSQL() {
-                this.editor.getAction('editor.action.formatDocument').run();
-
-                //this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
+                this.editor.setValue(sqlFormatter.format(this.editor.getValue()))
             },
             onMounted(editor) {
                 this.editor = editor;

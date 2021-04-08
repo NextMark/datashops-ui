@@ -51,6 +51,8 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
+                    <el-button type="primary" style="float: right; margin-top: 8px" icon="el-icon-date"
+                               @click="runJobFormVisible = true">补数</el-button>
                     <component :is="currentView" :jobInfo="jobInfo" ref="jobForm" ></component>
 
                 </el-tabs>
@@ -197,6 +199,21 @@
                 direction="rtl">
             <graph :jobGraph="jobGraph"></graph>
         </el-drawer>
+        <el-dialog title="选择执行时间段" :visible.sync="runJobFormVisible" width="480px" center>
+            <el-date-picker
+                    clearable=""
+                    style="vertical-align: middle; width: 400px"
+                    value-format="yyyyMMddHH"
+                    v-model="searchTimeHour"
+                    type="datetimerange"
+                    placeholder="基准时间">
+            </el-date-picker>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="runJobFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="batchRunJob">执行</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -227,8 +244,10 @@
         addNewJob,
         modifyJob,
         getJobGraph,
-        runJob
+        runJob,
+        batchRunJob
     } from "@/api/job";
+    var moment = require('moment')
 
 
     export default {
@@ -312,6 +331,11 @@
                 },
                 jobList: [],
                 jobGraph: {},
+                runJobFormVisible: false,
+                searchTimeHour: [
+                    moment().subtract(14, 'days').format('YYYYMMDDHH'),
+                    moment().subtract(0, 'days').format('YYYYMMDDHH')
+                ],
             }
         },
         methods: {
@@ -409,6 +433,19 @@
             },
             format() {
                 this.$refs.jobForm.formatSQL()
+            },
+            async batchRunJob(id) {
+                console.log(id)
+                console.log(this.searchTimeHour)
+                const res = await batchRunJob({id: id, operator: this.userInfo.name, startTime:
+                        this.searchTimeHour[0], endTime: this.searchTimeHour[1]});
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "补数提交成功",
+                        center: true
+                    });
+                }
             },
             async runJob(id) {
                 const res = await runJob({id: id, operator: this.userInfo.name});
