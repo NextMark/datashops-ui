@@ -333,7 +333,7 @@
                 jobGraph: {},
                 runJobFormVisible: false,
                 searchTimeHour: [
-                    moment().subtract(14, 'days').format('YYYYMMDDHH'),
+                    moment().subtract(0, 'days').format('YYYYMMDDHH'),
                     moment().subtract(0, 'days').format('YYYYMMDDHH')
                 ],
             }
