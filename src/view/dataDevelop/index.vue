@@ -211,7 +211,7 @@
 
             <div slot="footer" class="dialog-footer">
                 <el-button @click="runJobFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="batchRunJob">执行</el-button>
+                <el-button type="primary" @click="batchRunJob(jobInfo.id)">执行</el-button>
             </div>
         </el-dialog>
     </div>
