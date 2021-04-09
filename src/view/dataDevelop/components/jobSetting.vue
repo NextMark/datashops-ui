@@ -278,7 +278,8 @@
                                 <template slot-scope="scope">
                                     <el-button
                                             type="text"
-                                            size="mini">删除</el-button>
+                                            size="mini"
+                                    @click="deleteDependency(scope.row.id)">删除</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -378,7 +379,7 @@
 </template>
 
 <script>
-    import {addDependency, getJobDependency, getJobList, modifySchedulerStatus} from "@/api/job";
+    import {addDependency, getJobDependency, getJobList, modifySchedulerStatus, deleteDependency} from "@/api/job";
     import {getQueueList} from "@/api/resource";
     import infoList from "@/mixins/infoList";
     import {date, getJobIcon, hours, options, schedulingPeriod, week, formatSchedulingPeriod} from '@/utils/job';
@@ -471,6 +472,18 @@
                 this.dependency = res.data;
                 const queue = await getQueueList({pageSize: 20, pageNum: 1});
                 this.queue = queue.data.content
+            },
+            async deleteDependency(id) {
+                console.log(id)
+                const res = deleteDependency({id: id})
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "删除成功"
+                    });
+                    const res = await getJobDependency({id: this.jobInfo.id});
+                    this.dependency = res.data;
+                }
             },
             handleAddDependency() {
                 this.addDependencyDialog = true;

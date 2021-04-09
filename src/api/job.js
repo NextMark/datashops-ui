@@ -133,6 +133,14 @@ export const addDependency = (params) => {
     })
 }
 
+export const deleteDependency = (params) => {
+    return service({
+        url: "/v1/job/dependency/deleteJobDependency",
+        method: 'post',
+        data: params
+    })
+}
+
 export const getJobInstanceList = (params) => {
     return service({
         url: "/v1/job/instance/getJobInstanceList",

@@ -42,7 +42,7 @@
                     }
                 });
                 this.graph.edges.forEach(function (edge) {
-                    g.setEdge(edge.from, edge.to, {label: edge.label});
+                    g.setEdge(edge.from, edge.to, {label: edge.label ? edge.label : ''});
                 });
 
                 var svg = d3
@@ -66,7 +66,7 @@
                     d3.zoomIdentity
                         .translate(
                             (svg.attr("width") - g.graph().width * initialScale) / 2,
-                            20
+                            220
                         )
                         .scale(initialScale)
                 );
