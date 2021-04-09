@@ -36,7 +36,8 @@ export const getJobList = (data) => {
     return service({
         url: "/v1/job/getJobList",
         method: 'post',
-        data: data
+        data: data,
+        donNotShowLoading: false
     })
 }
 
@@ -110,7 +111,9 @@ export const getJobByMaskId = (params) => {
     return service({
         url: "/v1/job/getJobByMaskId",
         method: 'get',
-        params
+        params,
+        donNotShowLoading: false
+
     })
 }
 
@@ -134,13 +137,22 @@ export const getJobInstanceList = (params) => {
     return service({
         url: "/v1/job/instance/getJobInstanceList",
         method: 'post',
-        data: params
+        data: params,
+        donNotShowLoading: false
     })
 }
 
 export const getJobGraph = (params) => {
     return service({
         url: "/v1/job/getJobGraph",
+        method: 'get',
+        params
+    })
+}
+
+export const getDependencyPreview = (params) => {
+    return service({
+        url: "/v1/job/dependency/preview",
         method: 'get',
         params
     })

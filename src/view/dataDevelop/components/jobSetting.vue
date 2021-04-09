@@ -249,6 +249,9 @@
                                     </svg>
                                 </template>
                             </el-table-column>
+                            <el-table-column label="调度周期" width="80">
+                                <template slot-scope="scope">{{scope.row.schedulingPeriod|formatSchedulingPeriod}}</template>
+                            </el-table-column>
                             <el-table-column
                                     label="责任人"
                                     prop="owner"
@@ -378,7 +381,7 @@
     import {addDependency, getJobDependency, getJobList, modifySchedulerStatus} from "@/api/job";
     import {getQueueList} from "@/api/resource";
     import infoList from "@/mixins/infoList";
-    import {date, getJobIcon, hours, options, schedulingPeriod, week} from '@/utils/job';
+    import {date, getJobIcon, hours, options, schedulingPeriod, week, formatSchedulingPeriod} from '@/utils/job';
 
     var moment = require('moment');
 
@@ -394,7 +397,8 @@
             }
         },
         filters: {
-            getJobIcon
+            getJobIcon,
+            formatSchedulingPeriod
         },
         data() {
             return {

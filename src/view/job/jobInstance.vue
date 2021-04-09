@@ -224,6 +224,9 @@
                 if (state === 8) {
                     return '被杀'
                 }
+                if (state === 9) {
+                    return '超时失败'
+                }
 
             },
             runDuration: function(start, end) {
@@ -263,7 +266,8 @@
                     5: 'success',
                     6: 'info',
                     7: 'danger',
-                    8: 'warning'
+                    8: 'warning',
+                    9: 'danger'
                 }
                 return statusMap[status]
             }

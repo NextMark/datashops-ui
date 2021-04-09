@@ -65,6 +65,9 @@
                     <div class="right-setting">
                         <span @click="graphClick">依赖图</span>
                     </div>
+                    <div class="right-setting">
+                        <span @click="dependencyPreviewClick">依赖预览</span>
+                    </div>
                 </div>
             </template>
         </div>
@@ -199,6 +202,13 @@
                 direction="rtl">
             <graph :jobGraph="jobGraph"></graph>
         </el-drawer>
+        <el-drawer
+                title="依赖预览"
+                :visible.sync="dependencyPreviewVisible"
+                size="60%"
+                direction="rtl">
+            <graph :jobGraph="dependencyPreview"></graph>
+        </el-drawer>
         <el-dialog title="选择执行时间段" :visible.sync="runJobFormVisible" width="480px" center>
             <el-date-picker
                     clearable=""
@@ -245,7 +255,8 @@
         modifyJob,
         getJobGraph,
         runJob,
-        batchRunJob
+        batchRunJob,
+        getDependencyPreview
     } from "@/api/job";
     var moment = require('moment')
 
@@ -331,6 +342,8 @@
                 },
                 jobList: [],
                 jobGraph: {},
+                dependencyPreviewVisible: false,
+                dependencyPreview: {},
                 runJobFormVisible: false,
                 searchTimeHour: [
                     moment().subtract(0, 'days').format('YYYYMMDDHH'),
@@ -353,6 +366,14 @@
                 const dep = await getJobGraph({id: this.jobInfo.id})
                 if (dep.code === 1000) {
                     this.jobGraph = dep.data
+                }
+            },
+            async dependencyPreviewClick() {
+                this.dependencyPreview = {}
+                this.dependencyPreviewVisible = true
+                const dep = await getDependencyPreview({id: this.jobInfo.id})
+                if (dep.code === 1000) {
+                    this.dependencyPreview = dep.data
                 }
             },
             addTab() {

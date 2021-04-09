@@ -30,9 +30,10 @@ const closeLoading = () => {
     //http request 拦截器
 service.interceptors.request.use(
     config => {
-        if (!config.donNotShowLoading) {
-            showLoading()
-        }
+        // if (!config.donNotShowLoading) {
+        //     showLoading()
+        // }
+        showLoading()
         const token = store.getters['user/token']
         const user = store.getters['user/userInfo']
         config.data = JSON.stringify(config.data);
