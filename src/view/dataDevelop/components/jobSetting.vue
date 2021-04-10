@@ -474,8 +474,7 @@
                 this.queue = queue.data.content
             },
             async deleteDependency(id) {
-                console.log(id)
-                const res = deleteDependency({id: id})
+                const res = await deleteDependency({id: id})
                 if (res.code === 1000) {
                     this.$message({
                         type: "success",

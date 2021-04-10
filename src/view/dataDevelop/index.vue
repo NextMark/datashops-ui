@@ -207,7 +207,7 @@
                 :visible.sync="dependencyPreviewVisible"
                 size="60%"
                 direction="rtl">
-            <graph :jobGraph="dependencyPreview"></graph>
+            <graph :jobGraph="jobGraph"></graph>
         </el-drawer>
         <el-dialog title="选择执行时间段" :visible.sync="runJobFormVisible" width="480px" center>
             <el-date-picker
@@ -369,11 +369,11 @@
                 }
             },
             async dependencyPreviewClick() {
-                this.dependencyPreview = {}
+                this.jobGraph = {}
                 this.dependencyPreviewVisible = true
                 const dep = await getDependencyPreview({id: this.jobInfo.id})
                 if (dep.code === 1000) {
-                    this.dependencyPreview = dep.data
+                    this.jobGraph = dep.data
                 }
             },
             addTab() {

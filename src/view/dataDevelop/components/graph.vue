@@ -15,10 +15,14 @@
             jobGraph: {
                 deep: true,
                 handler(val) {
-                    this.graph = val
-                    this.$nextTick(() => {
-                        this.render();
-                    });
+                    d3.selectAll("#graph > *").remove();
+                    if (JSON.stringify(val) !== '{}') {
+                        this.graph = val
+                        this.$nextTick(() => {
+                            console.log(val)
+                            this.render(val);
+                        });
+                    }
                 },
             }
         },
@@ -29,10 +33,10 @@
             }
         },
         methods: {
-            render() {
-                d3.selectAll("#graph > *").remove();
+            render(val) {
+                //d3.selectAll("#graph > *").remove();
                 var g = new dagreD3.graphlib.Graph().setGraph({});
-                this.graph.nodes.forEach(function (node) {
+                val.nodes.forEach(function (node) {
                     node.rx = node.ry = 5;
                     g.setNode(node.id, node);
                     if (node.id.indexOf("error") === -1) {
@@ -41,7 +45,7 @@
                         g.node(node.id).style = "fill: #8EE2FF";
                     }
                 });
-                this.graph.edges.forEach(function (edge) {
+                val.edges.forEach(function (edge) {
                     g.setEdge(edge.from, edge.to, {label: edge.label ? edge.label : ''});
                 });
 
@@ -74,13 +78,12 @@
                 //svg.attr("height", g.graph().height * 2 + 40);
             }
         },
-        created() {
-            console.log('ss')
-            this.graph = this.jobGraph
-            this.$nextTick(() => {
-                this.render()
-            });
-            //this.render();
+        mounted() {
+            // this.graph = this.jobGraph
+            // this.$nextTick(() => {
+            //     console.log(this.jobGraph)
+            //     this.render(this.jobGraph)
+            // });
         }
     }
 </script>
