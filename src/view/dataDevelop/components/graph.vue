@@ -71,7 +71,7 @@
                     d3.zoomIdentity
                         .translate(
                             (svg.attr("width") - g.graph().width * initialScale) / 2,
-                            160
+                            80
                         )
                         .scale(initialScale)
                 );
