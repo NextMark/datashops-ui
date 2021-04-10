@@ -71,7 +71,7 @@
                     d3.zoomIdentity
                         .translate(
                             (svg.attr("width") - g.graph().width * initialScale) / 2,
-                            220
+                            160
                         )
                         .scale(initialScale)
                 );
@@ -99,6 +99,7 @@
 
     /deep/ .node text {
         font-weight: 400;
+        font-size: 14px;
         pointer-events: none;
         text-anchor: middle;
         /*fill: white;*/
@@ -113,7 +114,7 @@
     }
 
     /deep/ .label g text tspan:last-child {
-        font-size: 10px;
+        font-size: 12px;
         margin-top: 15px;
     }
 
