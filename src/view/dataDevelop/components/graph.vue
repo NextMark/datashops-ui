@@ -37,13 +37,14 @@
                 //d3.selectAll("#graph > *").remove();
                 var g = new dagreD3.graphlib.Graph().setGraph({});
                 val.nodes.forEach(function (node) {
-                    node.rx = node.ry = 5;
-                    g.setNode(node.id, node);
-                    if (node.id.indexOf("error") === -1) {
-                        g.node(node.id).style = "fill: #8EE2FF";
-                    } else {
-                        g.node(node.id).style = "fill: #8EE2FF";
-                    }
+                    g.setNode(node.id, {
+                        id: node.id,
+                        label: node.label,
+                        class: 'type-normal',
+                        width: 150,
+                        rx: 5,
+                        ry: 5,
+                    });
                 });
                 val.edges.forEach(function (edge) {
                     g.setEdge(edge.from, edge.to, {label: edge.label ? edge.label : ''});
@@ -96,14 +97,65 @@
         border: 1px solid #ccc;
     }
 
+    /deep/ .node text {
+        font-weight: 400;
+        pointer-events: none;
+        text-anchor: middle;
+        /*fill: white;*/
+    }
     /deep/ .node rect {
-        stroke: #333;
-        fill: #fff;
+        fill: white;
+        stroke-width: 1px;
+        color: white;
+    }
+    /deep/ .label g {
+        transform: translate(0, -13px);
+    }
+
+    /deep/ .label g text tspan:last-child {
+        font-size: 10px;
+        margin-top: 15px;
     }
 
     /deep/ .edgePath path {
-        stroke: #333;
-        fill: #333;
-        stroke-width: 1.5px;
+        stroke: rgb(78, 78, 78);
+        stroke-width: 1px;
+    }
+
+    /deep/ g.type-init>rect {
+        fill: rgba(0, 91, 252, 0.4);
+    }
+
+    /deep/ g.type-ready>rect {
+        fill: rgba(0, 91, 252, 0.6);
+    }
+
+    /deep/ g.type-queue>rect {
+        fill: #999999;
+    }
+
+    /deep/ g.type-run>rect {
+        fill: #d5eeff;
+    }
+
+    /deep/ g.type-normal>rect {
+        fill: #d5eeff;
+    }
+
+    /deep/ g.type-suss>rect {
+        fill: #3EBB44;
+    }
+
+    /deep/ g.type-fail>rect {
+        fill: #E93A3A;
+
+    }
+
+    /deep/ g.type-freeze>rect {
+        fill: #f2f3f7;
+    }
+
+    /deep/ .type-freeze text {
+        fill: #999999;
     }
 </style>
