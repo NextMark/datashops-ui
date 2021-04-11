@@ -106,14 +106,14 @@
             },
             async deleteRow(row) {
                 this.visible = false;
-                const res = await deleteQueue({ id: row.id });
-                if (res.code === 1000) {
-                    this.$message({
-                        type: "success",
-                        message: "删除成功"
-                    });
-                    this.getTableData();
-                }
+                // const res = await deleteQueue({ id: row.id });
+                // if (res.code === 1000) {
+                //     this.$message({
+                //         type: "success",
+                //         message: "删除成功"
+                //     });
+                //     this.getTableData();
+                // }
             },
             openDialog() {
                 this.dialogFormVisible = true;
