@@ -96,6 +96,14 @@
                         </span>
                     </el-tab-pane>
                     <el-tooltip class="item" effect="dark"
+                                content="保存">
+                        <el-button type="text" style="font-size:15px" @click="save(jobInfo.id)">
+                            <svg class="icon-1-5" aria-hidden="true">
+                                <use xlink:href="#el-icon-my-baocun"></use>
+                            </svg>
+                        </el-button>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark"
                                 content="立即运行">
                         <el-button type="text" style="font-size:15px" @click="runJob(jobInfo.id)">
                             <svg class="icon-1-5" aria-hidden="true">
@@ -142,6 +150,7 @@
     import {
         addTmpQuery,
         deleteTmpQuery,
+        update,
         getTmpQueryList,
         getTmpQueryById
     } from "@/api/tmpQuery";
@@ -176,7 +185,6 @@
                 pythonList: [],
                 openedJobList: [],
                 value: '',
-                editor: null,
                 language: '',
                 form: {
                     id: "",
@@ -227,6 +235,17 @@
             onCodeChange(value) {
                 this.value = value
             },
+            async save(id) {
+                console.log(id)
+                console.log(this.value)
+                const res = await update({id: id, value: this.value});
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "保存成功!"
+                    });
+                }
+            },
             async clickAdd() {
                 this.form.owner = this.userInfo.name
                 const res = await addTmpQuery(this.form);
@@ -270,16 +289,15 @@
                         });
                         if (job.type === 0) {
                             self.language = 'sql'
-                            self.editor.updateOptions({language: 'sql'})
+                            this.changeModel('sql')
                         }
                         if (job.type === 1) {
                             self.language = 'shell'
-                            self.editor.updateOptions({language: 'shell'})
+                            this.changeModel('shell')
                         }
                         if (job.type === 11) {
                             self.language = 'python'
-
-                            self.editor.updateOptions({language: 'python'})
+                            this.changeModel('python')
                         }
                         this.jobInfo = res.data
                         this.initEditor(this.jobInfo)
@@ -290,6 +308,15 @@
                     this.jobInfo = this.openedJobList[index]
                 }
                 this.jobActiveTab = job.id.toString()
+            },
+            changeModel(language){
+                var oldModel = this.editor.getModel();
+                var value = this.editor.getValue();
+                var newModel = window.monaco.editor.createModel(value,language);
+                if(oldModel){
+                    oldModel.dispose();
+                }
+                this.editor.setModel(newModel);
             },
             async runJob(id) {
                 const res = await runJob({id: id, operator: this.userInfo.name});

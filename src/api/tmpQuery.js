@@ -31,3 +31,11 @@ export const getTmpQueryById = (params) => {
         params
     })
 }
+
+export const update = (data) => {
+    return service({
+        url: "/v1/temQuery/update",
+        method: 'post',
+        data
+    })
+}
