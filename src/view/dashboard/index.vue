@@ -165,11 +165,6 @@
                         bottom: '13%',
                         containLabel: true
                     },
-                    toolbox: {
-                        feature: {
-                            saveAsImage: {}
-                        }
-                    },
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,

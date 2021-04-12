@@ -2,29 +2,16 @@
     <div class="parent">
         <div class="left">
             <el-row>
-                <el-popover
-                        placement="right"
-                        width="80">
-                    <el-row style="padding:0 0">
-                        <el-button style="font-size: 12px" type="text">新建HSQL</el-button>
-                    </el-row>
-                    <el-row style="padding:0 0">
-                        <el-button style="font-size: 12px" type="text">新建Shell</el-button>
-                    </el-row>
-                    <el-row style="padding:0 0">
-                        <el-button style="font-size: 12px" type="text">新建Python</el-button>
-                    </el-row>
-                    <el-button slot="reference" type="text" icon="el-icon-plus" style="font-size:20px" @click="clickAdd"></el-button>
-                </el-popover>
-<!--                <el-tooltip class="item" effect="dark" content="添加临时查询" placement="top-start">-->
-<!--                    <el-button type="text" icon="el-icon-plus" style="font-size:20px" @click="clickAdd"></el-button>-->
-<!--                </el-tooltip>-->
+                <el-tooltip class="item" effect="dark" content="添加作业" placement="top-start">
+                    <el-button type="text" icon="el-icon-plus" style="font-size:20px"
+                               @click="tmpQueryDia = true"></el-button>
+                </el-tooltip>
                 <el-tooltip class="item" effect="dark" content="刷新" placement="top-start">
                     <el-button type="text" icon="el-icon-refresh" style="font-size:20px" @click="refresh"></el-button>
                 </el-tooltip>
             </el-row>
 
-            <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+            <el-menu default-active="1" class="el-menu-vertical-demo"
                      :collapse="isCollapse" style="width: 200px">
                 <el-submenu index="1" >
                     <template slot="title">
@@ -90,7 +77,7 @@
         <div class="right outerContainer" style="overflow: auto">
             <div class="innerContent" v-show="openedTabs.length === 0">
                 <div style="text-align: center">
-                    <el-button icon="el-icon-plus">新建临时作业</el-button>
+                    <el-button icon="el-icon-plus" @click="tmpQueryDia = true">新建临时查询</el-button>
                 </div>
             </div>
             <div class="innerContentTop" v-if="openedTabs.length > 0" style="overflow: auto">
@@ -119,22 +106,45 @@
                     <Editor
                             :showThemeSelect="false"
                             style="padding-top: 3px"
-                            language="sql"
+                            :language="language"
                             :value="value"
                             @onMounted="onMounted"
                             @onCodeChange="onCodeChange"/>
                 </el-tabs>
             </div>
         </div>
+        <el-dialog title="临时查询" :visible.sync='tmpQueryDia' width="480px" center>
+            <el-form :model="form" label-width="80px">
+                <el-form-item label="类型">
+                    <el-select v-model="form.type" placeholder="请选择">
+                        <el-option label="hql" :value="0"></el-option>
+                        <el-option label="shell" :value="1"></el-option>
+                        <el-option label="python" :value="11"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="名称">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="tmpQueryDia = false">取消</el-button>
+                <el-button type="primary" @click="clickAdd()">添加</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
     import {
-        getJobByMaskId,
-        getJobList,
         runJob,
     } from "@/api/job";
+    import {
+        addTmpQuery,
+        deleteTmpQuery,
+        getTmpQueryList,
+        getTmpQueryById
+    } from "@/api/tmpQuery";
     import infoList from "@/mixins/infoList";
     import { mapGetters } from "vuex";
     import { getJobIcon } from '@/utils/job';
@@ -146,81 +156,96 @@
             Editor
         },
         mixins: [infoList],
-
         computed: {
+            ...mapGetters("user", ["userInfo"])
         },
         async created() {
-            await this.getTableData(1, 100);
-            for (let i = 0; i < this.tableData.length; i++) {
-                const job = this.tableData[i]
-                if (job.type === 0 ) {
-                    this.hiveList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type,
-                        maskId: job.maskId
-                    })
-                }
-                if (job.type === 1) {
-                    this.shellList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type,
-                        maskId: job.maskId
-                    })
-                }
-                if (job.type === 11) {
-                    this.pythonList.push({
-                        id: job.id,
-                        name: job.name,
-                        type: job.type,
-                        maskId: job.maskId
-                    })
-                }
-            }
+            this.initLeft()
         },
         data() {
             return {
-                listApi: getJobList,
+                tmpQueryDia: false,
+                listApi: getTmpQueryList,
                 openedTabs: [],
                 jobActiveTab: '1',
                 isCollapse: false,
                 integrationList: [],
                 jobInfo: {},
-                jobList: [],
                 hiveList: [],
                 shellList: [],
                 pythonList: [],
                 openedJobList: [],
                 value: '',
-                editor: null
+                editor: null,
+                language: '',
+                form: {
+                    id: "",
+                    name: "",
+                    type: 0,
+                    value: ''
+                },
             };
         },
         filters: {
             getJobIcon
         },
         methods: {
+            async initLeft() {
+                this.hiveList = []
+                this.shellList = []
+                this.pythonList = []
+                await this.getTableData(1, 100);
+                for (let i = 0; i < this.tableData.length; i++) {
+                    const job = this.tableData[i]
+                    if (job.type === 0 ) {
+                        this.hiveList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type,
+                        })
+                    }
+                    if (job.type === 1) {
+                        this.shellList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type,
+                        })
+                    }
+                    if (job.type === 11) {
+                        this.pythonList.push({
+                            id: job.id,
+                            name: job.name,
+                            type: job.type,
+                        })
+                    }
+                }
+            },
             onMounted(editor) {
-                this.editor = editor;
+                let self = this
+                self.editor = editor;
             },
             onCodeChange(value) {
                 this.value = value
             },
-            handleOpen(key, keyPath) {
-
-            },
-            handleClose(key, keyPath) {
-
-            },
-            clickAdd() {
+            async clickAdd() {
+                this.form.owner = this.userInfo.name
+                const res = await addTmpQuery(this.form);
+                if (res.code === 1000) {
+                    this.$message({
+                        type: "success",
+                        message: "添加成功!"
+                    });
+                    this.tmpQueryDia = false
+                    this.initLeft();
+                }
             },
             refresh() {
+                this.initLeft();
             },
             initEditor(jobInfo) {
                 const data = JSON.parse(jobInfo.data)
                 if (data) {
                     this.value = data.value
-                    console.log(data.value)
                     this.editor.setValue(data.value)
                 } else {
                     this.value = ''
@@ -228,19 +253,34 @@
                 }
             },
             async clickJob(job) {
+                let self = this
                 var res = this.openedTabs.some(item=>{
                     if(item.name === job.id.toString()){
+                        this.initEditor(job)
                         return true
                     }
                 })
                 if (!res) {
-                    const res = await getJobByMaskId({maskId: job.maskId})
+                    const res = await getTmpQueryById({id: job.id})
                     if (res.code === 1000) {
                         this.openedTabs.push({
                             title: job.name,
                             name: res.data.id.toString(),
                             type: job.type
                         });
+                        if (job.type === 0) {
+                            self.language = 'sql'
+                            self.editor.updateOptions({language: 'sql'})
+                        }
+                        if (job.type === 1) {
+                            self.language = 'shell'
+                            self.editor.updateOptions({language: 'shell'})
+                        }
+                        if (job.type === 11) {
+                            self.language = 'python'
+
+                            self.editor.updateOptions({language: 'python'})
+                        }
                         this.jobInfo = res.data
                         this.initEditor(this.jobInfo)
                         this.openedJobList.push(this.jobInfo)
@@ -284,6 +324,7 @@
             jobTabClick(tab) {
                 const index = this.openedJobList.findIndex(job => job.id.toString() === tab.name)
                 this.jobInfo = this.openedJobList[index]
+                this.initEditor(this.jobInfo)
             },
         }
     }

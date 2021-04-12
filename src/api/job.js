@@ -113,7 +113,6 @@ export const getJobByMaskId = (params) => {
         method: 'get',
         params,
         donNotShowLoading: false
-
     })
 }
 
