@@ -149,7 +149,6 @@
     } from "@/api/job";
     import {
         addTmpQuery,
-        deleteTmpQuery,
         update,
         getTmpQueryList,
         getTmpQueryById
@@ -168,9 +167,7 @@
         computed: {
             ...mapGetters("user", ["userInfo"])
         },
-        async created() {
-            this.initLeft()
-        },
+
         data() {
             return {
                 tmpQueryDia: false,
@@ -184,8 +181,9 @@
                 shellList: [],
                 pythonList: [],
                 openedJobList: [],
+                editor: null,
                 value: '',
-                language: '',
+                language: 'sql',
                 form: {
                     id: "",
                     name: "",
@@ -193,6 +191,9 @@
                     value: ''
                 },
             };
+        },
+        mounted() {
+            this.initLeft()
         },
         filters: {
             getJobIcon
@@ -229,8 +230,7 @@
                 }
             },
             onMounted(editor) {
-                let self = this
-                self.editor = editor;
+                this.editor = editor;
             },
             onCodeChange(value) {
                 this.value = value
@@ -262,17 +262,27 @@
                 this.initLeft();
             },
             initEditor(jobInfo) {
-                const data = JSON.parse(jobInfo.data)
-                if (data) {
-                    this.value = data.value
-                    this.editor.setValue(data.value)
+                if (jobInfo.type === 0) {
+                    this.language = 'sql'
+                    this.changeModel('sql')
+                }
+                if (jobInfo.type === 1) {
+                    this.language = 'shell'
+                    this.changeModel('shell')
+                }
+                if (jobInfo.type === 11) {
+                    this.language = 'python'
+                    this.changeModel('python')
+                }
+                if (jobInfo.value) {
+                    this.value = jobInfo.value
+                    this.editor.setValue(jobInfo.value)
                 } else {
                     this.value = ''
                     this.editor.setValue(this.value)
                 }
             },
             async clickJob(job) {
-                let self = this
                 var res = this.openedTabs.some(item=>{
                     if(item.name === job.id.toString()){
                         this.initEditor(job)
@@ -287,18 +297,6 @@
                             name: res.data.id.toString(),
                             type: job.type
                         });
-                        if (job.type === 0) {
-                            self.language = 'sql'
-                            this.changeModel('sql')
-                        }
-                        if (job.type === 1) {
-                            self.language = 'shell'
-                            this.changeModel('shell')
-                        }
-                        if (job.type === 11) {
-                            self.language = 'python'
-                            this.changeModel('python')
-                        }
                         this.jobInfo = res.data
                         this.initEditor(this.jobInfo)
                         this.openedJobList.push(this.jobInfo)
