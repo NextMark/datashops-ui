@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div style="height: 40px">
+        <div style="height: 40px" v-if="showThemeSelect">
             <span class="theme" style="float:right">
                 <el-select v-model="theme" size="mini" @change="themeChange" placeholder="请选择主题">
                     <el-option
@@ -19,6 +19,12 @@
     // import * as monaco from 'monaco-editor';
     export default {
         props:{
+            showThemeSelect: {
+                type: Boolean,
+                default: function () {
+                    return true
+                }
+            },
             height: {
                 type:String,
                 default:function(){

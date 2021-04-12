@@ -241,8 +241,6 @@
     import hive2mysql from "@/view/dataDevelop/components/hive2mysql";
     import mysql2hive from "@/view/dataDevelop/components/mysql2hive";
     import flinkSql from "@/view/dataDevelop/components/flinkSql";
-
-
     import jobSetting from '@/view/dataDevelop/components/jobSetting'
 
     import { mapGetters } from "vuex";
@@ -259,7 +257,6 @@
         getDependencyPreview
     } from "@/api/job";
     var moment = require('moment')
-
 
     export default {
         name: "dataDevelop",
@@ -456,8 +453,6 @@
                 this.$refs.jobForm.formatSQL()
             },
             async batchRunJob(id) {
-                console.log(id)
-                console.log(this.searchTimeHour)
                 const res = await batchRunJob({id: id, operator: this.userInfo.name, startTime:
                         this.searchTimeHour[0], endTime: this.searchTimeHour[1]});
                 if (res.code === 1000) {
