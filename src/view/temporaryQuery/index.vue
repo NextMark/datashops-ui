@@ -2,7 +2,7 @@
     <div class="parent">
         <div class="left">
             <el-row>
-                <el-tooltip class="item" effect="dark" content="添加作业" placement="top-start">
+                <el-tooltip class="item" effect="dark" content="添加临时查询" placement="top-start">
                     <el-button type="text" icon="el-icon-plus" style="font-size:20px"
                                @click="tmpQueryDia = true"></el-button>
                 </el-tooltip>
