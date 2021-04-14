@@ -12,13 +12,25 @@
                 </el-select>
             </span>
         </div>
-        <div id="editor" ref="container" :style="'height:' + height"></div>
+        <div :id="editorId" ref="container" :style="'height:' + height"></div>
     </div>
 </template>
 <script>
     // import * as monaco from 'monaco-editor';
     export default {
         props:{
+            readOnly: {
+                type: Boolean,
+                default: function () {
+                    return false
+                }
+            },
+            editorId: {
+                type:String,
+                default:function(){
+                    return 'editor'
+                }
+            },
             showThemeSelect: {
                 type: Boolean,
                 default: function () {
@@ -107,10 +119,11 @@
             initEditor(){
                 let self = this;
                 //self.$refs.container.innerHTML = '';
-                self.editor = window.monaco.editor.create(document.getElementById('editor'), {
+                self.editor = window.monaco.editor.create(document.getElementById(this.editorId), {
                     value:self.codesCopy || self.code,
                     language: self.language,
                     theme: self.theme,
+                    readOnly: self.readOnly,
                     ...self.editorOptions
                 });
                 self.$emit('onMounted',self.editor);

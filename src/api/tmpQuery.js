@@ -39,3 +39,11 @@ export const update = (data) => {
         data
     })
 }
+
+export const runJob = (params) => {
+    return service({
+        url: "/v1/temQuery/runJob",
+        method: 'get',
+        params
+    })
+}

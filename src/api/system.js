@@ -17,8 +17,7 @@ export const setSystemConfig = (data) => {
 
 export const getSystemState = () => {
     return service({
-        url: "/system/getServerInfo",
-        method: "post",
-        donNotShowLoading: true
+        url: "/v1/sys/getServerInfo",
+        method: "post"
     });
 };

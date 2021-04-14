@@ -118,6 +118,40 @@
                             :value="value"
                             @onMounted="onMounted"
                             @onCodeChange="onCodeChange"/>
+                    <el-divider></el-divider>
+                    <el-tabs v-model="activeName" type="card" v-if="logVisible">
+                        <el-tab-pane label="日志" name="log">
+                            <Editor
+                                    :readOnly="true"
+                                    :editorId="logEditorId"
+                                    :showThemeSelect="false"
+                                    height="200px"
+                                    style="padding-top: 3px"
+                                    language="sql"
+                                    value="log"
+                            />
+                        </el-tab-pane>
+                        <el-tab-pane label="结果" name="result">
+                            <el-table :data="list" border height="350">
+                                <el-table-column
+                                        label="序号"
+                                        type="index"
+                                        width="50">
+                                </el-table-column>
+                                <el-table-column label="时间" width="80">
+                                    <template slot-scope="scope">
+                                        {{ scope.row.type}}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="状态" width="80">
+                                    <template slot-scope="scope">
+                                        {{ scope.row.status}}
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                    </el-tabs>
+
                 </el-tabs>
             </div>
         </div>
@@ -144,18 +178,12 @@
 </template>
 
 <script>
-    import {
-        runJob,
-    } from "@/api/job";
-    import {
-        addTmpQuery,
-        update,
-        getTmpQueryList,
-        getTmpQueryById
-    } from "@/api/tmpQuery";
+    import {addTmpQuery, getTmpQueryById, getTmpQueryList, update, runJob} from "@/api/tmpQuery";
     import infoList from "@/mixins/infoList";
-    import { mapGetters } from "vuex";
-    import { getJobIcon } from '@/utils/job';
+    import {mapGetters} from "vuex";
+    import {getJobIcon} from '@/utils/job';
+    import lodash from 'lodash'
+
     import Editor from '../dataDevelop/components/editor'
 
     export default {
@@ -170,6 +198,19 @@
 
         data() {
             return {
+                logVisible: false,
+                activeName: 'log',
+                list: [
+                    {
+                        type: 1,
+                        status: 'running',
+                    },
+                    {
+                        type: 2,
+                        status: 'failed',
+                    }
+                ],
+                logEditorId: 'eee',
                 tmpQueryDia: false,
                 listApi: getTmpQueryList,
                 openedTabs: [],
@@ -211,6 +252,7 @@
                             id: job.id,
                             name: job.name,
                             type: job.type,
+                            value: job.value
                         })
                     }
                     if (job.type === 1) {
@@ -218,6 +260,7 @@
                             id: job.id,
                             name: job.name,
                             type: job.type,
+                            value: job.value
                         })
                     }
                     if (job.type === 11) {
@@ -225,6 +268,7 @@
                             id: job.id,
                             name: job.name,
                             type: job.type,
+                            value: job.value
                         })
                     }
                 }
@@ -236,14 +280,13 @@
                 this.value = value
             },
             async save(id) {
-                console.log(id)
-                console.log(this.value)
-                const res = await update({id: id, value: this.value});
+                const res = await update({id: id, value: this.value, owner: this.userInfo.name});
                 if (res.code === 1000) {
                     this.$message({
                         type: "success",
                         message: "保存成功!"
                     });
+                    this.openedJobList = lodash.unionBy([res.data], this.openedJobList, 'id')
                 }
             },
             async clickAdd() {
@@ -262,30 +305,31 @@
                 this.initLeft();
             },
             initEditor(jobInfo) {
-                if (jobInfo.type === 0) {
-                    this.language = 'sql'
-                    this.changeModel('sql')
-                }
-                if (jobInfo.type === 1) {
-                    this.language = 'shell'
-                    this.changeModel('shell')
-                }
-                if (jobInfo.type === 11) {
-                    this.language = 'python'
-                    this.changeModel('python')
-                }
-                if (jobInfo.value) {
-                    this.value = jobInfo.value
-                    this.editor.setValue(jobInfo.value)
-                } else {
-                    this.value = ''
-                    this.editor.setValue(this.value)
-                }
+                this.$nextTick(() => {
+                    if (jobInfo.type === 0) {
+                        this.language = 'sql'
+                        this.changeModel('sql')
+                    }
+                    if (jobInfo.type === 1) {
+                        this.language = 'shell'
+                        this.changeModel('shell')
+                    }
+                    if (jobInfo.type === 11) {
+                        this.language = 'python'
+                        this.changeModel('python')
+                    }
+                    if (jobInfo.value) {
+                        this.value = jobInfo.value
+                        this.editor.setValue(jobInfo.value)
+                    } else {
+                        this.value = ''
+                        this.editor.setValue(this.value)
+                    }
+                })
             },
             async clickJob(job) {
                 var res = this.openedTabs.some(item=>{
                     if(item.name === job.id.toString()){
-                        this.initEditor(job)
                         return true
                     }
                 })
@@ -295,16 +339,18 @@
                         this.openedTabs.push({
                             title: job.name,
                             name: res.data.id.toString(),
-                            type: job.type
+                            type: job.type,
+                            value: job.value
                         });
                         this.jobInfo = res.data
-                        this.initEditor(this.jobInfo)
                         this.openedJobList.push(this.jobInfo)
+                        this.initEditor(this.jobInfo)
                     }
                 } else {
                     const index = this.openedJobList.findIndex(j => j.id.toString() === job.id.toString())
                     this.jobInfo = this.openedJobList[index]
                 }
+                this.initEditor(this.jobInfo)
                 this.jobActiveTab = job.id.toString()
             },
             changeModel(language){
@@ -317,6 +363,7 @@
                 this.editor.setModel(newModel);
             },
             async runJob(id) {
+                this.logVisible = true
                 const res = await runJob({id: id, operator: this.userInfo.name});
                 if (res.code === 1000) {
                     this.$message({

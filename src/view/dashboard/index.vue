@@ -111,6 +111,8 @@
 </template>
 
 <script>
+    import {getSystemState} from "@/api/system";
+
     import {mapGetters} from "vuex";
     import LineChart from './component/LineChart'
     import BarChart from './component/BarChart'
@@ -329,7 +331,10 @@
             };
         },
         computed: {
-            ...mapGetters("user", ["userInfo"]),
+            ...mapGetters("user", ["userInfo"])
+        },
+        created() {
+            this.sysInfo()
         },
         components: {
             LineChart,
@@ -341,13 +346,17 @@
             toTarget(name) {
                 this.$router.push({name});
             },
+            async sysInfo() {
+                const res = await getSystemState()
+                console.log(res)
+            }
         },
     };
 </script>
 
 <style lang="scss" scoped>
     .big {
-        margin: 115px 15px 20px;
+        margin: 100px 15px 20px;
         padding-top: 0;
         background-color: rgb(243, 243, 243);
         padding-top: 15px;
