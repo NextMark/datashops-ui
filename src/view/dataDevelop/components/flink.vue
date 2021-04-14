@@ -2,18 +2,6 @@
     <div>
         <el-form ref="form" :model="form" :rules="flinkRules" label-width="140px">
             <el-row>
-<!--                <el-col :span="6">-->
-<!--                    <el-form-item label="flink版本" prop="version">-->
-<!--                        <el-select v-model="form.version" clearable placeholder="请选择">-->
-<!--                            <el-option-->
-<!--                                    v-for="item in flinkVersion"-->
-<!--                                    :key="item.value"-->
-<!--                                    :label="item.label"-->
-<!--                                    :value="item.value">-->
-<!--                            </el-option>-->
-<!--                        </el-select>-->
-<!--                    </el-form-item>-->
-<!--                </el-col>-->
                 <el-col :span="10">
                     <el-form-item label="yarn任务名称" prop="yarnAppName">
                         <el-input v-model="form.yarnAppName"></el-input>
