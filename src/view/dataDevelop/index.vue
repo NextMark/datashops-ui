@@ -34,8 +34,8 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
-                    <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3 || jobInfo.type === 5 || jobInfo.type
-                    === 9 || jobInfo.type === 10" class="item" effect="dark"
+                    <el-tooltip v-if="jobInfo.type === 2 || jobInfo.type === 3 || jobInfo.type === 5 ||jobInfo.type
+                    === 7 || jobInfo.type === 8 || jobInfo.type === 9 || jobInfo.type === 10" class="item" effect="dark"
                                 content="立即运行">
                         <el-button type="text" style="font-size:15px" @click="runJob(jobInfo.id)">
                             <svg class="icon-1-5" aria-hidden="true">
@@ -51,7 +51,9 @@
                             </svg>
                         </el-button>
                     </el-tooltip>
-                    <el-button type="primary" style="float: right; margin-top: 8px" icon="el-icon-date"
+                    <el-button
+                            v-if="jobInfo.type === 0 || jobInfo.type === 1 || jobInfo.type === 11"
+                            type="primary" style="float: right; margin-top: 8px" icon="el-icon-date"
                                @click="runJobFormVisible = true">补数</el-button>
                     <component :is="currentView" :jobInfo="jobInfo" ref="jobForm" ></component>
 
@@ -59,7 +61,7 @@
             </div>
             <template>
                 <div class="tabBox" v-show="openedTabs.length > 0">
-                    <div class="right-setting" v-if="jobInfo.type !== 2 && jobInfo.type !== 3">
+                    <div class="right-setting" v-if="jobInfo.type === 0 || jobInfo.type === 1 || jobInfo.type === 11">
                         <span @click="settingClick">调度设置</span>
                     </div>
                     <div class="right-setting">
@@ -155,12 +157,12 @@
                             </svg>
                             <el-button type="text" @click="createNewJob(2, 5)">Flink SQL</el-button>
                         </el-row>
-                        <el-row>
-                            <svg class="icon-1-5" aria-hidden="true">
-                                <use xlink:href="#el-icon-my-streaming"></use>
-                            </svg>
-                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>
-                        </el-row>
+<!--                        <el-row>-->
+<!--                            <svg class="icon-1-5" aria-hidden="true">-->
+<!--                                <use xlink:href="#el-icon-my-streaming"></use>-->
+<!--                            </svg>-->
+<!--                            <el-button type="text" @click="createNewJob(2, 7)">Kafka2Hive</el-button>-->
+<!--                        </el-row>-->
                         <el-row>
                             <svg class="icon-1-5" aria-hidden="true">
                                 <use xlink:href="#el-icon-my-streaming"></use>
@@ -477,89 +479,22 @@
             async save() {
                 this.$refs.jobForm.$refs['form'].validate(async valid => {
                     if (valid) {
-                        if (!this.$refs.jobSettingForm) {
-                            const jobDto = this.jobInfo
+                        let jobDto;
+                        if (this.$refs.jobSettingForm) {
+                            jobDto = this.$refs.jobSettingForm.jobInfoCopy
+                        } else {
+                            jobDto = this.jobInfo
+                        }
 
-                            // hive shell
-                            if (jobDto.type === 0 || jobDto.type === 1 || jobDto.type === 5) {
-                                jobDto.data = {
-                                    value: this.$refs.jobForm.value
-                                }
-                                jobDto.data = JSON.stringify(jobDto.data)
+                        //const jobDto = this.jobInfo
+                        // hive shell
+                        if (jobDto.type === 0 || jobDto.type === 1 || jobDto.type === 5) {
+                            jobDto.data = {
+                                value: this.$refs.jobForm.value
                             }
-                            // python
-                            if (jobDto.type === 11) {
-                                jobDto.data = {
-                                    version: this.$refs.jobForm.version,
-                                    value: this.$refs.jobForm.value
-                                }
-                                jobDto.data = JSON.stringify(jobDto.data)
-                            }
-                            // spark flink
-                            if (jobDto.type === 2 || jobDto.type === 3) {
-                                jobDto.data = this.$refs.jobForm.form
-                                jobDto.data = JSON.stringify(jobDto.data)
-                            }
-
-                            // hive2mysql, mysql2hive
-                            if (jobDto.type === 9 || jobDto.type === 10) {
-                                jobDto.data = this.$refs.jobForm.form
-                                var mysqlJdbc = "jdbc:mysql://ip:3306/db?useUnicode=true&characterEncoding=utf-8"
-                                jobDto.data.mysqlJdbc = mysqlJdbc.replace("ip", jobDto.data.mysqlAddress).replace("db",
-                                    jobDto.data.mysqlDb)
-
-                                jobDto.data = JSON.stringify(jobDto.data)
-                            }
-
-                            await modifyJob(jobDto);
-                            this.$message({
-                                type: "success",
-                                message: "作业修改成功",
-                                center: true
-                            });
-                            return
+                            jobDto.data = JSON.stringify(jobDto.data)
                         }
-                        const jobDto = this.$refs.jobSettingForm.jobInfoCopy
-                        let timeConfigDto = this.$refs.jobSettingForm.timeConfig
-                        const hourMinute = this.$refs.jobSettingForm.hourMinute
-                        const validRange = this.$refs.jobSettingForm.validRange
-
-                        let timeParams = {}
-                        if (jobDto.schedulingPeriod === 0) {
-                            const timeArrs = hourMinute.split(":")
-                            timeParams.hour = timeArrs[0]
-                            timeParams.minute = timeArrs[1]
-                            timeParams.days = timeConfigDto.days.join()
-                        }
-                        if (jobDto.schedulingPeriod === 1) {
-                            const timeArrs = hourMinute.split(":")
-                            timeParams.hour = timeArrs[0]
-                            timeParams.minute = timeArrs[1]
-                            timeParams.weeks = timeConfigDto.weeks.join()
-                        }
-                        if (jobDto.schedulingPeriod === 2) {
-                            const timeArrs = hourMinute.split(":")
-                            timeParams.hour = timeArrs[0]
-                            timeParams.minute = timeArrs[1]
-                        }
-                        if (jobDto.schedulingPeriod === 3) {
-                            timeParams.type = timeConfigDto.type
-                            timeParams.hours = timeConfigDto.hours.join()
-                            timeParams.hourBegin = timeConfigDto.hourBegin.split(":")[0];
-                            timeParams.hourPeriod = timeConfigDto.hourPeriod;
-                            timeParams.hourMinute = timeConfigDto.hourBegin.split(":")[1];
-                            timeParams.hourEnd = timeConfigDto.hourEnd
-                        }
-                        if (jobDto.schedulingPeriod === 4) {
-                            timeParams.minuteBegin = timeConfigDto.minuteBegin
-                            timeParams.minuteEnd = timeConfigDto.minuteEnd
-                            timeParams.period = timeConfigDto.period
-                        }
-
-                        jobDto.timeConfig = JSON.stringify(timeParams)
-                        jobDto.validStartDate = validRange[0]
-                        jobDto.validEndDate = validRange[1]
-                        //
+                        // python
                         if (jobDto.type === 11) {
                             jobDto.data = {
                                 version: this.$refs.jobForm.version,
@@ -567,9 +502,86 @@
                             }
                             jobDto.data = JSON.stringify(jobDto.data)
                         }
+                        // spark flink
+                        if (jobDto.type === 2 || jobDto.type === 3) {
+                            jobDto.data = this.$refs.jobForm.form
+                            jobDto.name = jobDto.data.name
+                            jobDto.data = JSON.stringify(jobDto.data)
+                        }
+                        // kafka2hdfs
+                        if (jobDto.type === 7 || jobDto.type === 8) {
+                            jobDto.data = this.$refs.jobForm.form
+                            jobDto.name = jobDto.data.name
+                            jobDto.data = JSON.stringify(jobDto.data)
+                        }
+
+                        // hive2mysql, mysql2hive
+                        if (jobDto.type === 9 || jobDto.type === 10) {
+                            jobDto.data = this.$refs.jobForm.form
+                            jobDto.name = jobDto.data.name
+                            var mysqlJdbc = "jdbc:mysql://ip:3306/db?useUnicode=true&characterEncoding=utf-8"
+                            jobDto.data.mysqlJdbc = mysqlJdbc.replace("ip", jobDto.data.mysqlAddress).replace("db",
+                                jobDto.data.mysqlDb)
+                            jobDto.data = JSON.stringify(jobDto.data)
+                        }
+
+                        let needScheduler = [0, 1, 11, 12];
+
+                        if (needScheduler.includes(jobDto.type)) {
+                            //const jobDto = this.$refs.jobSettingForm.jobInfoCopy
+                            let timeConfigDto = this.$refs.jobSettingForm.timeConfig
+                            const hourMinute = this.$refs.jobSettingForm.hourMinute
+                            const validRange = this.$refs.jobSettingForm.validRange
+
+                            let timeParams = {}
+                            if (jobDto.schedulingPeriod === 0) {
+                                const timeArrs = hourMinute.split(":")
+                                timeParams.hour = timeArrs[0]
+                                timeParams.minute = timeArrs[1]
+                                timeParams.days = timeConfigDto.days.join()
+                            }
+                            if (jobDto.schedulingPeriod === 1) {
+                                const timeArrs = hourMinute.split(":")
+                                timeParams.hour = timeArrs[0]
+                                timeParams.minute = timeArrs[1]
+                                timeParams.weeks = timeConfigDto.weeks.join()
+                            }
+                            if (jobDto.schedulingPeriod === 2) {
+                                const timeArrs = hourMinute.split(":")
+                                timeParams.hour = timeArrs[0]
+                                timeParams.minute = timeArrs[1]
+                            }
+                            if (jobDto.schedulingPeriod === 3) {
+                                timeParams.type = timeConfigDto.type
+                                timeParams.hours = timeConfigDto.hours.join()
+                                timeParams.hourBegin = timeConfigDto.hourBegin.split(":")[0];
+                                timeParams.hourPeriod = timeConfigDto.hourPeriod;
+                                timeParams.hourMinute = timeConfigDto.hourBegin.split(":")[1];
+                                timeParams.hourEnd = timeConfigDto.hourEnd
+                            }
+                            if (jobDto.schedulingPeriod === 4) {
+                                timeParams.minuteBegin = timeConfigDto.minuteBegin
+                                timeParams.minuteEnd = timeConfigDto.minuteEnd
+                                timeParams.period = timeConfigDto.period
+                            }
+
+                            jobDto.timeConfig = JSON.stringify(timeParams)
+                            jobDto.validStartDate = validRange[0]
+                            jobDto.validEndDate = validRange[1]
+                            //
+                            if (jobDto.type === 11) {
+                                jobDto.data = {
+                                    version: this.$refs.jobForm.version,
+                                    value: this.$refs.jobForm.value
+                                }
+                                jobDto.data = JSON.stringify(jobDto.data)
+                            }
+                        }
                         const res = await modifyJob(jobDto);
                         if (res.code === 1000) {
-                            this.$refs.jobSettingForm.formatJob(res.data)
+                            if (this.$refs.jobSettingForm) {
+                                this.$refs.jobSettingForm.formatJob(res.data)
+                            }
                             this.$refs.leftNav.refresh()
                             this.$message({
                                 type: "success",

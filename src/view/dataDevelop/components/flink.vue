@@ -1,14 +1,43 @@
 <template>
     <div>
-        <el-form ref="form" :model="form" :rules="flinkRules" label-width="140px">
-            <el-row>
-                <el-col :span="10">
+        <el-row>
+            <el-col :span="9">
+                <el-form ref="form" :model="form" label-width="140px">
                     <el-form-item label="yarn任务名称" prop="yarnAppName">
-                        <el-input v-model="form.yarnAppName"></el-input>
+                        <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
-                    <el-form-item label="队列" prop="yarnQueue">
+                    <el-form-item label="并行度" prop="parallelism">
+                        <el-input v-model="form.parallelism"></el-input>
+                    </el-form-item>
+                    <el-form-item label="JobManager内存" prop="jobManagerMemory">
+                        <el-input v-model="form.jobManagerMemory"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类名" prop="className">
+                        <el-input v-model="form.className"></el-input>
+                    </el-form-item>
+                    <el-form-item label="jar">
+                        <el-upload
+                                class="upload-demo"
+                                action="http://localhost:8666/v1/res/uploadJar"
+                                :data="{'jobId': jobInfo.id, 'type': 1, 'name': jobInfo.name}"
+                                :headers="{'Authorization': token}"
+                                :multiple="false"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :before-remove="beforeRemove"
+                                :on-success="handleSuccess"
+                                :limit="1"
+                                :on-exceed="handleExceed"
+                                :file-list="fileList">
+                            <el-button size="small" type="primary">点击上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jar文件，且不超过100Mb</div>
+                        </el-upload>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+            <el-col :span="10" :offset="2">
+                <el-form ref="form" :model="form" label-width="140px">
+                    <el-form-item label="队列:">
                         <el-select v-model="form.yarnQueue" placeholder="请选择队列">
                             <el-option
                                     v-for="item in queue"
@@ -18,57 +47,15 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="10">
-                    <el-form-item label="并行度" prop="parallelism">
-                        <el-input v-model="form.parallelism"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
                     <el-form-item label="Slot数" prop="taskSlotNum">
                         <el-input v-model="form.taskSlotNum"></el-input>
                     </el-form-item>
-                </el-col>
-            </el-row>
-            <el-row>
-                <el-col :span="10">
-                    <el-form-item label="JobManager内存" prop="jobManagerMemory">
-                        <el-input v-model="form.jobManagerMemory"></el-input>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="10" :offset="2">
                     <el-form-item label="TaskManager内存" prop="taskManagerMemory">
                         <el-input v-model="form.taskManagerMemory"></el-input>
                     </el-form-item>
-                </el-col>
-            </el-row>
-            <el-form-item label="类名" prop="className">
-                <el-input v-model="form.className"></el-input>
-            </el-form-item>
-<!--            <el-form-item label="扩展参数">-->
-<!--                <el-input type="textarea" v-model="form.extension"></el-input>-->
-<!--            </el-form-item>-->
-            <el-form-item label="jar">
-                <el-upload
-                        class="upload-demo"
-                        action="http://localhost:8666/v1/res/uploadJar"
-                        :data="{'jobId': jobInfo.id, 'type': 1, 'name': jobInfo.name}"
-                        :headers="{'Authorization': token}"
-                        :multiple="false"
-                        :on-preview="handlePreview"
-                        :on-remove="handleRemove"
-                        :before-remove="beforeRemove"
-                        :on-success="handleSuccess"
-                        :limit="1"
-                        :on-exceed="handleExceed"
-                        :file-list="fileList">
-                    <el-button size="small" type="primary">点击上传</el-button>
-                    <div slot="tip" class="el-upload__tip">只能上传jar文件，且不超过100Mb</div>
-                </el-upload>
-            </el-form-item>
-        </el-form>
+                </el-form>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -98,7 +85,7 @@
                 }],
                 form: {
                     version: '1.12.0',
-                    yarnAppName: '',
+                    name: '',
                     taskSlotNum: 1,
                     parallelism: 1,
                     jobManagerMemory: '2048mb',
@@ -136,17 +123,17 @@
             resetForm() {
                 this.form = {
                     version: '1.12.0',
-                        yarnAppName: '',
-                        taskSlotNum: 1,
-                        parallelism: 1,
-                        jobManagerMemory: '2048mb',
-                        taskManagerMemory: '1024mb',
-                        className: '',
-                        yarnQueue: '',
-                        extension: '',
-                        fileName: '',
-                        url: '',
-                        size: ''
+                    yarnAppName: '',
+                    taskSlotNum: 1,
+                    parallelism: 1,
+                    jobManagerMemory: '2048mb',
+                    taskManagerMemory: '1024mb',
+                    className: '',
+                    yarnQueue: '',
+                    extension: '',
+                    fileName: '',
+                    url: '',
+                    size: ''
                 }
             },
             handleRemove(file, fileList) {
