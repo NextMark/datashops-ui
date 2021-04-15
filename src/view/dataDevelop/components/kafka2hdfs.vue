@@ -30,7 +30,7 @@
                         <el-input v-model="form.hdfsPath"></el-input>
                     </el-form-item>
                     <el-form-item label="时间字段:" prop="timeField">
-                        <el-input v-model="form.timeField"></el-input>
+                        <el-input v-model="form.ts"></el-input>
                     </el-form-item>
                 </el-form>
             </el-col>
@@ -74,7 +74,7 @@
                     kafkaServer: '',
                     topic: '',
                     hdfsPath: '',
-                    timeField: '',
+                    ts: '',
                     groupId: 'test',
                     checkpointPath: 'hdfs:///tmp/ds/checkpoint',
                     checkpointInterval: 2,
@@ -84,6 +84,7 @@
                     jobManagerMemory: '2048mb',
                     taskManagerMemory: '1024mb',
                     yarnQueue: '',
+                    className: 'com.bigdata.datashops.processor.Processor'
                 },
                 queue: [],
                 kafka2hdfsRules
