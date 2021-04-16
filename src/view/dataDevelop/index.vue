@@ -529,10 +529,19 @@
 
                         if (needScheduler.includes(jobDto.type)) {
                             //const jobDto = this.$refs.jobSettingForm.jobInfoCopy
-                            let timeConfigDto = this.$refs.jobSettingForm.timeConfig
-                            const hourMinute = this.$refs.jobSettingForm.hourMinute
-                            const validRange = this.$refs.jobSettingForm.validRange
 
+                            let timeConfigDto
+                            let hourMinute
+                            let validRange
+                            if (!this.$refs.jobSettingForm) {
+                                timeConfigDto = JSON.parse(jobDto.timeConfig)
+                                hourMinute = timeConfigDto.hour + ':' + timeConfigDto.minute
+                                validRange = [timeConfigDto.validStartDate, timeConfigDto.validEndDate]
+                            } else {
+                                timeConfigDto = this.$refs.jobSettingForm.timeConfig
+                                hourMinute = this.$refs.jobSettingForm.hourMinute
+                                validRange = this.$refs.jobSettingForm.validRange
+                            }
                             let timeParams = {}
                             if (jobDto.schedulingPeriod === 0) {
                                 const timeArrs = hourMinute.split(":")

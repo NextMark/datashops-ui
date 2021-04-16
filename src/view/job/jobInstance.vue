@@ -11,9 +11,6 @@
                 <el-form-item>
                     <el-button @click="onSubmit" type="primary">查询</el-button>
                 </el-form-item>
-                <el-form-item>
-                    <el-button @click="readLog" type="primary">LOG</el-button>
-                </el-form-item>
             </el-form>
         </div>
         <el-table
