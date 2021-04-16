@@ -7,3 +7,11 @@ export const rollReadLog = (params) => {
         params
     })
 }
+
+export const readYarnLog = (params) => {
+    return service({
+        url: "/v1/log/readYarnLog",
+        method: 'get',
+        params
+    })
+}

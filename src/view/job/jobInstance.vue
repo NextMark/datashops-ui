@@ -11,6 +11,9 @@
                 <el-form-item>
                     <el-button @click="onSubmit" type="primary">查询</el-button>
                 </el-form-item>
+                <el-form-item>
+                    <el-button @click="readLog" type="primary">LOG</el-button>
+                </el-form-item>
             </el-form>
         </div>
         <el-table
@@ -160,7 +163,8 @@
         getJobGraph
     } from "@/api/job";
     import {
-        rollReadLog
+        rollReadLog,
+        readYarnLog
     } from "@/api/log";
     import infoList from "@/mixins/infoList";
 
@@ -277,6 +281,9 @@
             graph
         },
         methods: {
+            readLog() {
+              readYarnLog()
+            },
             //条件搜索前端看此方法
             onSubmit() {
                 this.pageNum = 1;
