@@ -37,6 +37,7 @@
                  <div class="fl-right right-box">
                 <Search />
                 <Screenfull class="screenfull"></Screenfull>
+                     <Github class="screenfull"></Github>
                 <el-dropdown>
                   <span class="header-avatar">
                    <CustomPic/>
@@ -78,6 +79,7 @@
 import Aside from '@/view/layout/aside'
 import HistoryComponent from '@/view/layout/aside/historyComponent/history'
 import Screenfull from '@/view/layout/screenfull'
+import Github from '@/view/layout/github'
 import Search from '@/view/layout/search/search'
 import BottomInfo from '@/view/layout/bottomInfo/bottomInfo'
 import { mapGetters, mapActions } from 'vuex'
@@ -100,6 +102,7 @@ export default {
     Aside,
     HistoryComponent,
     Screenfull,
+      Github,
     Search,
     BottomInfo,
     CustomPic
