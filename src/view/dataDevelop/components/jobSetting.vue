@@ -39,7 +39,7 @@
                                 @change='handleSchedulerStatus'>
                         </el-switch>
                     </el-form-item>
-                    <el-form-item label="执行机分发策略">
+                    <el-form-item label="任务分发策略">
                         <el-col :span="5">
                             <el-select v-model="jobInfoCopy.hostSelector" placeholder="选择分发策略">
                                 <el-option
@@ -442,7 +442,7 @@
                 validRange: [],
                 jobInfoCopy: {
                     queueId: 3,
-                    hostSelector: 0,
+                    hostSelector: 1,
                     retryTimes: 0,
                     retryInterval: 3600,
                     schedulingPeriod: 2
@@ -457,7 +457,7 @@
                         id: 0
                     },
                     {
-                        name: '负载',
+                        name: '最低负载',
                         id: 1
                     },
                     {
