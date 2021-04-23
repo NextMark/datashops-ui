@@ -40,22 +40,20 @@
                         </el-switch>
                     </el-form-item>
                     <el-form-item label="执行机分发策略">
-                        <el-select v-model="jobInfoCopy.hostSelector" placeholder="选择分发策略">
-                            <el-option
-                                    v-for="item in hostSelector"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id">
-                            </el-option>
-                        </el-select>
-                        <el-select v-if="jobInfoCopy.hostSelector === 2" v-model="jobInfoCopy.host">
-                            <el-option
-                                    v-for="item in workers"
-                                    :key="item.ip"
-                                    :label="item.ip"
-                                    :value="item.ip">
-                            </el-option>
-                        </el-select>
+                        <el-col :span="5">
+                            <el-select v-model="jobInfoCopy.hostSelector" placeholder="选择分发策略">
+                                <el-option
+                                        v-for="item in hostSelector"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                        <el-col :span="8">
+                            <el-input v-if="jobInfoCopy.hostSelector === 2" v-model="jobInfoCopy.host"
+                                      placeholder="填写worker ip"></el-input>
+                        </el-col>
                     </el-form-item>
                     <el-form-item label="重试次数">
                         <el-input-number v-model="jobInfoCopy.retryTimes" :min="0" :max="10"></el-input-number>
@@ -461,6 +459,10 @@
                     {
                         name: '负载',
                         id: 1
+                    },
+                    {
+                        name: '指定机器',
+                        id: 2
                     }
                 ]
             }
