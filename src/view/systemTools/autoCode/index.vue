@@ -287,7 +287,7 @@ export default {
             });
           }
           const blob = new Blob([data]);
-          const fileName = "ginvueadmin.zip";
+          const fileName = "datashops-ui.zip";
           if ("download" in document.createElement("a")) {
             // 不是IE浏览器
             let url = window.URL.createObjectURL(blob);

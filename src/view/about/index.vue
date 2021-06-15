@@ -3,7 +3,7 @@
     <el-row :gutter="10">
       <el-col :span="12">
         <el-card>
-          <div slot="header">gin-vue-admin</div>
+          <div slot="header">datashops</div>
           <div>
             <el-row>
               <el-col :span="8" :offset="8">
