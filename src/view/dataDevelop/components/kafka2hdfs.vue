@@ -83,8 +83,7 @@
                     parallelism: 1,
                     jobManagerMemory: '2048mb',
                     taskManagerMemory: '1024mb',
-                    yarnQueue: '',
-                    className: 'com.bigdata.datashops.processor.Processor'
+                    yarnQueue: ''
                 },
                 queue: [],
                 kafka2hdfsRules

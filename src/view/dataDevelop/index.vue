@@ -508,6 +508,11 @@
                             jobDto.name = jobDto.data.name
                             jobDto.data = JSON.stringify(jobDto.data)
                         }
+                        // fsql
+                        if (jobDto.type === 5) {
+                            jobDto.data = this.$refs.jobForm.form
+                            jobDto.data = JSON.stringify(jobDto.data)
+                        }
                         // kafka2hdfs
                         if (jobDto.type === 7 || jobDto.type === 8) {
                             jobDto.data = this.$refs.jobForm.form

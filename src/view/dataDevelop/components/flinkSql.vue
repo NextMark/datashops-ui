@@ -4,7 +4,7 @@
         <Editor
                 style="margin-top: -30px"
                 language="sql"
-                :code="value"
+                :code="sql"
                 @onMounted="onMounted"
                 @onCodeChange="onCodeChange"/>
     </div>
@@ -24,7 +24,7 @@
         data() {
             return {
                 form: {},
-                value: '-- Type your SQL! \n',
+                sql: '-- Type your SQL! \n',
                 defaultSql: '-- Type your SQL! \n'
             }
         },
@@ -52,20 +52,20 @@
             onMounted(editor) {
                 this.editor = editor;
             },
-            onCodeChange(value, event) {
-                this.value = value
+            onCodeChange(sql, event) {
+                this.sql = sql
             },
             init(jobInfo) {
                 const data = JSON.parse(jobInfo.data)
                 if (data) {
-                    this.value = data.value
+                    this.sql = data.sql
                 }
                 this.defaultSql += '-- Author: ' + this.userInfo.name + '\n'
 
-                if (this.value) {
-                    this.editor.setValue(this.value)
+                if (this.sql) {
+                    this.editor.setValue(this.sql)
                 } else {
-                    this.value = this.defaultSql
+                    this.sql = this.defaultSql
                     this.editor.setValue(this.defaultSql)
                 }
             }
